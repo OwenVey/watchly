@@ -1,6 +1,6 @@
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 
 // Set up a Router instance
@@ -16,6 +16,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// biome-ignore lint/style/noNonNullAssertion: 'app' id will always exist in index.html
 const rootElement = document.getElementById('app')!;
 
 if (!rootElement.innerHTML) {

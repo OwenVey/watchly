@@ -1,10 +1,27 @@
 {
   "compilerOptions": {
-    "strict": true,
+    /* Base Options: */
     "esModuleInterop": true,
-    "jsx": "react-jsx",
+    "skipLibCheck": true,
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
-  }
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
+
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    /* If NOT transpiling with TypeScript: */
+    "module": "preserve",
+    "noEmit": true,
+
+    /* If your code runs in the DOM: */
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "exclude": ["node_modules"]
 }
