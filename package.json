@@ -8,12 +8,14 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "start": "vite"
+    "start": "vite",
+    "format": "biome format --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@tanstack/router-plugin": "^1.64.0",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
-    "@tanstack/router-plugin": "^1.64.0",
     "@vitejs/plugin-react": "^4.3.2",
     "vite": "^5.4.8"
   },
