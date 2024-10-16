@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -11,177 +10,242 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
+import { getTmdbImage } from '@/lib/utils';
+import { Route as MovieIdRoute } from '@/routes/movies_.$movieId';
+import {
+  infiniteQueryOptions,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import {
   Link,
   createFileRoute,
-  defer,
+  retainSearchParams,
   useNavigate,
 } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
-import { ChevronLeft, ChevronRight, Search, Star } from 'lucide-react';
+import { useIntersectionObserver } from '@uidotdev/usehooks';
+import { ArrowDownIcon, ArrowUpIcon, Star } from 'lucide-react';
+import React from 'react';
 import { z } from 'zod';
 
-const movieSearchSchema = z.object({
-  page: fallback(z.number().min(1), 1).default(1),
+const MovieSearchSchema = z.object({
   adult: fallback(z.boolean(), false).default(false),
+  ratingMin: fallback(z.number().min(1).max(10), 1).default(1),
+  ratingMax: fallback(z.number().min(1).max(10), 10).default(10),
+  sort: fallback(
+    z.enum([
+      'vote_average',
+      'primary_release_date',
+      'revenue',
+      'popularity',
+      'title',
+      'vote_count',
+    ]),
+    'popularity',
+  ).default('popularity'),
+  sortDir: fallback(z.enum(['asc', 'desc']), 'desc').default('desc'),
 });
+type Params = z.infer<typeof MovieSearchSchema>;
+
+const movieQueryOptions = (params: Params) =>
+  infiniteQueryOptions({
+    queryKey: ['movies', params],
+    queryFn: async ({ pageParam }) => {
+      const pagesToFetch = [pageParam, pageParam + 1, pageParam + 2];
+
+      const responses = await Promise.all(
+        pagesToFetch.map((page) =>
+          movieApi('/discover/movie', {
+            query: {
+              page,
+              include_adult: params.adult,
+              'vote_average.gte': params.ratingMin,
+              'vote_average.lte': params.ratingMax,
+              sort_by: `${params.sort}.${params.sortDir}`,
+            },
+          }),
+        ),
+      );
+
+      return {
+        page: responses.at(-1)?.page ?? 0,
+        results: responses.flatMap((f) => f.results),
+      };
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => lastPage.page + 1,
+  });
 
 export const Route = createFileRoute('/movies')({
-  component: Movies,
-  loaderDeps: ({ search: { page, adult } }) => ({ page, adult }),
-  loader: async ({ deps }) => {
-    const [movies, genresResponse] = await Promise.all([
-      movieApi('/discover/movie', {
-        query: {
-          include_adult: deps.adult,
-          sort_by: 'popularity.desc',
-          page: deps.page,
-        },
-      }),
-      movieApi('/genre/movie/list'),
-    ]);
-
-    return { movies, genres: genresResponse.genres };
+  loaderDeps: ({ search }) => search,
+  loader: ({ context: { queryClient }, deps }) =>
+    queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
+  validateSearch: zodSearchValidator(MovieSearchSchema),
+  search: {
+    middlewares: [retainSearchParams(true)],
   },
-  validateSearch: zodSearchValidator(movieSearchSchema),
+  component: Movies,
 });
 
 function Movies() {
-  const { movies, genres } = Route.useLoaderData();
-  const { page, adult } = Route.useSearch();
+  const deps = Route.useLoaderDeps();
   const navigate = useNavigate({ from: Route.fullPath });
+
+  const [rating, setRating] = React.useState([deps.ratingMin, deps.ratingMax]);
+
+  const [loadMoreRef, entry] = useIntersectionObserver({
+    rootMargin: '0px 0px 0% 0px',
+  });
+
+  React.useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry]);
+
+  const {
+    data: movies,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useSuspenseInfiniteQuery(movieQueryOptions(deps));
 
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar with filters */}
-      <aside className="w-64 border-r p-6 overflow-y-auto">
+      <aside className="w-64 border-r p-4 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Filters</h2>
-        {/* Search input */}
-        <div className="mb-4">
-          <Label htmlFor="search">Search</Label>
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="search"
-              placeholder="Search titles..."
-              className="pl-8"
+
+        <div className="flex flex-col gap-4">
+          {/* Rating */}
+          <div className="">
+            <Label>Rating</Label>
+            <Slider
+              className="mt-1"
+              value={rating}
+              onValueChange={setRating}
+              onValueCommit={([ratingMin, ratingMax]) =>
+                navigate({ search: { ratingMin, ratingMax } })
+              }
+              defaultValue={[1, 10]}
+              min={1}
+              max={10}
+              step={1}
+              minStepsBetweenThumbs={1}
             />
+            <div className="flex justify-between text-sm text-muted-foreground mt-1">
+              <span>1</span>
+              <span>10</span>
+            </div>
           </div>
-        </div>
 
-        {/* Genre filter */}
-        <div className="mb-4">
-          <Label htmlFor="genre">Genre</Label>
-          <Select>
-            <SelectTrigger id="genre">
-              <SelectValue placeholder="Select genre" />
-            </SelectTrigger>
-            <SelectContent>
-              {genres.map((genre) => (
-                <SelectItem key={genre.id} value={genre.id.toString()}>
-                  {genre.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Sort dropdown*/}
+          <div>
+            <Label htmlFor="sort">Sort By</Label>
+            <div className="flex gap-2">
+              <Select
+                defaultValue="popularity"
+                value={deps.sort}
+                onValueChange={(sort: Params['sort']) =>
+                  navigate({ search: { sort } })
+                }
+              >
+                <SelectTrigger id="sort">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="vote_average">Rating</SelectItem>
+                  <SelectItem value="primary_release_date">
+                    Release Date
+                  </SelectItem>
+                  <SelectItem value="revenue">Revenue</SelectItem>
+                  <SelectItem value="popularity">Popularity</SelectItem>
+                  <SelectItem value="title">Title</SelectItem>
+                  <SelectItem value="vote_count">Vote Count</SelectItem>
+                </SelectContent>
+              </Select>
 
-        {/* Year range filter */}
-        <div className="mb-4">
-          <Label>Year Range</Label>
-          <Slider defaultValue={[1990, 2023]} min={1900} max={2023} step={1} />
-          <div className="flex justify-between text-sm text-muted-foreground mt-1">
-            <span>1990</span>
-            <span>2023</span>
+              <Button
+                asChild
+                className="shrink-0"
+                size="icon"
+                variant="outline"
+              >
+                <Link
+                  to="."
+                  search={(prev) => ({
+                    sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc',
+                  })}
+                >
+                  {deps.sortDir === 'asc' ? (
+                    <ArrowUpIcon className="size-5" />
+                  ) : (
+                    <ArrowDownIcon className="size-5" />
+                  )}
+                </Link>
+              </Button>
+            </div>
           </div>
-        </div>
 
-        {/* Rating filter */}
-        <div className="mb-4">
-          <Label htmlFor="rating">Minimum Rating</Label>
-          <Select>
-            <SelectTrigger id="rating">
-              <SelectValue placeholder="Select rating" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">1+ Star</SelectItem>
-              <SelectItem value="2">2+ Stars</SelectItem>
-              <SelectItem value="3">3+ Stars</SelectItem>
-              <SelectItem value="4">4+ Stars</SelectItem>
-              <SelectItem value="5">5 Stars</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Adult Content */}
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="adult-content"
+              checked={deps.adult}
+              onCheckedChange={(adult) => navigate({ search: { adult } })}
+            />
+            <Label htmlFor="adult-content">Include Adult Content</Label>
+          </div>
 
-        {/* Adult content filter */}
-        <div className="flex items-center space-x-2 mb-4">
-          <Switch
-            id="adult-content"
-            checked={adult}
-            onCheckedChange={(adult) =>
-              navigate({ search: (prev) => ({ ...prev, adult }) })
-            }
-          />
-          <Label htmlFor="adult-content">Include Adult Content</Label>
+          <Button className="w-full">Apply Filters</Button>
         </div>
-
-        <div className="mb-4">
-          <Label htmlFor="duration">Max Duration (minutes)</Label>
-          <Input type="number" id="duration" placeholder="e.g. 120" />
-        </div>
-
-        {/* Apply filters button */}
-        <Button className="w-full">Apply Filters</Button>
       </aside>
 
       {/* Results area */}
       <main className="flex-1 p-6 overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Movies</h1>
-          <div className="flex space-x-2">
-            <Button asChild disabled={page === 1} variant="outline" size="icon">
-              <Link
-                to="."
-                search={(prev) => ({
-                  ...prev,
-                  page: prev.page - 1,
-                })}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="icon">
-              <Link
-                to="."
-                search={(prev) => ({
-                  ...prev,
-                  page: prev.page + 1,
-                })}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-
         {/* Grid of movie/show results */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-          {movies.results.map((movie) => (
-            <div key={movie.id} className="space-y-2">
-              <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden">
-                <img
-                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}}`}
-                  alt="movie poster"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-semibold truncate">{movie.title}</h3>
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Star className="h-4 w-4 mr-1 fill-primary" />
-                <span>{movie.vote_average}</span>
-              </div>
-            </div>
+          {movies.pages.map((page) => (
+            <React.Fragment key={page.page}>
+              {page.results.map((movie) => (
+                <Link
+                  key={movie.id}
+                  className="space-y-2"
+                  to={MovieIdRoute.to}
+                  params={{ movieId: movie.id.toString() }}
+                >
+                  <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden">
+                    {movie.poster_path ? (
+                      <img
+                        src={getTmdbImage('poster', movie.poster_path, 'w342')}
+                        alt={`Movie poster for ${movie.title}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div>no img</div>
+                    )}
+                  </div>
+                  <h3 className="font-semibold truncate">{movie.title}</h3>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Star className="size-4 mr-1 fill-primary" />
+                    <span>{movie.vote_average}</span>
+                  </div>
+                </Link>
+              ))}
+            </React.Fragment>
           ))}
+        </div>
+
+        <div className="mt-4 flex justify-center">
+          <Button
+            ref={loadMoreRef}
+            onClick={() => fetchNextPage()}
+            loading={isFetchingNextPage}
+            disabled={!hasNextPage}
+          >
+            Load More
+          </Button>
         </div>
       </main>
     </div>

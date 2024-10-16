@@ -1,8 +1,17 @@
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router';
+import { ModeToggle } from '@/components/mode-toggle';
+import type { QueryClient } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import {
+  Link,
+  Outlet,
+  ScrollRestoration,
+  createRootRouteWithContext,
+} from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import * as React from 'react';
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   component: RootComponent,
 });
 
@@ -32,10 +41,12 @@ function RootComponent() {
           </Link>
         </div>
         <div>
-          {/* Placeholder for user menu or additional navigation items */}
+          <ModeToggle />
         </div>
       </nav>
+      <ScrollRestoration />
       <Outlet />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
       <TanStackRouterDevtools position="bottom-right" />
     </div>
   );
