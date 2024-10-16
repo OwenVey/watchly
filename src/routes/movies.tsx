@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
@@ -24,7 +25,7 @@ import {
 } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
-import { ArrowDownIcon, ArrowUpIcon, Star } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CameraOffIcon } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';
 
@@ -52,7 +53,7 @@ const movieQueryOptions = (params: Params) =>
     queryKey: ['movies', params],
     queryFn: async ({ pageParam }) => {
       const pagesToFetch = [pageParam, pageParam + 1, pageParam + 2];
-
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const responses = await Promise.all(
         pagesToFetch.map((page) =>
           movieApi('/discover/movie', {
@@ -94,9 +95,7 @@ function Movies() {
 
   const [rating, setRating] = React.useState([deps.ratingMin, deps.ratingMax]);
 
-  const [loadMoreRef, entry] = useIntersectionObserver({
-    rootMargin: '0px 0px 0% 0px',
-  });
+  const [loadMoreRef, entry] = useIntersectionObserver();
 
   React.useEffect(() => {
     if (entry?.isIntersecting) {
@@ -197,8 +196,6 @@ function Movies() {
             />
             <Label htmlFor="adult-content">Include Adult Content</Label>
           </div>
-
-          <Button className="w-full">Apply Filters</Button>
         </div>
       </aside>
 
@@ -211,42 +208,38 @@ function Movies() {
               {page.results.map((movie) => (
                 <Link
                   key={movie.id}
-                  className="space-y-2"
+                  className="aspect-[2/3] grid place-items-center bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
                   to={MovieIdRoute.to}
                   params={{ movieId: movie.id.toString() }}
+                  preloadDelay={500}
                 >
-                  <div className="aspect-[2/3] bg-muted rounded-lg overflow-hidden">
-                    {movie.poster_path ? (
-                      <img
-                        src={getTmdbImage('poster', movie.poster_path, 'w342')}
-                        alt={`Movie poster for ${movie.title}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div>no img</div>
-                    )}
-                  </div>
-                  <h3 className="font-semibold truncate">{movie.title}</h3>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Star className="size-4 mr-1 fill-primary" />
-                    <span>{movie.vote_average}</span>
-                  </div>
+                  {movie.poster_path ? (
+                    <img
+                      src={getTmdbImage('poster', movie.poster_path, 'w342')}
+                      alt={`Movie poster for ${movie.title}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <CameraOffIcon className="size-8 text-muted-foreground" />
+                  )}
                 </Link>
               ))}
             </React.Fragment>
           ))}
+
+          {isFetchingNextPage &&
+            Array.from({ length: 60 }).map((_, index) => (
+              <Skeleton
+                className="aspect-[2/3] w-full"
+                key={`placeholder-${
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                  index
+                }`}
+              />
+            ))}
         </div>
 
-        <div className="mt-4 flex justify-center">
-          <Button
-            ref={loadMoreRef}
-            onClick={() => fetchNextPage()}
-            loading={isFetchingNextPage}
-            disabled={!hasNextPage}
-          >
-            Load More
-          </Button>
-        </div>
+        <div ref={loadMoreRef} className="h-1" />
       </main>
     </div>
   );
