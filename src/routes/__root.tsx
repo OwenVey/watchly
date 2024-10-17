@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <div className="flex h-screen flex-col bg-background">
-      <nav className="flex items-center justify-between border-b bg-background px-6 py-4">
+      <nav className="flex items-center justify-between border-gray-700 border-b bg-background px-6 py-4">
         <Link to="/" className="font-bold text-2xl">
           MovieFinder
         </Link>
