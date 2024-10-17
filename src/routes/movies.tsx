@@ -91,7 +91,7 @@ function Movies() {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar with filters */}
-      <aside className="w-64 overflow-y-auto border-r border-gray-700 p-4">
+      <aside className="w-64 overflow-y-auto border-gray-6 border-r p-4">
         <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
         <div className="flex flex-col gap-4">
@@ -137,16 +137,16 @@ function Movies() {
                 </SelectContent>
               </Select>
 
-              <Button asChild className="shrink-0" size="icon" variant="outline">
-                <Link
-                  to="."
-                  search={(prev) => ({
-                    sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc',
-                  })}
-                >
+              <Link
+                to="."
+                search={(prev) => ({
+                  sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc',
+                })}
+              >
+                <Button asChild className="shrink-0" size="icon" variant="outline">
                   {deps.sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ function Movies() {
               {page.results.map((movie) => (
                 <Link
                   key={movie.id}
-                  className="group relative grid aspect-[2/3] place-items-center overflow-hidden rounded-lg border border-gray-800 bg-gray-900 transition-all hover:scale-105 hover:border-gray-400"
+                  className="group relative grid aspect-[2/3] place-items-center overflow-hidden rounded-lg border border-gray-6 bg-gray-3 transition-all hover:scale-105 hover:border-gray-9"
                   to={MovieIdRoute.to}
                   params={{ movieId: movie.id.toString() }}
                   preloadDelay={500}
@@ -183,7 +183,7 @@ function Movies() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <CameraOffIcon className="size-8 text-gray-400" />
+                    <CameraOffIcon className="size-8 text-gray-9" />
                   )}
                   <div className="absolute inset-0 bg-gray-900/50 p-2 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
                     <div className="font-bold text-white text-xl">{movie.title}</div>
@@ -197,7 +197,7 @@ function Movies() {
           {isFetchingNextPage &&
             Array.from({ length: 60 }).map((_, index) => (
               <Skeleton
-                className="aspect-[2/3] w-full border border-gray-800"
+                className="aspect-[2/3] w-full border border-gray-6"
                 key={`placeholder-${
                   // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   index

@@ -1,11 +1,11 @@
+@import "@radix-ui/colors/sand";
+@import "@radix-ui/colors/sand-dark";
+@import "@radix-ui/colors/red";
+@import "@radix-ui/colors/red-dark";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
-}
 
 html.dark {
   color-scheme: dark;
