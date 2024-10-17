@@ -64,9 +64,7 @@ export const movieApi = createFetch({
             with_release_type: z.number().optional(),
             'with_runtime.gte': z.number().int().optional(),
             'with_runtime.lte': z.number().int().optional(),
-            with_watch_monetization_types: z
-              .enum(['flatrate', 'free', 'ads', 'rent', 'buy'])
-              .optional(),
+            with_watch_monetization_types: z.enum(['flatrate', 'free', 'ads', 'rent', 'buy']).optional(),
             with_watch_providers: z.string().optional(),
             without_genres: z.string().optional(),
             without_keywords: z.string().optional(),
@@ -145,9 +143,7 @@ export const movieApi = createFetch({
               origin_country: z.string(),
             }),
           ),
-          production_countries: z.array(
-            z.object({ iso_3166_1: z.string(), name: z.string() }),
-          ),
+          production_countries: z.array(z.object({ iso_3166_1: z.string(), name: z.string() })),
           release_date: z.string(),
           revenue: z.number(),
           runtime: z.number(),

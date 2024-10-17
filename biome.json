@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": ["src/routeTree.gen.ts"]
   },
   "formatter": {
     "indentStyle": "space"
@@ -21,12 +21,22 @@
       "correctness": {
         "noUnusedImports": "warn"
       },
-      "recommended": true
+      "recommended": true,
+      "nursery": {
+        "useSortedClasses": {
+          "fix": "unsafe",
+          "level": "warn",
+          "options": {
+            "functions": ["clsx", "cva"]
+          }
+        }
+      }
     }
   },
   "javascript": {
     "formatter": {
-      "quoteStyle": "single"
+      "quoteStyle": "single",
+      "lineWidth": 120
     }
   }
 }

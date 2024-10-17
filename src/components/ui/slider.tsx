@@ -9,10 +9,7 @@ const Slider = React.forwardRef<
 >(({ className, defaultValue, ...props }, ref) => (
   <SliderPrimitive.Root
     ref={ref}
-    className={cn(
-      'relative flex w-full touch-none select-none items-center',
-      className,
-    )}
+    className={cn('relative flex w-full touch-none select-none items-center', className)}
     defaultValue={defaultValue}
     {...props}
   >

@@ -1,28 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
 import { getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/movies_.$movieId';
-import {
-  infiniteQueryOptions,
-  useSuspenseInfiniteQuery,
-} from '@tanstack/react-query';
-import {
-  Link,
-  createFileRoute,
-  retainSearchParams,
-  useNavigate,
-} from '@tanstack/react-router';
+import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { Link, createFileRoute, retainSearchParams, useNavigate } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import { ArrowDownIcon, ArrowUpIcon, CameraOffIcon } from 'lucide-react';
@@ -34,14 +20,7 @@ const MovieSearchSchema = z.object({
   ratingMin: fallback(z.number().min(1).max(10), 1).default(1),
   ratingMax: fallback(z.number().min(1).max(10), 10).default(10),
   sort: fallback(
-    z.enum([
-      'vote_average',
-      'primary_release_date',
-      'revenue',
-      'popularity',
-      'title',
-      'vote_count',
-    ]),
+    z.enum(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']),
     'popularity',
   ).default('popularity'),
   sortDir: fallback(z.enum(['asc', 'desc']), 'desc').default('desc'),
@@ -80,8 +59,7 @@ const movieQueryOptions = (params: Params) =>
 
 export const Route = createFileRoute('/movies')({
   loaderDeps: ({ search }) => search,
-  loader: ({ context: { queryClient }, deps }) =>
-    queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
+  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   validateSearch: zodSearchValidator(MovieSearchSchema),
   search: {
     middlewares: [retainSearchParams(true)],
@@ -113,8 +91,8 @@ function Movies() {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar with filters */}
-      <aside className="w-64 border-r p-4 overflow-y-auto">
-        <h2 className="text-lg font-semibold mb-4">Filters</h2>
+      <aside className="w-64 overflow-y-auto border-r p-4">
+        <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
         <div className="flex flex-col gap-4">
           {/* Rating */}
@@ -124,16 +102,14 @@ function Movies() {
               className="mt-1"
               value={rating}
               onValueChange={setRating}
-              onValueCommit={([ratingMin, ratingMax]) =>
-                navigate({ search: { ratingMin, ratingMax } })
-              }
+              onValueCommit={([ratingMin, ratingMax]) => navigate({ search: { ratingMin, ratingMax } })}
               defaultValue={[1, 10]}
               min={1}
               max={10}
               step={1}
               minStepsBetweenThumbs={1}
             />
-            <div className="flex justify-between text-sm text-muted-foreground mt-1">
+            <div className="mt-1 flex justify-between text-muted-foreground text-sm">
               <span>1</span>
               <span>10</span>
             </div>
@@ -146,18 +122,14 @@ function Movies() {
               <Select
                 defaultValue="popularity"
                 value={deps.sort}
-                onValueChange={(sort: Params['sort']) =>
-                  navigate({ search: { sort } })
-                }
+                onValueChange={(sort: Params['sort']) => navigate({ search: { sort } })}
               >
                 <SelectTrigger id="sort">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="vote_average">Rating</SelectItem>
-                  <SelectItem value="primary_release_date">
-                    Release Date
-                  </SelectItem>
+                  <SelectItem value="primary_release_date">Release Date</SelectItem>
                   <SelectItem value="revenue">Revenue</SelectItem>
                   <SelectItem value="popularity">Popularity</SelectItem>
                   <SelectItem value="title">Title</SelectItem>
@@ -165,23 +137,14 @@ function Movies() {
                 </SelectContent>
               </Select>
 
-              <Button
-                asChild
-                className="shrink-0"
-                size="icon"
-                variant="outline"
-              >
+              <Button asChild className="shrink-0" size="icon" variant="outline">
                 <Link
                   to="."
                   search={(prev) => ({
                     sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc',
                   })}
                 >
-                  {deps.sortDir === 'asc' ? (
-                    <ArrowUpIcon className="size-5" />
-                  ) : (
-                    <ArrowDownIcon className="size-5" />
-                  )}
+                  {deps.sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
                 </Link>
               </Button>
             </div>
@@ -200,15 +163,15 @@ function Movies() {
       </aside>
 
       {/* Results area */}
-      <main className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto p-4">
         {/* Grid of movie/show results */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
           {movies.pages.map((page) => (
             <React.Fragment key={page.page}>
               {page.results.map((movie) => (
                 <Link
                   key={movie.id}
-                  className="aspect-[2/3] grid place-items-center bg-muted rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                  className="group relative grid aspect-[2/3] place-items-center overflow-hidden rounded-lg border bg-muted transition-all hover:scale-105 hover:border-yellow-500"
                   to={MovieIdRoute.to}
                   params={{ movieId: movie.id.toString() }}
                   preloadDelay={500}
@@ -217,11 +180,15 @@ function Movies() {
                     <img
                       src={getTmdbImage('poster', movie.poster_path, 'w342')}
                       alt={`Movie poster for ${movie.title}`}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   ) : (
                     <CameraOffIcon className="size-8 text-muted-foreground" />
                   )}
+                  <div className="absolute inset-0 bg-neutral-900/50 p-2 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+                    <div className="font-bold text-white text-xl">{movie.title}</div>
+                    <div className="line-clamp-3 text-sm text-white">{movie.overview}</div>
+                  </div>
                 </Link>
               ))}
             </React.Fragment>

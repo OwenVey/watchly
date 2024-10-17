@@ -1,12 +1,7 @@
 import { ModeToggle } from '@/components/mode-toggle';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import {
-  Link,
-  Outlet,
-  ScrollRestoration,
-  createRootRouteWithContext,
-} from '@tanstack/react-router';
+import { Link, Outlet, ScrollRestoration, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 export const Route = createRootRouteWithContext<{
@@ -17,9 +12,9 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <nav className="flex items-center justify-between px-6 py-4 bg-background border-b">
-        <Link to="/" className="text-2xl font-bold">
+    <div className="flex h-screen flex-col bg-background">
+      <nav className="flex items-center justify-between border-b bg-background px-6 py-4">
+        <Link to="/" className="font-bold text-2xl">
           MovieFinder
         </Link>
         <div className="space-x-4">
