@@ -91,7 +91,7 @@ function Movies() {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar with filters */}
-      <aside className="w-64 overflow-y-auto border-gray-6 border-r p-4">
+      <aside className="mb-4 ml-4 w-64 overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
         <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
         <div className="flex flex-col gap-4">
@@ -163,7 +163,7 @@ function Movies() {
       </aside>
 
       {/* Results area */}
-      <main className="flex-1 overflow-y-auto p-4">
+      <main className="flex-1 overflow-y-auto p-4 pt-0">
         {/* Grid of movie/show results */}
         <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
           {movies.pages.map((page) => (

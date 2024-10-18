@@ -1,10 +1,12 @@
+import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Link } from '@tanstack/react-router';
 
 export function Navbar() {
   return (
-    <nav className="flex items-center justify-between border-gray-6 border-b bg-background px-6 py-4">
-      <Link to="/" className="font-bold text-2xl">
+    <nav className="m-4 flex items-center justify-between rounded-xl border border-gray-5 bg-background bg-gray-2 p-4">
+      <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
+        <Logo className="size-8 text-primary-9" />
         Watchly
       </Link>
 
