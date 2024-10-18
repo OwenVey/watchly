@@ -89,9 +89,9 @@ function Movies() {
   } = useSuspenseInfiniteQuery(movieQueryOptions(deps));
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <>
       {/* Sidebar with filters */}
-      <aside className="ml-4 mb-4 w-64 overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
+      <aside className="mb-4 ml-4 w-64 overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
         <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
         <div className="flex flex-col gap-4">
@@ -203,6 +203,6 @@ function Movies() {
 
         <div ref={loadMoreRef} className="h-1" />
       </main>
-    </div>
+    </>
   );
 }

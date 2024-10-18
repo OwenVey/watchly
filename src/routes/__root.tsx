@@ -15,7 +15,9 @@ function RootComponent() {
     <div className="flex h-screen flex-col bg-background">
       <Navbar />
       <ScrollRestoration />
-      <Outlet />
+      <div className="flex flex-1 overflow-auto">
+        <Outlet />
+      </div>
       <ReactQueryDevtools buttonPosition="bottom-left" />
       <TanStackRouterDevtools position="bottom-right" />
     </div>
