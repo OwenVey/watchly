@@ -91,7 +91,7 @@ function Movies() {
   return (
     <div className="flex flex-1 overflow-hidden">
       {/* Sidebar with filters */}
-      <aside className="mb-4 ml-4 w-64 overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
+      <aside className="ml-4 mb-4 w-64 overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
         <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
         <div className="flex flex-col gap-4">
@@ -137,12 +137,7 @@ function Movies() {
                 </SelectContent>
               </Select>
 
-              <Link
-                to="."
-                search={(prev) => ({
-                  sortDir: prev.sortDir === 'asc' ? 'desc' : 'asc',
-                })}
-              >
+              <Link to="." search={{ sortDir: deps.sortDir === 'asc' ? 'desc' : 'asc' }}>
                 <Button asChild className="shrink-0" size="icon" variant="outline">
                   {deps.sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
                 </Button>
