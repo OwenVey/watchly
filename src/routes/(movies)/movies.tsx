@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
 import { MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
 import { getTmdbImage } from '@/lib/utils';
-import { Route as MovieIdRoute } from '@/routes/movies_.$movieId';
+import { Route as MovieIdRoute } from '@/routes/(movies)/movies_.$movieId.js';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link, createFileRoute, retainSearchParams, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
@@ -73,16 +73,30 @@ const movieQueryOptions = (params: Params) =>
           movieApi('/discover/movie', {
             query: {
               page,
-              ...(params.ratingMin !== defaultSearch.ratingMin && { 'vote_average.gte': params.ratingMin }),
-              ...(params.ratingMax !== defaultSearch.ratingMax && { 'vote_average.lte': params.ratingMax }),
-              ...(params.voteCountMin !== defaultSearch.voteCountMin && { 'vote_count.gte': params.voteCountMin }),
-              ...(params.voteCountMax !== defaultSearch.voteCountMax && { 'vote_count.lte': params.voteCountMax }),
+              ...(params.ratingMin !== defaultSearch.ratingMin && {
+                'vote_average.gte': params.ratingMin,
+              }),
+              ...(params.ratingMax !== defaultSearch.ratingMax && {
+                'vote_average.lte': params.ratingMax,
+              }),
+              ...(params.voteCountMin !== defaultSearch.voteCountMin && {
+                'vote_count.gte': params.voteCountMin,
+              }),
+              ...(params.voteCountMax !== defaultSearch.voteCountMax && {
+                'vote_count.lte': params.voteCountMax,
+              }),
               ...((params.sort !== defaultSearch.sort || params.sortDir !== defaultSearch.sortDir) && {
                 sort_by: `${params.sort}.${params.sortDir}`,
               }),
-              ...(params.genres.length > 0 && { with_genres: params.genres.join(',') }),
-              ...(params.releaseTypes.length > 0 && { with_release_type: params.releaseTypes.join('|') }),
-              ...(params.adult !== defaultSearch.adult && { include_adult: params.adult }),
+              ...(params.genres.length > 0 && {
+                with_genres: params.genres.join(','),
+              }),
+              ...(params.releaseTypes.length > 0 && {
+                with_release_type: params.releaseTypes.join('|'),
+              }),
+              ...(params.adult !== defaultSearch.adult && {
+                include_adult: params.adult,
+              }),
             },
           }),
         ),
@@ -101,7 +115,7 @@ const movieQueryOptions = (params: Params) =>
     getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
 
-export const Route = createFileRoute('/movies')({
+export const Route = createFileRoute('/(movies)/movies')({
   loaderDeps: ({ search }) => search,
   validateSearch: zodSearchValidator(MovieSearchSchema),
   search: {
@@ -223,7 +237,11 @@ function FilterSidebar() {
               value,
               label: MOVIE_GENRES.find((option) => option.value === value)?.label ?? 'Unknown',
             }))}
-            onChange={(options) => navigate({ search: { genres: options.map(({ value }) => value) } })}
+            onChange={(options) =>
+              navigate({
+                search: { genres: options.map(({ value }) => value) },
+              })
+            }
             defaultOptions={MOVIE_GENRES}
             placeholder="Select genre(s)..."
             hidePlaceholderWhenSelected
@@ -237,7 +255,11 @@ function FilterSidebar() {
               value,
               label: RELEASE_TYPES.find((option) => option.value === value)?.label ?? 'Unknown',
             }))}
-            onChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => value) } })}
+            onChange={(options) =>
+              navigate({
+                search: { releaseTypes: options.map(({ value }) => value) },
+              })
+            }
             defaultOptions={RELEASE_TYPES}
             placeholder="Select release type(s)..."
             hidePlaceholderWhenSelected

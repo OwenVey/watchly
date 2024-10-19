@@ -1,6 +1,6 @@
 import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
-import { defaultSearch as defaultMovieSearch } from '@/routes/movies';
+import { defaultSearch as defaultMovieSearch } from '@/routes/(movies)/movies.js';
 import { Link } from '@tanstack/react-router';
 import { FilmIcon, TvIcon } from 'lucide-react';
 
