@@ -465,7 +465,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   <button
                     type="button"
                     className={cn(
-                      '-my-0.5 -mr-1 ml-1 rounded-full p-0.5 text-gray-8 outline-none ring-offset-gray-1 transition-colors hover:bg-gray-9 hover:text-gray-12 focus:ring-2 focus:ring-gray-1',
+                      '-my-0.5 -mr-1 ml-1 rounded-full p-0.5 text-gray-8 outline-none ring-offset-gray-1 transition-colors hover:bg-gray-11 hover:text-gray-1 focus:ring-2 focus:ring-gray-1',
                       (disabled || option.fixed) && 'hidden',
                     )}
                     onKeyDown={(e) => {

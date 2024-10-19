@@ -198,7 +198,10 @@ function FilterSidebar() {
         <div className="">
           <Label>Genres</Label>
           <MultipleSelector
-            value={genres.map((value) => ({ value, label: MOVIE_GENRES.find((g) => g.value === value)!.label }))}
+            value={genres.map((value) => ({
+              value,
+              label: MOVIE_GENRES.find((option) => option.value === value)?.label ?? 'Unknown',
+            }))}
             onChange={(genres) => navigate({ search: { genres: genres.map(({ value }) => value) } })}
             defaultOptions={MOVIE_GENRES}
             placeholder="Select genre(s)..."
