@@ -1,4 +1,4 @@
-import MultipleSelector, { type Option } from '@/components/multi-select';
+import MultipleSelector from '@/components/multi-select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
-import { MOVIE_GENRES } from '@/lib/constants';
+import { MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
 import { getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/movies_.$movieId';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
@@ -24,6 +24,7 @@ const defaultSearch = {
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as string[],
+  releaseTypes: [] as string[],
 } as const;
 
 const MovieSearchSchema = z.object({
@@ -36,6 +37,7 @@ const MovieSearchSchema = z.object({
   ).default(defaultSearch.sort),
   sortDir: fallback(z.enum(['asc', 'desc']), defaultSearch.sortDir).default(defaultSearch.sortDir),
   genres: fallback(z.array(z.string()), defaultSearch.genres).default(defaultSearch.genres),
+  releaseTypes: fallback(z.array(z.string()), defaultSearch.releaseTypes).default(defaultSearch.releaseTypes),
 });
 
 type Params = z.infer<typeof MovieSearchSchema>;
@@ -56,6 +58,7 @@ const movieQueryOptions = (params: Params) =>
               'vote_average.lte': params.ratingMax,
               sort_by: `${params.sort}.${params.sortDir}`,
               with_genres: params.genres.join(','),
+              with_release_type: params.releaseTypes.join('|'),
             },
           }),
         ),
@@ -115,22 +118,8 @@ function SkeletonCards() {
   ));
 }
 
-const OPTIONS: Option[] = [
-  { label: 'nextjs', value: 'Nextjs' },
-  { label: 'Vite', value: 'vite' },
-  { label: 'Nuxt', value: 'nuxt' },
-  { label: 'Vue', value: 'vue' },
-  { label: 'Remix', value: 'remix' },
-  { label: 'Svelte', value: 'svelte' },
-  { label: 'Angular', value: 'angular', disable: true },
-  { label: 'Ember', value: 'ember' },
-  { label: 'React', value: 'react' },
-  { label: 'Gatsby', value: 'gatsby' },
-  { label: 'Astro', value: 'astro' },
-];
-
 function FilterSidebar() {
-  const { adult, ratingMin, ratingMax, sort, sortDir, genres } = Route.useSearch();
+  const { adult, ratingMin, ratingMax, sort, sortDir, genres, releaseTypes } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
 
@@ -138,9 +127,9 @@ function FilterSidebar() {
     <aside className="mb-4 ml-4 flex w-64 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
       <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="flex flex-1 flex-col gap-6">
         {/* Rating */}
-        <div className="">
+        <div className="flex flex-col gap-1.5">
           <Label>Rating</Label>
           <Slider
             className="mt-1"
@@ -160,7 +149,7 @@ function FilterSidebar() {
         </div>
 
         {/* Sort dropdown*/}
-        <div>
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="sort">Sort By</Label>
           <div className="flex gap-2">
             <Select
@@ -189,25 +178,38 @@ function FilterSidebar() {
           </div>
         </div>
 
-        {/* Adult Content */}
-        <div className="flex items-center space-x-2">
-          <Switch id="adult-content" checked={adult} onCheckedChange={(adult) => navigate({ search: { adult } })} />
-          <Label htmlFor="adult-content">Include Adult Content</Label>
-        </div>
-
-        <div className="">
+        <div className="flex flex-col gap-1.5">
           <Label>Genres</Label>
           <MultipleSelector
             value={genres.map((value) => ({
               value,
               label: MOVIE_GENRES.find((option) => option.value === value)?.label ?? 'Unknown',
             }))}
-            onChange={(genres) => navigate({ search: { genres: genres.map(({ value }) => value) } })}
+            onChange={(options) => navigate({ search: { genres: options.map(({ value }) => value) } })}
             defaultOptions={MOVIE_GENRES}
             placeholder="Select genre(s)..."
-            // hidePlaceholderWhenSelected
-            emptyIndicator="No results found"
+            hidePlaceholderWhenSelected
           />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label>Release Type</Label>
+          <MultipleSelector
+            value={releaseTypes.map((value) => ({
+              value,
+              label: RELEASE_TYPES.find((option) => option.value === value)?.label ?? 'Unknown',
+            }))}
+            onChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => value) } })}
+            defaultOptions={RELEASE_TYPES}
+            placeholder="Select release type(s)..."
+            hidePlaceholderWhenSelected
+          />
+        </div>
+
+        {/* Adult Content */}
+        <div className="flex items-center gap-2">
+          <Switch id="adult-content" checked={adult} onCheckedChange={(adult) => navigate({ search: { adult } })} />
+          <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>
       </div>
 

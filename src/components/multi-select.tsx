@@ -176,7 +176,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       onSearch,
       onSearchSync,
       loadingIndicator,
-      emptyIndicator,
+      emptyIndicator = 'No results found',
       maxSelected = Number.MAX_SAFE_INTEGER,
       onMaxSelected,
       hidePlaceholderWhenSelected,

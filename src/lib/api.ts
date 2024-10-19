@@ -61,7 +61,7 @@ export const movieApi = createFetch({
             with_keywords: z.string().optional(),
             with_original_language: z.string().optional(),
             with_people: z.string().optional(),
-            with_release_type: z.number().optional(),
+            with_release_type: z.union([z.string(), z.number()]).optional(),
             'with_runtime.gte': z.number().int().optional(),
             'with_runtime.lte': z.number().int().optional(),
             with_watch_monetization_types: z.enum(['flatrate', 'free', 'ads', 'rent', 'buy']).optional(),

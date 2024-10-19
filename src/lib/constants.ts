@@ -1,11 +1,29 @@
-export const RELEASE_TYPES = {
-  1: 'Premiere',
-  2: 'Theatrical (limited)',
-  3: 'Theatrical',
-  4: 'Digital',
-  5: 'Physical',
-  6: 'TV',
-};
+export const RELEASE_TYPES = [
+  {
+    value: '1',
+    label: 'Premiere',
+  },
+  {
+    value: '2',
+    label: 'Theatrical (limited)',
+  },
+  {
+    value: '3',
+    label: 'Theatrical',
+  },
+  {
+    value: '4',
+    label: 'Digital',
+  },
+  {
+    value: '5',
+    label: 'Physical',
+  },
+  {
+    value: '6',
+    label: 'TV',
+  },
+];
 
 export const MOVIE_GENRES = [
   {
