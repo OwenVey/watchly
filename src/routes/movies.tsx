@@ -17,9 +17,8 @@ import { ArrowDownIcon, ArrowUpIcon, CameraOffIcon, FilterXIcon } from 'lucide-r
 import React, { Suspense } from 'react';
 import { z } from 'zod';
 
-const defaultSearch = {
-  adult: false,
-  ratingMin: 1,
+export const defaultSearch = {
+  ratingMin: 0,
   ratingMax: 10,
   voteCountMin: 0,
   voteCountMax: 50_000,
@@ -27,10 +26,10 @@ const defaultSearch = {
   sortDir: 'desc',
   genres: [] as string[],
   releaseTypes: [] as string[],
+  adult: false,
 } as const;
 
 const MovieSearchSchema = z.object({
-  adult: fallback(z.boolean(), defaultSearch.adult).default(defaultSearch.adult),
   ratingMin: fallback(
     z
       .number()
@@ -58,6 +57,7 @@ const MovieSearchSchema = z.object({
   sortDir: fallback(z.enum(['asc', 'desc']), defaultSearch.sortDir).default(defaultSearch.sortDir),
   genres: fallback(z.array(z.string()), defaultSearch.genres).default(defaultSearch.genres),
   releaseTypes: fallback(z.array(z.string()), defaultSearch.releaseTypes).default(defaultSearch.releaseTypes),
+  adult: fallback(z.boolean(), defaultSearch.adult).default(defaultSearch.adult),
 });
 
 type Params = z.infer<typeof MovieSearchSchema>;
@@ -73,14 +73,16 @@ const movieQueryOptions = (params: Params) =>
           movieApi('/discover/movie', {
             query: {
               page,
-              include_adult: params.adult,
-              'vote_average.gte': params.ratingMin,
-              'vote_average.lte': params.ratingMax,
-              'vote_count.gte': params.voteCountMin,
-              'vote_count.lte': params.voteCountMax,
-              sort_by: `${params.sort}.${params.sortDir}`,
-              with_genres: params.genres.join(','),
-              with_release_type: params.releaseTypes.join('|'),
+              ...(params.ratingMin !== defaultSearch.ratingMin && { 'vote_average.gte': params.ratingMin }),
+              ...(params.ratingMax !== defaultSearch.ratingMax && { 'vote_average.lte': params.ratingMax }),
+              ...(params.voteCountMin !== defaultSearch.voteCountMin && { 'vote_count.gte': params.voteCountMin }),
+              ...(params.voteCountMax !== defaultSearch.voteCountMax && { 'vote_count.lte': params.voteCountMax }),
+              ...((params.sort !== defaultSearch.sort || params.sortDir !== defaultSearch.sortDir) && {
+                sort_by: `${params.sort}.${params.sortDir}`,
+              }),
+              ...(params.genres.length > 0 && { with_genres: params.genres.join(',') }),
+              ...(params.releaseTypes.length > 0 && { with_release_type: params.releaseTypes.join('|') }),
+              ...(params.adult !== defaultSearch.adult && { include_adult: params.adult }),
             },
           }),
         ),
