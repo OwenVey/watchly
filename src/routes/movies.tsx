@@ -21,6 +21,8 @@ const defaultSearch = {
   adult: false,
   ratingMin: 1,
   ratingMax: 10,
+  voteCountMin: 0,
+  voteCountMax: 50_000,
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as string[],
@@ -29,8 +31,26 @@ const defaultSearch = {
 
 const MovieSearchSchema = z.object({
   adult: fallback(z.boolean(), defaultSearch.adult).default(defaultSearch.adult),
-  ratingMin: fallback(z.number().min(1).max(10), defaultSearch.ratingMin).default(defaultSearch.ratingMin),
-  ratingMax: fallback(z.number().min(1).max(10), defaultSearch.ratingMax).default(defaultSearch.ratingMax),
+  ratingMin: fallback(
+    z
+      .number()
+      .min(1)
+      .max(defaultSearch.ratingMax - 1),
+    defaultSearch.ratingMin,
+  ).default(defaultSearch.ratingMin),
+  ratingMax: fallback(z.number().min(1).max(defaultSearch.ratingMax), defaultSearch.ratingMax).default(
+    defaultSearch.ratingMax,
+  ),
+  voteCountMin: fallback(
+    z
+      .number()
+      .min(1)
+      .max(defaultSearch.voteCountMax - 1),
+    defaultSearch.voteCountMin,
+  ).default(defaultSearch.voteCountMin),
+  voteCountMax: fallback(z.number().min(1).max(defaultSearch.voteCountMax), defaultSearch.voteCountMax).default(
+    defaultSearch.voteCountMax,
+  ),
   sort: fallback(
     z.enum(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']),
     defaultSearch.sort,
@@ -56,6 +76,8 @@ const movieQueryOptions = (params: Params) =>
               include_adult: params.adult,
               'vote_average.gte': params.ratingMin,
               'vote_average.lte': params.ratingMax,
+              'vote_count.gte': params.voteCountMin,
+              'vote_count.lte': params.voteCountMax,
               sort_by: `${params.sort}.${params.sortDir}`,
               with_genres: params.genres.join(','),
               with_release_type: params.releaseTypes.join('|'),
@@ -119,9 +141,11 @@ function SkeletonCards() {
 }
 
 function FilterSidebar() {
-  const { adult, ratingMin, ratingMax, sort, sortDir, genres, releaseTypes } = Route.useSearch();
+  const { adult, ratingMin, ratingMax, voteCountMin, voteCountMax, sort, sortDir, genres, releaseTypes } =
+    Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
+  const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
 
   return (
     <aside className="mb-4 ml-4 flex w-64 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
@@ -132,20 +156,32 @@ function FilterSidebar() {
         <div className="flex flex-col gap-1.5">
           <Label>Rating</Label>
           <Slider
-            className="mt-1"
+            className="mt-1 mb-4"
             value={rating}
             onValueChange={setRating}
             onValueCommit={([ratingMin, ratingMax]) => navigate({ search: { ratingMin, ratingMax } })}
-            defaultValue={[1, 10]}
-            min={1}
-            max={10}
+            defaultValue={[defaultSearch.ratingMin, defaultSearch.ratingMax]}
+            min={defaultSearch.ratingMin}
+            max={defaultSearch.ratingMax}
             step={1}
-            minStepsBetweenThumbs={1}
+            label={(value) => value}
           />
-          <div className="mt-1 flex justify-between text-sm">
-            <span>1</span>
-            <span>10</span>
-          </div>
+        </div>
+
+        {/* Vote Count */}
+        <div className="flex flex-col gap-1.5">
+          <Label>Vote Count</Label>
+          <Slider
+            className="mt-1 mb-4"
+            value={voteCount}
+            onValueChange={setVoteCount}
+            onValueCommit={([voteCountMin, voteCountMax]) => navigate({ search: { voteCountMin, voteCountMax } })}
+            defaultValue={[defaultSearch.voteCountMin, defaultSearch.voteCountMax]}
+            min={defaultSearch.voteCountMin}
+            max={defaultSearch.voteCountMax}
+            step={1}
+            label={(value) => value?.toLocaleString()}
+          />
         </div>
 
         {/* Sort dropdown*/}

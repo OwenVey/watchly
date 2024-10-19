@@ -3,27 +3,48 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-const Slider = React.forwardRef<
-  React.ElementRef<typeof SliderPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
->(({ className, defaultValue, ...props }, ref) => (
-  <SliderPrimitive.Root
-    ref={ref}
-    className={cn('relative flex w-full touch-none select-none items-center', className)}
-    defaultValue={defaultValue}
-    {...props}
-  >
-    <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-gray-7">
-      <SliderPrimitive.Range className="absolute h-full bg-primary-9" />
-    </SliderPrimitive.Track>
-    {(defaultValue ?? [1]).map((i) => (
-      <SliderPrimitive.Thumb
-        key={i}
-        className="block h-4 w-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-12 disabled:pointer-events-none disabled:opacity-50 "
-      />
-    ))}
-  </SliderPrimitive.Root>
-));
+interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
+  labelPosition?: 'top' | 'bottom';
+  label?: (value: number | undefined) => React.ReactNode;
+}
+
+const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
+  ({ className, label, labelPosition = 'bottom', ...props }, ref) => {
+    const initialValue = Array.isArray(props.value) ? props.value : [props.min, props.max];
+
+    return (
+      <SliderPrimitive.Root
+        ref={ref}
+        className={cn('relative flex w-full touch-none select-none items-center', className)}
+        {...props}
+      >
+        <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-gray-7">
+          <SliderPrimitive.Range className="absolute h-full bg-primary-9" />
+        </SliderPrimitive.Track>
+
+        {initialValue.map((value, index) => (
+          <React.Fragment key={index}>
+            <SliderPrimitive.Thumb className="relative block h-4 w-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-12 disabled:pointer-events-none disabled:opacity-50">
+              {label && (
+                <span
+                  className={cn(
+                    'absolute flex w-full text-gray-12 text-sm',
+                    labelPosition === 'top' && '-top-7',
+                    labelPosition === 'bottom' && 'top-4',
+                    index === 0 && 'justify-start',
+                    index === 1 && 'justify-end',
+                  )}
+                >
+                  {label(value)}
+                </span>
+              )}
+            </SliderPrimitive.Thumb>
+          </React.Fragment>
+        ))}
+      </SliderPrimitive.Root>
+    );
+  },
+);
 Slider.displayName = SliderPrimitive.Root.displayName;
 
 export { Slider };
