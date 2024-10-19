@@ -24,7 +24,12 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
 
         {initialValue.map((value, index) => (
           <React.Fragment key={index}>
-            <SliderPrimitive.Thumb className="relative block h-4 w-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-12 disabled:pointer-events-none disabled:opacity-50">
+            <SliderPrimitive.Thumb
+              className={cn(
+                'relative block size-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-12 disabled:pointer-events-none disabled:opacity-50',
+                props.orientation === 'vertical' ? 'cursor-ns-resize' : 'cursor-ew-resize',
+              )}
+            >
               {label && (
                 <span
                   className={cn(

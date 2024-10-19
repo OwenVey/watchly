@@ -169,9 +169,12 @@ function MovieCards() {
               ) : (
                 <CameraOffIcon className="size-8 text-gray-9" />
               )}
-              <div className="absolute inset-0 bg-gray-900/50 p-2 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-                <div className="font-bold text-white text-xl">{movie.title}</div>
-                <div className="line-clamp-3 text-sm text-white">{movie.overview}</div>
+              <div className="absolute inset-0 flex flex-col justify-end bg-black/50 p-2 opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
+                {movie.release_date && (
+                  <div className="font-semibold text-sm text-white">{new Date(movie.release_date).getFullYear()}</div>
+                )}
+                <div className="font-semibold text-lg text-white leading-6">{movie.title}</div>
+                <div className="line-clamp-3 text-sm text-white/70">{movie.overview}</div>
               </div>
             </Link>
           ))}

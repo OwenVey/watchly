@@ -84,7 +84,7 @@ export const movieApi = createFetch({
               overview: z.string(),
               popularity: z.number().optional(),
               poster_path: z.string().nullable(),
-              release_date: z.string().optional(),
+              release_date: z.string().date().optional(),
               title: z.string(),
               video: z.boolean().optional().default(false),
               vote_average: z

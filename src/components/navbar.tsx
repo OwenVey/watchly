@@ -16,14 +16,14 @@ export function Navbar() {
         <Link
           to="/movies"
           search={defaultMovieSearch}
-          className="flex items-center gap-2 rounded-md px-4 py-2 font-medium text-gray-11 text-sm hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
+          className="flex items-center gap-2 rounded-md px-4 py-2 font-medium text-gray-11 text-sm transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
         >
           <FilmIcon className="size-5" />
           Movies
         </Link>
         <Link
           to="/tv"
-          className="flex items-center gap-2 rounded-md px-4 py-2 font-medium text-gray-11 text-sm hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
+          className="flex items-center gap-2 rounded-md px-4 py-2 font-medium text-gray-11 text-sm transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
         >
           <TvIcon className="size-5" />
           TV Shows
