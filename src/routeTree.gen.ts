@@ -19,21 +19,25 @@ import { Route as MoviesMovieIdImport } from './routes/movies_.$movieId'
 // Create/Update Routes
 
 const TvRoute = TvImport.update({
+  id: '/tv',
   path: '/tv',
   getParentRoute: () => rootRoute,
 } as any)
 
 const MoviesRoute = MoviesImport.update({
+  id: '/movies',
   path: '/movies',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
 const MoviesMovieIdRoute = MoviesMovieIdImport.update({
+  id: '/movies_/$movieId',
   path: '/movies/$movieId',
   getParentRoute: () => rootRoute,
 } as any)

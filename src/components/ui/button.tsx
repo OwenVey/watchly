@@ -48,7 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         <span className="grid place-items-center">
           {loading && <LoaderIcon className="absolute size-4 animate-spin" />}
-          <span className={cn(loading && 'opacity-0')}>{children}</span>
+          <span className={cn('flex items-center', loading && 'opacity-0')}>{children}</span>
         </span>
       </Comp>
     );
