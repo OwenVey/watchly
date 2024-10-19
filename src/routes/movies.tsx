@@ -1,3 +1,4 @@
+import MultipleSelector, { type Option } from '@/components/multi-select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -5,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { movieApi } from '@/lib/api';
+import { MOVIE_GENRES } from '@/lib/constants';
 import { getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/movies_.$movieId';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
@@ -21,6 +23,7 @@ const defaultSearch = {
   ratingMax: 10,
   sort: 'popularity',
   sortDir: 'desc',
+  genres: [] as string[],
 } as const;
 
 const MovieSearchSchema = z.object({
@@ -32,6 +35,7 @@ const MovieSearchSchema = z.object({
     defaultSearch.sort,
   ).default(defaultSearch.sort),
   sortDir: fallback(z.enum(['asc', 'desc']), defaultSearch.sortDir).default(defaultSearch.sortDir),
+  genres: fallback(z.array(z.string()), defaultSearch.genres).default(defaultSearch.genres),
 });
 
 type Params = z.infer<typeof MovieSearchSchema>;
@@ -51,19 +55,23 @@ const movieQueryOptions = (params: Params) =>
               'vote_average.gte': params.ratingMin,
               'vote_average.lte': params.ratingMax,
               sort_by: `${params.sort}.${params.sortDir}`,
+              with_genres: params.genres.join(','),
             },
           }),
         ),
       );
 
+      const lastResponse = responses.at(-1);
       return {
-        page: responses.at(-1)?.page ?? 0,
+        page: lastResponse?.page ?? 0,
         results: responses.flatMap(({ results }) => results),
+        totalPages: lastResponse?.total_pages ?? 0,
+        totalResults: lastResponse?.total_results ?? 0,
       };
     },
     initialPageParam: 1,
     getPreviousPageParam: (firstPage) => firstPage.page - 1,
-    getNextPageParam: (lastPage) => lastPage.page + 1,
+    getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
 
 export const Route = createFileRoute('/movies')({
@@ -107,16 +115,22 @@ function SkeletonCards() {
   ));
 }
 
-const frameworksList = [
-  { value: 'react', label: 'React' },
-  { value: 'angular', label: 'Angular' },
-  { value: 'vue', label: 'Vue' },
-  { value: 'svelte', label: 'Svelte' },
-  { value: 'ember', label: 'Ember' },
+const OPTIONS: Option[] = [
+  { label: 'nextjs', value: 'Nextjs' },
+  { label: 'Vite', value: 'vite' },
+  { label: 'Nuxt', value: 'nuxt' },
+  { label: 'Vue', value: 'vue' },
+  { label: 'Remix', value: 'remix' },
+  { label: 'Svelte', value: 'svelte' },
+  { label: 'Angular', value: 'angular', disable: true },
+  { label: 'Ember', value: 'ember' },
+  { label: 'React', value: 'react' },
+  { label: 'Gatsby', value: 'gatsby' },
+  { label: 'Astro', value: 'astro' },
 ];
 
 function FilterSidebar() {
-  const { adult, ratingMin, ratingMax, sort, sortDir } = Route.useSearch();
+  const { adult, ratingMin, ratingMax, sort, sortDir, genres } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
 
@@ -179,6 +193,18 @@ function FilterSidebar() {
         <div className="flex items-center space-x-2">
           <Switch id="adult-content" checked={adult} onCheckedChange={(adult) => navigate({ search: { adult } })} />
           <Label htmlFor="adult-content">Include Adult Content</Label>
+        </div>
+
+        <div className="">
+          <Label>Genres</Label>
+          <MultipleSelector
+            value={genres.map((value) => ({ value, label: MOVIE_GENRES.find((g) => g.value === value)!.label }))}
+            onChange={(genres) => navigate({ search: { genres: genres.map(({ value }) => value) } })}
+            defaultOptions={MOVIE_GENRES}
+            placeholder="Select genre(s)..."
+            // hidePlaceholderWhenSelected
+            emptyIndicator="No results found"
+          />
         </div>
       </div>
 
