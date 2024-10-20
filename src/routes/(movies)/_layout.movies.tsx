@@ -8,11 +8,14 @@ import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-
 import { Link, createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
+import { format } from 'date-fns';
 import { CameraOffIcon } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';
 
 export const DEFAULT_MOVIE_SEARCH = {
+  releasedAfter: undefined,
+  releasedBefore: undefined,
   ratingMin: 0,
   ratingMax: 10,
   voteCountMin: 0,
@@ -25,6 +28,8 @@ export const DEFAULT_MOVIE_SEARCH = {
 } as const;
 
 const MovieSearchSchema = z.object({
+  releasedAfter: z.string().optional().pipe(z.coerce.date().optional()),
+  releasedBefore: z.string().optional().pipe(z.coerce.date().optional()),
   ratingMin: fallback(
     z
       .number()
@@ -71,6 +76,12 @@ const movieQueryOptions = (params: MovieSearchParams) =>
           movieApi('/discover/movie', {
             query: {
               page,
+              ...(params.releasedAfter !== DEFAULT_MOVIE_SEARCH.releasedAfter && {
+                'primary_release_date.gte': format(params.releasedAfter, 'yyyy-M-d'),
+              }),
+              ...(params.releasedBefore !== DEFAULT_MOVIE_SEARCH.releasedBefore && {
+                'primary_release_date.lte': format(params.releasedBefore, 'yyyy-M-d'),
+              }),
               ...(params.ratingMin !== DEFAULT_MOVIE_SEARCH.ratingMin && {
                 'vote_average.gte': params.ratingMin,
               }),
@@ -148,6 +159,10 @@ function MovieCards() {
     }
   }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
 
+  if (movies.pages[0]?.totalResults === 0) {
+    return <div className="col-span-full mt-24 grid place-items-center text-gray-11">No results</div>;
+  }
+
   return (
     <>
       {movies.pages.map((page) => (
@@ -171,7 +186,7 @@ function MovieCards() {
               )}
               <div className="absolute inset-0 flex flex-col justify-end bg-black/50 p-2 opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
                 {movie.release_date && (
-                  <div className="font-semibold text-sm text-white">{new Date(movie.release_date).getFullYear()}</div>
+                  <div className="font-semibold text-sm text-white">{movie.release_date.getFullYear()}</div>
                 )}
                 <div className="font-semibold text-lg text-white leading-6">{movie.title}</div>
                 <div className="line-clamp-3 text-sm text-white/70">{movie.overview}</div>
