@@ -48,15 +48,11 @@ function FilterSidebar() {
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
 
   useEffect(() => {
-    if (ratingMin === DEFAULT_MOVIE_SEARCH.ratingMin && ratingMax === DEFAULT_MOVIE_SEARCH.ratingMax) {
-      setRating([DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]);
-    }
+    setRating([ratingMin, ratingMax]);
   }, [ratingMin, ratingMax]);
 
   useEffect(() => {
-    if (voteCountMin === DEFAULT_MOVIE_SEARCH.voteCountMin && voteCountMax === DEFAULT_MOVIE_SEARCH.voteCountMax) {
-      setVoteCount([DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]);
-    }
+    setVoteCount([voteCountMin, voteCountMax]);
   }, [voteCountMin, voteCountMax]);
 
   return (
