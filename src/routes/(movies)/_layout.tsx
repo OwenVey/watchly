@@ -13,7 +13,7 @@ import { Outlet, createFileRoute } from '@tanstack/react-router';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from './_layout.movies.js';
 
 export const Route = createFileRoute('/(movies)/_layout')({
@@ -46,7 +46,19 @@ function FilterSidebar() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
-  console.log('releasedAfter', releasedAfter);
+
+  useEffect(() => {
+    if (ratingMin === DEFAULT_MOVIE_SEARCH.ratingMin && ratingMax === DEFAULT_MOVIE_SEARCH.ratingMax) {
+      setRating([DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]);
+    }
+  }, [ratingMin, ratingMax]);
+
+  useEffect(() => {
+    if (voteCountMin === DEFAULT_MOVIE_SEARCH.voteCountMin && voteCountMax === DEFAULT_MOVIE_SEARCH.voteCountMax) {
+      setVoteCount([DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]);
+    }
+  }, [voteCountMin, voteCountMax]);
+
   return (
     <aside className="mb-4 ml-4 flex w-80 flex-col rounded-xl border border-gray-5 bg-gray-2">
       <ScrollArea className="p-4" type="auto">
