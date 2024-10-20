@@ -74,7 +74,6 @@ function FilterSidebar() {
                     mode="single"
                     selected={releasedAfter}
                     onSelect={(releasedAfter) => navigate({ search: { releasedAfter } })}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -97,7 +96,6 @@ function FilterSidebar() {
                     mode="single"
                     selected={releasedBefore}
                     onSelect={(releasedBefore) => navigate({ search: { releasedBefore } })}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
