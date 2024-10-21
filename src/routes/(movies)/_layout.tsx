@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
-import { cn } from '@/lib/utils.js';
+import { cn, formatMinutesToHHMM } from '@/lib/utils.js';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { format } from 'date-fns';
@@ -36,6 +36,8 @@ function FilterSidebar() {
     ratingMax,
     voteCountMin,
     voteCountMax,
+    runtimeMin,
+    runtimeMax,
     sort,
     sortDir,
     genres,
@@ -45,6 +47,7 @@ function FilterSidebar() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
+  const [runtime, setRuntime] = React.useState([runtimeMin, runtimeMax]);
 
   useEffect(() => {
     setRating([ratingMin, ratingMax]);
@@ -53,6 +56,10 @@ function FilterSidebar() {
   useEffect(() => {
     setVoteCount([voteCountMin, voteCountMax]);
   }, [voteCountMin, voteCountMax]);
+
+  useEffect(() => {
+    setRuntime([runtimeMin, runtimeMax]);
+  }, [runtimeMin, runtimeMax]);
 
   return (
     <aside className="mb-4 ml-4 flex w-80 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
@@ -139,6 +146,23 @@ function FilterSidebar() {
             step={1}
             minStepsBetweenThumbs={1}
             label={(value) => value?.toLocaleString()}
+          />
+        </div>
+
+        {/* Runtime */}
+        <div className="flex flex-col gap-1.5">
+          <Label>Runtime</Label>
+          <Slider
+            className="mt-1 mb-4"
+            value={runtime}
+            onValueChange={setRuntime}
+            onValueCommit={([runtimeMin, runtimeMax]) => navigate({ search: { runtimeMin, runtimeMax } })}
+            defaultValue={[DEFAULT_MOVIE_SEARCH.runtimeMin, DEFAULT_MOVIE_SEARCH.runtimeMax]}
+            min={DEFAULT_MOVIE_SEARCH.runtimeMin}
+            max={DEFAULT_MOVIE_SEARCH.runtimeMax}
+            step={1}
+            minStepsBetweenThumbs={1}
+            label={(value) => formatMinutesToHHMM(value ?? 0)}
           />
         </div>
 

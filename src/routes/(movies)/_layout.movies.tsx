@@ -20,6 +20,8 @@ export const DEFAULT_MOVIE_SEARCH = {
   ratingMax: 10,
   voteCountMin: 0,
   voteCountMax: 50_000,
+  runtimeMin: 0,
+  runtimeMax: 300,
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as string[],
@@ -51,6 +53,16 @@ const MovieSearchSchema = z.object({
     z.number().min(1).max(DEFAULT_MOVIE_SEARCH.voteCountMax),
     DEFAULT_MOVIE_SEARCH.voteCountMax,
   ).default(DEFAULT_MOVIE_SEARCH.voteCountMax),
+  runtimeMin: fallback(
+    z
+      .number()
+      .min(1)
+      .max(DEFAULT_MOVIE_SEARCH.runtimeMax - 1),
+    DEFAULT_MOVIE_SEARCH.runtimeMin,
+  ).default(DEFAULT_MOVIE_SEARCH.runtimeMin),
+  runtimeMax: fallback(z.number().min(1).max(DEFAULT_MOVIE_SEARCH.runtimeMax), DEFAULT_MOVIE_SEARCH.runtimeMax).default(
+    DEFAULT_MOVIE_SEARCH.runtimeMax,
+  ),
   sort: fallback(
     z.enum(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']),
     DEFAULT_MOVIE_SEARCH.sort,
@@ -93,6 +105,12 @@ const movieQueryOptions = (params: MovieSearchParams) =>
               }),
               ...(params.voteCountMax !== DEFAULT_MOVIE_SEARCH.voteCountMax && {
                 'vote_count.lte': params.voteCountMax,
+              }),
+              ...(params.runtimeMin !== DEFAULT_MOVIE_SEARCH.runtimeMin && {
+                'with_runtime.gte': params.runtimeMin,
+              }),
+              ...(params.runtimeMax !== DEFAULT_MOVIE_SEARCH.runtimeMax && {
+                'with_runtime.lte': params.runtimeMax,
               }),
               ...((params.sort !== DEFAULT_MOVIE_SEARCH.sort || params.sortDir !== DEFAULT_MOVIE_SEARCH.sortDir) && {
                 sort_by: `${params.sort}.${params.sortDir}`,

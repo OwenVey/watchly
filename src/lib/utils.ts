@@ -31,3 +31,12 @@ export function getTmdbImage<T extends keyof ImageTypeToSizeMap>(
 
   return `https://image.tmdb.org/t/p/${size}/${path}`;
 }
+
+export function formatMinutesToHHMM(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  const formattedMinutes = String(remainingMinutes).padStart(2, '0');
+
+  return `${hours}:${formattedMinutes}`;
+}
