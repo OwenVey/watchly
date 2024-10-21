@@ -1,15 +1,15 @@
+import { TmdbLogo } from '@/components/tmdb-logo';
 import {} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { movieApi } from '@/lib/api';
 import {} from '@/lib/constants';
-import { getTmdbImage } from '@/lib/utils';
+import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_.$movieId.js';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link, createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { CameraOffIcon } from 'lucide-react';
 import React from 'react';
 import { z } from 'zod';
 
@@ -188,26 +188,36 @@ function MovieCards() {
           {page.results.map((movie) => (
             <Link
               key={movie.id}
-              className="group relative grid aspect-[2/3] place-items-center overflow-hidden rounded-lg border border-gray-6 bg-gray-3 transition-all hover:scale-105 hover:border-gray-9"
+              className="group relative grid aspect-[2/3] place-items-center overflow-hidden rounded-lg border border-gray-5 bg-gray-3 transition-all hover:scale-105 hover:border-gray-7"
               to={MovieIdRoute.to}
               params={{ movieId: movie.id.toString() }}
               preloadDelay={500}
             >
-              {movie.poster_path ? (
+              {movie.poster_path && (
                 <img
                   src={getTmdbImage('poster', movie.poster_path, 'w342')}
                   alt={`Movie poster for ${movie.title}`}
                   className="h-full w-full object-cover"
                 />
-              ) : (
-                <CameraOffIcon className="size-8 text-gray-9" />
               )}
-              <div className="absolute inset-0 flex flex-col justify-end bg-black/50 p-2 opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100">
-                {movie.release_date && (
-                  <div className="font-semibold text-sm text-white">{movie.release_date.getFullYear()}</div>
+              <div
+                className={cn(
+                  'absolute inset-0 flex flex-col justify-end p-2',
+                  movie.poster_path &&
+                    'bg-black/50 opacity-0 backdrop-blur-md transition-opacity group-hover:opacity-100',
                 )}
-                <div className="font-semibold text-lg text-white leading-6">{movie.title}</div>
-                <div className="line-clamp-3 text-sm text-white/70">{movie.overview}</div>
+              >
+                {movie.vote_average ? (
+                  <div className="absolute top-2 left-2 flex items-center gap-1">
+                    <TmdbLogo className="size-6" />
+                    <span className="text-sm text-white">{movie.vote_average}</span>
+                  </div>
+                ) : null}
+                {movie.release_date && (
+                  <div className="font-medium text-sm text-white">{movie.release_date.getFullYear()}</div>
+                )}
+                <div className="text-balance font-bold text-lg text-white leading-6">{movie.title}</div>
+                <div className="line-clamp-3 text-balance text-sm text-white/70">{movie.overview}</div>
               </div>
             </Link>
           ))}
@@ -216,7 +226,7 @@ function MovieCards() {
 
       {isFetchingNextPage &&
         Array.from({ length: 60 }).map((_, index) => (
-          <Skeleton className="aspect-[2/3] w-full border border-gray-6" key={`placeholder-${index}`} />
+          <Skeleton className="aspect-[2/3] w-full border border-gray-5" key={`placeholder-${index}`} />
         ))}
 
       <div ref={loadMoreRef} className="h-1" />

@@ -94,9 +94,8 @@ export const movieApi = createFetch({
               vote_average: z
                 .number()
                 .optional()
-                .default(0)
-                .transform((num) => Math.round(num * 10) / 10),
-              vote_count: z.number().optional().default(0),
+                .transform((num) => (num ? `${Math.round(num * 10)}%` : undefined)),
+              vote_count: z.number().optional(),
             }),
           ),
           total_pages: z.number(),
