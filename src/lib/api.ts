@@ -168,5 +168,5 @@ export const movieApi = createFetch({
     },
     { strict: true },
   ),
-  plugins: [logger({ enabled: true })],
+  plugins: [logger({ enabled: import.meta.env.DEV })],
 });
