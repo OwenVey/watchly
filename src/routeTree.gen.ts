@@ -98,8 +98,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof moviesLayoutMoviesImport
       parentRoute: typeof moviesLayoutImport
     }
-    '/(movies)/movies/$movieId': {
-      id: '/(movies)/movies/$movieId'
+    '/(movies)/movies_/$movieId': {
+      id: '/(movies)/movies_/$movieId'
       path: '/movies/$movieId'
       fullPath: '/movies/$movieId'
       preLoaderRoute: typeof moviesMoviesMovieIdImport
@@ -156,7 +156,7 @@ export interface FileRoutesById {
   '/(movies)': typeof moviesRouteWithChildren
   '/(movies)/_layout': typeof moviesLayoutRouteWithChildren
   '/(movies)/_layout/movies': typeof moviesLayoutMoviesRoute
-  '/(movies)/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
 }
 
 export interface FileRouteTypes {
@@ -171,7 +171,7 @@ export interface FileRouteTypes {
     | '/(movies)'
     | '/(movies)/_layout'
     | '/(movies)/_layout/movies'
-    | '/(movies)/movies/$movieId'
+    | '/(movies)/movies_/$movieId'
   fileRoutesById: FileRoutesById
 }
 
@@ -214,7 +214,7 @@ export const routeTree = rootRoute
       "filePath": "(movies)",
       "children": [
         "/(movies)/_layout",
-        "/(movies)/movies/$movieId"
+        "/(movies)/movies_/$movieId"
       ]
     },
     "/(movies)/_layout": {
@@ -228,7 +228,7 @@ export const routeTree = rootRoute
       "filePath": "(movies)/_layout.movies.tsx",
       "parent": "/(movies)/_layout"
     },
-    "/(movies)/movies/$movieId": {
+    "/(movies)/movies_/$movieId": {
       "filePath": "(movies)/movies_.$movieId.tsx",
       "parent": "/(movies)"
     }

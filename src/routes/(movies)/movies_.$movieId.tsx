@@ -1,7 +1,7 @@
 import { movieApi } from '@/lib/api';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/(movies)/movies/$movieId')({
+export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ params }) => {
     return movieApi('/movie/:movieId', { params });
   },
