@@ -26,6 +26,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   sortDir: 'desc',
   genres: [] as string[],
   releaseTypes: [] as string[],
+  originalLanguage: undefined,
   adult: false,
 } as const;
 
@@ -72,6 +73,7 @@ const MovieSearchSchema = z.object({
   releaseTypes: fallback(z.array(z.string()), DEFAULT_MOVIE_SEARCH.releaseTypes).default(
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
+  originalLanguage: z.string().optional(),
   adult: fallback(z.boolean(), DEFAULT_MOVIE_SEARCH.adult).default(DEFAULT_MOVIE_SEARCH.adult),
 });
 
@@ -120,6 +122,9 @@ const movieQueryOptions = (params: MovieSearchParams) =>
               }),
               ...(params.releaseTypes.length > 0 && {
                 with_release_type: params.releaseTypes.join('|'),
+              }),
+              ...(params.originalLanguage && {
+                with_original_language: params.originalLanguage,
               }),
               ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && {
                 include_adult: params.adult,

@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
+import { LANGUAGES, MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
 import { cn, formatMinutesToHHMM } from '@/lib/utils.js';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -42,6 +42,7 @@ function FilterSidebar() {
     sortDir,
     genres,
     releaseTypes,
+    originalLanguage,
     adult,
   } = MoviesRoute.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -166,7 +167,7 @@ function FilterSidebar() {
           />
         </div>
 
-        {/* Sort dropdown*/}
+        {/* Sort */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="sort">Sort By</Label>
           <div className="flex gap-2">
@@ -211,7 +212,7 @@ function FilterSidebar() {
               })
             }
             defaultOptions={MOVIE_GENRES}
-            placeholder="Select genre(s)..."
+            placeholder="Select genre(s)"
             hidePlaceholderWhenSelected
           />
         </div>
@@ -229,9 +230,29 @@ function FilterSidebar() {
               })
             }
             defaultOptions={RELEASE_TYPES}
-            placeholder="Select release type(s)..."
+            placeholder="Select release type(s)"
             hidePlaceholderWhenSelected
           />
+        </div>
+
+        {/* Original Language */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="original-language">Original Language</Label>
+          <Select
+            value={originalLanguage}
+            onValueChange={(originalLanguage) => navigate({ search: { originalLanguage } })}
+          >
+            <SelectTrigger id="original-language">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map(({ label, value }) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Adult Content */}
