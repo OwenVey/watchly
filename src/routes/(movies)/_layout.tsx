@@ -1,3 +1,4 @@
+import { Image } from '@/components/image.js';
 import MultipleSelector from '@/components/multi-select';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
@@ -299,13 +300,13 @@ function FilterSidebar() {
                           to="."
                           search={{ watchProviders: toggleItemInArray(watchProviders, provider.provider_id) }}
                           className={cn(
-                            'overflow-hidden rounded-lg border p-1.5',
+                            'aspect-square overflow-hidden rounded-lg border p-1.5',
                             watchProviders.includes(provider.provider_id)
                               ? 'border-primary-7 bg-primary-3 hover:border-primary-8 hover:bg-primary-5'
                               : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
                           )}
                         >
-                          <img
+                          <Image
                             src={getTmdbImage('logo', provider.logo_path, 'w92')}
                             alt={`${provider.provider_name} logo`}
                             className="h-full w-full rounded-lg"

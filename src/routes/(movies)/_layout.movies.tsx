@@ -1,3 +1,4 @@
+import { Image } from '@/components/image';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import {} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -207,7 +208,7 @@ function MovieCards() {
               preloadDelay={500}
             >
               {movie.poster_path && (
-                <img
+                <Image
                   src={getTmdbImage('poster', movie.poster_path, 'w342')}
                   alt={`Movie poster for ${movie.title}`}
                   className="h-full w-full object-cover"
