@@ -263,6 +263,7 @@ function FilterSidebar() {
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="original-language">Original Language</Label>
           <Select
+            key={originalLanguage}
             value={originalLanguage}
             onValueChange={(originalLanguage) => navigate({ search: { originalLanguage } })}
           >
