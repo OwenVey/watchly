@@ -2,7 +2,7 @@ import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
 import { z } from 'zod';
 
-export const movieApi = createFetch({
+export const tmdbApi = createFetch({
   baseURL: 'https://api.themoviedb.org/3',
   auth: {
     type: 'Bearer',
@@ -163,6 +163,23 @@ export const movieApi = createFetch({
           video: z.boolean(),
           vote_average: z.number(),
           vote_count: z.number(),
+        }),
+      },
+      '/watch/providers/movie': {
+        query: z.object({
+          language: z.string().optional(),
+          watch_region: z.string(),
+        }),
+        output: z.object({
+          results: z.array(
+            z.object({
+              // display_priorities: z.record(z.number()),
+              display_priority: z.number(),
+              logo_path: z.string(),
+              provider_name: z.string(),
+              provider_id: z.number(),
+            }),
+          ),
         }),
       },
     },

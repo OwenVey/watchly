@@ -1,7 +1,7 @@
 import { TmdbLogo } from '@/components/tmdb-logo';
 import {} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { movieApi } from '@/lib/api';
+import { tmdbApi } from '@/lib/api';
 import {} from '@/lib/constants';
 import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_.$movieId.js';
@@ -27,6 +27,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   genres: [] as string[],
   releaseTypes: [] as string[],
   originalLanguage: undefined,
+  watchProviders: [] as number[],
   adult: false,
 } as const;
 
@@ -74,6 +75,9 @@ const MovieSearchSchema = z.object({
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
   originalLanguage: z.string().optional(),
+  watchProviders: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.watchProviders).default(
+    DEFAULT_MOVIE_SEARCH.watchProviders,
+  ),
   adult: fallback(z.boolean(), DEFAULT_MOVIE_SEARCH.adult).default(DEFAULT_MOVIE_SEARCH.adult),
 });
 
@@ -87,7 +91,7 @@ const movieQueryOptions = (params: MovieSearchParams) =>
       // await new Promise((resolve) => setTimeout(resolve, 2000));
       const responses = await Promise.all(
         pagesToFetch.map((page) =>
-          movieApi('/discover/movie', {
+          tmdbApi('/discover/movie', {
             query: {
               page,
               ...(params.releasedAfter !== DEFAULT_MOVIE_SEARCH.releasedAfter && {
@@ -125,6 +129,10 @@ const movieQueryOptions = (params: MovieSearchParams) =>
               }),
               ...(params.originalLanguage && {
                 with_original_language: params.originalLanguage,
+              }),
+              ...(params.watchProviders.length > 0 && {
+                watch_region: 'US',
+                with_watch_providers: params.watchProviders.join('|'),
               }),
               ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && {
                 include_adult: params.adult,

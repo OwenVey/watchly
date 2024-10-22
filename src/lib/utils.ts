@@ -40,3 +40,10 @@ export function formatMinutesToHHMM(minutes: number) {
 
   return `${hours}:${formattedMinutes}`;
 }
+
+export function toggleItemInArray<T extends string | number>(array: T[], item: T) {
+  if (array.includes(item)) {
+    return array.filter((i) => i !== item);
+  }
+  return [...array, item];
+}

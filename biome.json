@@ -19,7 +19,7 @@
   "linter": {
     "rules": {
       "correctness": {
-        "noUnusedImports": "warn"
+        "noUnusedImports": "off"
       },
       "suspicious": {
         "noArrayIndexKey": "off"

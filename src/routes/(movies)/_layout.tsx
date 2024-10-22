@@ -4,23 +4,40 @@ import { Calendar } from '@/components/ui/calendar.js';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton.js';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
+import { tmdbApi } from '@/lib/api.js';
 import { LANGUAGES, MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
-import { cn, formatMinutesToHHMM } from '@/lib/utils.js';
-import { Outlet, createFileRoute } from '@tanstack/react-router';
+import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { Await, Outlet, createFileRoute, defer } from '@tanstack/react-router';
 import { Link, useNavigate } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon, MoveDownIcon, MoveUpIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from './_layout.movies.js';
 
+async function getProviders() {
+  // await new Promise((resolve) => setTimeout(resolve, 3000));
+  const results = await tmdbApi('/watch/providers/movie', { query: { watch_region: 'US' } });
+  return results;
+}
+
 export const Route = createFileRoute('/(movies)/_layout')({
+  loader: () => {
+    return {
+      providersPromise: getProviders(),
+    };
+  },
+  gcTime: 0,
+  shouldReload: false,
   component: () => (
     <>
       <FilterSidebar />
-      <main className="flex-1 overflow-y-auto p-4 pt-0">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
+      <main className="flex-1 overflow-y-auto">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
           <Outlet />
         </div>
       </main>
@@ -29,6 +46,8 @@ export const Route = createFileRoute('/(movies)/_layout')({
 });
 
 function FilterSidebar() {
+  const { providersPromise } = Route.useLoaderData();
+
   const {
     releasedAfter,
     releasedBefore,
@@ -43,12 +62,16 @@ function FilterSidebar() {
     genres,
     releaseTypes,
     originalLanguage,
+    watchProviders,
     adult,
   } = MoviesRoute.useSearch();
+
   const navigate = useNavigate({ from: Route.fullPath });
+
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
   const [runtime, setRuntime] = React.useState([runtimeMin, runtimeMax]);
+  const [showMore, toggleShowMore] = useToggle(false);
 
   useEffect(() => {
     setRating([ratingMin, ratingMax]);
@@ -63,7 +86,7 @@ function FilterSidebar() {
   }, [runtimeMin, runtimeMax]);
 
   return (
-    <aside className="mb-4 ml-4 flex w-80 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
+    <aside className="m-4 mr-0 flex w-80 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
       <h2 className="mb-4 font-semibold text-lg">Filters</h2>
 
       <div className="flex flex-1 flex-col gap-6">
@@ -255,6 +278,53 @@ function FilterSidebar() {
           </Select>
         </div>
 
+        {/* Streaming Services */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="streaming-services">Streaming Services</Label>
+          <div className="grid grid-cols-5 gap-1">
+            <Await
+              promise={providersPromise}
+              fallback={Array.from({ length: 10 }).map((_, index) => (
+                <Skeleton className="aspect-square" key={`placeholder-${index}`} />
+              ))}
+            >
+              {({ results: providers }) =>
+                providers
+                  .sort((a, b) => a.display_priority - b.display_priority)
+                  .slice(0, showMore ? providers.length : 10)
+                  .map((provider) => (
+                    <Tooltip key={provider.provider_id}>
+                      <TooltipTrigger asChild>
+                        <Link
+                          to="."
+                          search={{ watchProviders: toggleItemInArray(watchProviders, provider.provider_id) }}
+                          className={cn(
+                            'overflow-hidden rounded-lg border p-1.5',
+                            watchProviders.includes(provider.provider_id)
+                              ? 'border-primary-7 bg-primary-3 hover:border-primary-8 hover:bg-primary-5'
+                              : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
+                          )}
+                        >
+                          <img
+                            src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                            alt={`${provider.provider_name} logo`}
+                            className="h-full w-full rounded-lg"
+                          />
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>{provider.provider_name}</TooltipContent>
+                    </Tooltip>
+                  ))
+              }
+            </Await>
+          </div>
+          <Button onClick={() => toggleShowMore()} className="text-gray-10 hover:text-gray-11" variant="ghost">
+            <MoveDownIcon className={cn(showMore && 'rotate-180')} />
+            Show {showMore ? 'Less' : 'More'}
+            <MoveDownIcon className={cn(showMore && 'rotate-180')} />
+          </Button>
+        </div>
+
         {/* Adult Content */}
         <div className="flex items-center gap-2">
           <Switch id="adult-content" checked={adult} onCheckedChange={(adult) => navigate({ search: { adult } })} />
@@ -268,7 +338,7 @@ function FilterSidebar() {
         className={cn('mt-4 w-full', buttonVariants({ variant: 'secondary' }))}
       >
         <FilterXIcon />
-        Clear
+        Clear Filters
       </Link>
     </aside>
   );

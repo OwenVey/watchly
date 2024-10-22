@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import './index.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,6 +25,7 @@ const router = createRouter({
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
+  defaultStaleTime: Number.POSITIVE_INFINITY,
 });
 
 // Register things for typesafety
@@ -41,7 +43,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
+        <TooltipProvider>
+          <RouterProvider router={router} />
+        </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>,
   );
