@@ -36,9 +36,11 @@ export function formatMinutesToHHMM(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
 
-  const formattedMinutes = String(remainingMinutes).padStart(2, '0');
+  const hoursPart = hours > 0 ? `${hours}h` : '';
+  const minutesPart = `${remainingMinutes}m`;
 
-  return `${hours}:${formattedMinutes}`;
+  // Join the parts with a space if hoursPart is present
+  return [hoursPart, minutesPart].filter((part) => part !== '').join(' ');
 }
 
 export function toggleItemInArray<T extends string | number>(array: T[], item: T) {

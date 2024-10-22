@@ -33,7 +33,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
               {label && (
                 <span
                   className={cn(
-                    'absolute flex w-full text-gray-12 text-sm',
+                    'absolute flex w-full whitespace-nowrap text-gray-12 text-gray-12 text-xs',
                     labelPosition === 'top' && '-top-7',
                     labelPosition === 'bottom' && 'top-4',
                     index === 0 && 'justify-start',

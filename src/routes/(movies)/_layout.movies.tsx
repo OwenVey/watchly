@@ -224,7 +224,7 @@ function MovieCards() {
                 {movie.vote_average ? (
                   <div className="absolute top-2 left-2 flex items-center gap-1">
                     <TmdbLogo className="size-6" />
-                    <span className="text-sm text-white">{movie.vote_average}</span>
+                    <span className="font-medium text-white text-xs">{movie.vote_average}</span>
                   </div>
                 ) : null}
                 {movie.release_date && (

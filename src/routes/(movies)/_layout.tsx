@@ -88,7 +88,7 @@ function FilterSidebar() {
 
   return (
     <aside className="m-4 mr-0 flex w-80 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
-      <h2 className="mb-4 font-semibold text-lg">Filters</h2>
+      <h2 className="mb-4 font-semibold text-gray-12 text-lg">Filters</h2>
 
       <div className="flex flex-1 flex-col gap-6">
         <div className="flex flex-col gap-1.5">

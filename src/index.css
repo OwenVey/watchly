@@ -42,9 +42,7 @@
   --color-gray-10: var(--sand-10);
   --color-gray-11: var(--sand-11);
   --color-gray-12: var(--sand-12);
-  
-
-  
+  /* --color-gray-12: red */
 }
 
 html.dark {
