@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { SearchIcon } from 'lucide-react';
+import { LoaderIcon, SearchIcon } from 'lucide-react';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -32,22 +32,28 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   );
 };
 
-const CommandInput = React.forwardRef<
-  React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-    <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-    <CommandPrimitive.Input
-      ref={ref}
-      className={cn(
-        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-9 disabled:cursor-not-allowed disabled:opacity-50',
-        className,
+interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> {
+  loading?: boolean;
+}
+const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, CommandInputProps>(
+  ({ className, loading = false, ...props }, ref) => (
+    <div className="flex items-center border-gray-6 border-b px-3" cmdk-input-wrapper="">
+      {loading ? (
+        <LoaderIcon className="mr-2 h-4 w-4 shrink-0 animate-spin text-gray-9" />
+      ) : (
+        <SearchIcon className="mr-2 h-4 w-4 shrink-0 text-gray-9" />
       )}
-      {...props}
-    />
-  </div>
-));
+      <CommandPrimitive.Input
+        ref={ref}
+        className={cn(
+          'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-gray-9 disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+        {...props}
+      />
+    </div>
+  ),
+);
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
