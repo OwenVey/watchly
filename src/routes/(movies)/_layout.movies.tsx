@@ -192,7 +192,7 @@ function MovieCards() {
   }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
 
   if (movies.pages[0]?.totalResults === 0) {
-    return <div className="col-span-full mt-24 grid place-items-center text-gray-11">No results</div>;
+    return <div className="col-span-full mt-48 grid place-items-center text-gray-11">No results</div>;
   }
 
   return (
