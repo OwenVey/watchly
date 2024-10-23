@@ -19,45 +19,45 @@ function AboutComponent() {
       </div>
       <div className="flex gap-4">
         <Button variant="default">
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Default
         </Button>
         <Button variant="outline">
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Outline
         </Button>
         <Button variant="secondary">
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Secondary
         </Button>
         <Button variant="ghost">
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Ghost
         </Button>
         <Button variant="link">
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Link
         </Button>
       </div>
       <div className="flex gap-4">
         <Button variant="default" loading>
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Default
         </Button>
         <Button variant="outline" loading>
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Outline
         </Button>
         <Button variant="secondary" loading>
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Secondary
         </Button>
         <Button variant="ghost" loading>
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Ghost
         </Button>
         <Button variant="link" loading>
-          <SearchIcon className="size-4 mr-2" />
+          <SearchIcon className="mr-2 size-4" />
           Link
         </Button>
       </div>

@@ -12,11 +12,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { tmdbApi } from '@/lib/api.js';
 import { LANGUAGES, MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
-import { Await, Outlet, createFileRoute, defer } from '@tanstack/react-router';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Await, Link, Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon, MoveDownIcon, MoveUpIcon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon, MoveDownIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from './_layout.movies.js';
 
@@ -88,7 +87,7 @@ function FilterSidebar() {
 
   return (
     <aside className="m-4 mr-0 flex w-80 flex-col overflow-y-auto rounded-xl border border-gray-5 bg-gray-2 p-4">
-      <h2 className="mb-4 font-semibold text-gray-12 text-lg">Filters</h2>
+      <h2 className="mb-4 text-lg font-semibold text-gray-12">Filters</h2>
 
       <div className="flex flex-1 flex-col gap-6">
         <div className="flex flex-col gap-1.5">

@@ -95,7 +95,7 @@ export function useDebounce<T>(value: T, delay?: number): T {
     return () => {
       clearTimeout(timer);
     };
-  }, [value, delay]);
+  }, [delay, value]);
 
   return debouncedValue;
 }
@@ -153,7 +153,8 @@ const CommandEmpty = forwardRef<HTMLDivElement, React.ComponentProps<typeof Comm
     return (
       <div
         ref={forwardedRef}
-        className={cn('py-6 text-center text-gray-11 text-sm', className)}
+        className={cn('py-6 text-center text-sm text-gray-11', className)}
+        // eslint-disable-next-line react/no-unknown-property
         cmdk-empty=""
         role="presentation"
         {...props}
@@ -257,7 +258,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       [handleUnselect, selected],
     );
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       if (open) {
         document.addEventListener('mousedown', handleClickOutside);
@@ -279,7 +279,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       }
     }, [value]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       /** If `onSearch` is provided, do not trigger options updated. */
       if (!arrayOptions || onSearch) {
@@ -291,7 +290,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       }
     }, [arrayDefaultOptions, arrayOptions, groupBy, onSearch, options]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       /** sync search */
 
@@ -300,7 +298,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         setOptions(transToGroupOption(res || [], groupBy));
       };
 
-      const exec = async () => {
+      const exec = () => {
         if (!onSearchSync || !open) return;
 
         if (triggerSearchOnFocus) {
@@ -316,7 +314,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearchTerm, groupBy, open, triggerSearchOnFocus]);
 
-    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       /** async search */
 
@@ -432,13 +429,12 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         shouldFilter={commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch} // When onSearch is provided, we don't want to filter the options. You can still override it.
         filter={commandFilter()}
       >
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <div
           className={cn(
             'flex rounded-md border border-gray-7 bg-gray-1 text-sm ring-offset-gray-1 hover:border-gray-8',
             // 'focus-within:ring-2 focus-within:ring-gray-12 focus-within:ring-offset-2',
             {
-              'px-3 py-1.5': selected.length !== 0,
+              'py-1.5 px-3': selected.length !== 0,
               'cursor-text': !disabled && selected.length !== 0,
             },
             className,
@@ -465,7 +461,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                   <button
                     type="button"
                     className={cn(
-                      '-my-0.5 -mr-1 ml-1 rounded-full p-0.5 text-gray-8 outline-none ring-offset-gray-1 transition-colors hover:bg-gray-11 hover:text-gray-1 focus:ring-2 focus:ring-gray-1',
+                      '-my-0.5 -mr-1 ml-1 rounded-full p-0.5 text-gray-8 ring-offset-gray-1 outline-none transition-colors hover:bg-gray-11 hover:text-gray-1 focus:ring-2 focus:ring-gray-1',
                       (disabled || option.fixed) && 'hidden',
                     )}
                     onKeyDown={(e) => {
@@ -502,7 +498,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               }}
               onFocus={(event) => {
                 setOpen(true);
-                triggerSearchOnFocus && onSearch?.(debouncedSearchTerm);
+                void (triggerSearchOnFocus && onSearch?.(debouncedSearchTerm));
                 inputProps?.onFocus?.(event);
               }}
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
@@ -510,7 +506,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 'flex-1 border-none bg-transparent outline-none placeholder:text-gray-9',
                 {
                   'w-full': hidePlaceholderWhenSelected,
-                  'h-[34px] px-3 py-2': selected.length === 0,
+                  'h-[34px] py-2 px-3': selected.length === 0,
                   'ml-1': selected.length !== 0,
                 },
                 inputProps?.className,
@@ -538,7 +534,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         <div className="relative">
           {open && (
             <CommandList
-              className="absolute top-1 z-10 w-full animate-in rounded-md border border-gray-6 bg-gray-1 text-gray-12 shadow-md outline-none"
+              className="absolute top-1 z-10 w-full rounded-md border border-gray-6 bg-gray-1 text-gray-12 shadow-md outline-none animate-in"
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}

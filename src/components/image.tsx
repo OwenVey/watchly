@@ -22,7 +22,6 @@ export function Image({ src, alt, className, ...props }: ImageProps) {
   });
 
   return (
-    // biome-ignore lint/a11y/useAltText: <explanation>
     <img
       ref={ref}
       src={src}

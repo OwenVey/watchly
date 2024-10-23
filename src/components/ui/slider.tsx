@@ -15,7 +15,7 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
     return (
       <SliderPrimitive.Root
         ref={ref}
-        className={cn('relative flex w-full touch-none select-none items-center', className)}
+        className={cn('relative flex w-full touch-none items-center select-none', className)}
         {...props}
       >
         <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-gray-7">
@@ -26,14 +26,14 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
           <React.Fragment key={index}>
             <SliderPrimitive.Thumb
               className={cn(
-                'relative block size-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-12 disabled:pointer-events-none disabled:opacity-50',
+                'relative block size-4 rounded-full border-2 border-primary-9 bg-gray-1 shadow transition-colors focus-visible:ring-1 focus-visible:ring-gray-12 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
                 props.orientation === 'vertical' ? 'cursor-ns-resize' : 'cursor-ew-resize',
               )}
             >
               {label && (
                 <span
                   className={cn(
-                    'absolute flex w-full whitespace-nowrap text-gray-12 text-gray-12 text-xs',
+                    'absolute flex w-full whitespace-nowrap text-xs text-gray-12',
                     labelPosition === 'top' && '-top-7',
                     labelPosition === 'bottom' && 'top-4',
                     index === 0 && 'justify-start',

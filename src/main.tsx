@@ -1,10 +1,10 @@
+import { ThemeProvider } from '@/components/theme-provider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
-import { routeTree } from './routeTree.gen';
 import './index.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { routeTree } from './routeTree.gen';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +35,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-// biome-ignore lint/style/noNonNullAssertion: 'app' id will always exist in index.html
 const rootElement = document.getElementById('app')!;
 
 if (!rootElement.innerHTML) {

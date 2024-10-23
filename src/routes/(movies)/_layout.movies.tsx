@@ -157,14 +157,14 @@ const movieQueryOptions = (params: MovieSearchParams) =>
   });
 
 export const Route = createFileRoute('/(movies)/_layout/movies')({
-  loaderDeps: ({ search }) => search,
   validateSearch: zodSearchValidator(MovieSearchSchema),
   search: {
     middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],
   },
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
+  loaderDeps: ({ search }) => search,
   pendingMs: 0,
   pendingComponent: SkeletonCards,
+  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   component: MovieCards,
 });
 
@@ -187,7 +187,7 @@ function MovieCards() {
 
   React.useEffect(() => {
     if (entry?.isIntersecting && !isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
+      void fetchNextPage();
     }
   }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
 
@@ -224,13 +224,13 @@ function MovieCards() {
                 {movie.vote_average ? (
                   <div className="absolute top-2 left-2 flex items-center gap-1">
                     <TmdbLogo className="size-6" />
-                    <span className="font-medium text-white text-xs">{movie.vote_average}</span>
+                    <span className="text-xs font-medium text-white">{movie.vote_average}</span>
                   </div>
                 ) : null}
                 {movie.release_date && (
-                  <div className="font-medium text-sm text-white">{movie.release_date.getFullYear()}</div>
+                  <div className="text-sm font-medium text-white">{movie.release_date.getFullYear()}</div>
                 )}
-                <div className="text-balance font-bold text-lg text-white leading-6">{movie.title}</div>
+                <div className="text-balance text-lg font-bold leading-6 text-white">{movie.title}</div>
                 <div className="line-clamp-3 text-balance text-sm text-white/70">{movie.overview}</div>
               </div>
             </Link>
