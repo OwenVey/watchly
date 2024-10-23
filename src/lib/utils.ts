@@ -15,13 +15,13 @@ type ImageTypeToSizeMap = {
 
 /**
  * Constructs a TMDB image URL.
- * @param type - The type of the image (e.g., 'backdrop', 'logo').
+ * @param _type - The type of the image (e.g., 'backdrop', 'logo').
  * @param path - The path of the image.
  * @param size - The size of the image, specific to the type.
  * @returns The complete URL for the TMDB image.
  */
 export function getTmdbImage<T extends keyof ImageTypeToSizeMap>(
-  type: T,
+  _type: T,
   path: string,
   size: ImageTypeToSizeMap[T],
 ): string {

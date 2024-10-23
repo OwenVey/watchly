@@ -162,9 +162,9 @@ export const Route = createFileRoute('/(movies)/_layout/movies')({
     middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],
   },
   loaderDeps: ({ search }) => search,
+  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   pendingMs: 0,
   pendingComponent: SkeletonCards,
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   component: MovieCards,
 });
 
