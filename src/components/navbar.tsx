@@ -6,7 +6,7 @@ import { FilmIcon, TvIcon } from 'lucide-react';
 
 export function Navbar() {
   return (
-    <nav className="bg-background m-4 mb-0 flex items-center justify-between rounded-xl border border-gray-5 bg-gray-2 p-4">
+    <nav className="m-4 mb-0 flex items-center justify-between rounded-xl border border-gray-5 bg-gray-2 p-4">
       <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
         <Logo className="size-8 text-primary-9" />
         Watchly
