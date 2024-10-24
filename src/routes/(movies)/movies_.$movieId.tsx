@@ -25,7 +25,7 @@ function Movie() {
             src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
             alt={`backdrop image for ${movie.title}`}
           />
-          <div className="absolute right-0 bottom-0 left-0 h-1/4 bg-gradient-to-t from-gray-1">zzz</div>
+          <div className="absolute right-0 bottom-0 left-0 h-1/4 bg-gradient-to-t from-gray-1" />
         </div>
       )}
       <h1>{movie.title}</h1>

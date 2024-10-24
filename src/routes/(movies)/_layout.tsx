@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton.js';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
+import { useScrollShadows } from '@/hooks/useScrollShadows.js';
 import { tmdbApi } from '@/lib/api.js';
 import { LANGUAGES, MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
@@ -33,17 +34,37 @@ export const Route = createFileRoute('/(movies)/_layout')({
   },
   gcTime: 0,
   shouldReload: false,
-  component: () => (
+  component: Layout,
+});
+
+function Layout() {
+  const { containerRef, showTopShadow, showBottomShadow } = useScrollShadows();
+
+  return (
     <>
       <FilterSidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
-          <Outlet />
+      <main className="relative isolate flex flex-1">
+        <div ref={containerRef} className="flex-1 overflow-y-auto">
+          <div
+            className={cn(
+              'pointer-events-none absolute -top-20 right-4 left-0 z-10 h-20 bg-gradient-to-b from-gray-1 from-[1rem] opacity-0 transition-all duration-300',
+              showTopShadow && 'top-0 opacity-100',
+            )}
+          />
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
+            <Outlet />
+          </div>
         </div>
+        <div
+          className={cn(
+            'absolute right-4 -bottom-20 left-0 h-20 bg-gradient-to-t from-gray-1 from-15% from-[1rem] opacity-0 transition-all duration-300',
+            showBottomShadow && 'bottom-0 opacity-100',
+          )}
+        ></div>
       </main>
     </>
-  ),
-});
+  );
+}
 
 function FilterSidebar() {
   const { providersPromise } = Route.useLoaderData();
