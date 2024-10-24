@@ -20,7 +20,7 @@ const TanStackRouterDevtools = import.meta.env.PROD
 
 function RootComponent() {
   return (
-    <div className="flex h-screen flex-col">
+    <>
       <Navbar />
       <ScrollRestoration />
       <div className="flex flex-1 overflow-auto">
@@ -30,6 +30,6 @@ function RootComponent() {
       <Suspense>
         <TanStackRouterDevtools position="bottom-right" />
       </Suspense>
-    </div>
+    </>
   );
 }
