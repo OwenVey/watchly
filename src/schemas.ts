@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-function paginated(resultSchema: z.ZodObject<Record<string, z.ZodTypeAny>>) {
+function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
   return z.object({
     page: z.number(),
     total_pages: z.number(),
