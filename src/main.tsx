@@ -41,7 +41,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="system" storageKey="watchly-ui-theme">
         <TooltipProvider>
           <RouterProvider router={router} />
         </TooltipProvider>

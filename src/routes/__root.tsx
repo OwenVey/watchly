@@ -23,7 +23,7 @@ function RootComponent() {
     <>
       <Navbar />
       <ScrollRestoration />
-      <div className="flex flex-1 overflow-auto">
+      <div className="flex">
         <Outlet />
       </div>
       <ReactQueryDevtools buttonPosition="bottom-left" />
