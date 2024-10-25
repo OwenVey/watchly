@@ -7,7 +7,7 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   alt: string;
 }
 
-export function Image({ src, alt, className, ...props }: ImageProps) {
+export function FadeImage({ src, alt, className, ...props }: ImageProps) {
   const [loaded, setLoaded] = useState(false);
   const ref = useRef<HTMLImageElement>(null);
 

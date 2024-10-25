@@ -1,4 +1,3 @@
-import { Image } from '@/components/image';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
@@ -98,7 +97,7 @@ function Movie() {
     <div className="mx-auto max-w-6xl overflow-hidden p-4">
       {movie.backdrop_path && (
         <div className="absolute top-0 right-0 left-0 -z-10">
-          <Image
+          <img
             className="h-[45rem] w-full object-cover opacity-10 blur-sm"
             src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
             alt={`backdrop image for ${movie.title}`}
@@ -110,7 +109,7 @@ function Movie() {
       <div className="flex flex-col justify-between gap-4 md:flex-row">
         <div className="mt-4 flex flex-col items-center gap-4 md:flex-row md:items-start">
           {movie.poster_path ? (
-            <Image
+            <img
               className="shad h-fit w-48 rounded-xl shadow-lg"
               src={getTmdbImage('poster', movie.poster_path, 'w342')}
               alt={`movie poster for ${movie.title}`}
@@ -150,7 +149,7 @@ function Movie() {
           {movie.belongs_to_collection && (
             <div className="glass relative flex items-center justify-between overflow-hidden rounded-xl py-3 px-4">
               {movie.belongs_to_collection.backdrop_path && (
-                <Image
+                <img
                   className="absolute right-0 left-0 -z-10 w-full object-cover opacity-15 blur-xs"
                   src={getTmdbImage(
                     'backdrop',
@@ -269,7 +268,7 @@ function PersonCard({ profilePath, name, role }: { profilePath: string | null; n
       className="flex aspect-2/3 h-full flex-col items-center justify-center rounded-lg border border-gray-4 bg-gradient-to-t from-gray-2 to-gray-3 py-4 px-2 transition-all hover:scale-105 hover:border-gray-7"
     >
       {profilePath ? (
-        <Image
+        <img
           className="size-24 rounded-full border border-gray-5 object-cover"
           src={getTmdbImage('profile', profilePath, 'w185')}
           alt={`profile picture of ${name}`}

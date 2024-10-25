@@ -1,4 +1,3 @@
-import { Image } from '@/components/image.js';
 import MultipleSelector from '@/components/multi-select';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
@@ -309,7 +308,7 @@ function FilterSidebar() {
                               : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
                           )}
                         >
-                          <Image
+                          <img
                             src={getTmdbImage('logo', provider.logo_path, 'w92')}
                             alt={`${provider.provider_name} logo`}
                             className="h-full w-full rounded-md"

@@ -1,4 +1,3 @@
-import { Image } from '@/components/image';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_.$movieId.js';
@@ -18,7 +17,7 @@ export function MovieCard({ movie, className }: { movie: Movie; className?: stri
       preloadDelay={500}
     >
       {movie.poster_path && (
-        <Image
+        <img
           src={getTmdbImage('poster', movie.poster_path, 'w342')}
           alt={`Movie poster for ${movie.title}`}
           className="h-full w-full object-cover"
