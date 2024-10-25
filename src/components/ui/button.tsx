@@ -13,13 +13,13 @@ const buttonVariants = cva(
         outline:
           'border border-gray-7 bg-gray-1 text-gray-12 shadow-sm hover:border-gray-8 hover:bg-gray-3 active:bg-gray-4',
         secondary: 'bg-gray-3 text-gray-12 shadow-sm hover:bg-gray-4 active:bg-gray-5',
-        ghost: 'text-gray-12 hover:bg-gray-3 active:bg-gray-4',
+        ghost: 'text-gray-12 hover:bg-gray-4 active:bg-gray-5',
         link: 'text-gray-12 underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-9 py-2 px-4',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
+        sm: 'h-8 px-3 text-xs',
+        lg: 'h-10 px-8',
         icon: 'h-9 w-9',
       },
     },
