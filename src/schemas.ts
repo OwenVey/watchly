@@ -1,3 +1,5 @@
+import { LANGUAGES_MAP } from '@/lib/constants';
+import { zodObjectKeys } from '@/lib/utils';
 import { z } from 'zod';
 
 function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
@@ -14,7 +16,7 @@ export const MovieSchema = z.object({
   backdrop_path: z.string().nullable(),
   genre_ids: z.array(z.number()).default([]),
   id: z.number(),
-  original_language: z.string(),
+  original_language: zodObjectKeys(LANGUAGES_MAP),
   original_title: z.string(),
   overview: z.string(),
   popularity: z.number().optional(),
@@ -153,6 +155,33 @@ export const ReviewsOutputSchema = paginated(
   }),
 );
 
+export const ReleaseTypeSchema = z.union([
+  z.literal(1),
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+]);
+
+export const ReleaseDatesOutputSchema = z.object({
+  results: z.array(
+    z.object({
+      iso_3166_1: z.string(),
+      release_dates: z.array(
+        z.object({
+          certification: z.string(),
+          descriptors: z.array(z.string()),
+          iso_639_1: z.string(),
+          note: z.string(),
+          release_date: z.coerce.date(),
+          type: ReleaseTypeSchema,
+        }),
+      ),
+    }),
+  ),
+});
+
 export const MovieDetailsOutputSchema = z.object({
   adult: z.boolean(),
   backdrop_path: z.string().nullable(),
@@ -171,7 +200,7 @@ export const MovieDetailsOutputSchema = z.object({
   id: z.number(),
   imdb_id: z.string().nullable(),
   origin_country: z.array(z.string()),
-  original_language: z.string(),
+  original_language: zodObjectKeys(LANGUAGES_MAP),
   original_title: z.string(),
   overview: z.string(),
   popularity: z.number(),
@@ -191,6 +220,7 @@ export const MovieDetailsOutputSchema = z.object({
     .optional()
     .transform((val) => (val === '' ? undefined : val))
     .pipe(z.coerce.date().optional()),
+  release_dates: ReleaseDatesOutputSchema,
   revenue: z.number(),
   reviews: ReviewsOutputSchema,
   runtime: z.number(),

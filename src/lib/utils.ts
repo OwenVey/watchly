@@ -1,12 +1,13 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { z } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 type ImageTypeToSizeMap = {
-  backdrop: 'w300' | 'w780' | 'w1280' | 'original';
+  backdrop: 'w300' | 'w780' | 'w1280' | 'w1440_and_h320_multi_faces' | 'original';
   logo: 'w45' | 'w92' | 'w154' | 'w185' | 'w300' | 'w500' | 'original';
   poster: 'w92' | 'w154' | 'w185' | 'w342' | 'w500' | 'w780' | 'original';
   profile: 'w45' | 'w185' | 'h632' | 'original';
@@ -48,4 +49,45 @@ export function toggleItemInArray<T extends string | number>(array: T[], item: T
     return array.filter((i) => i !== item);
   }
   return [...array, item];
+}
+
+/**
+ * Formats a number as a currency string based on the specified locale and currency.
+ *
+ * @param {number} amount - The amount of money to format.
+ * @param {string} [locale='en-US'] - The locale string (e.g., 'en-US', 'de-DE').
+ * @param {string} [currency='USD'] - The currency code (e.g., 'USD', 'EUR').
+ * @param {Intl.NumberFormatOptions} [options={}] - Additional formatting options.
+ * @returns {string} - The formatted currency string.
+ */
+export function formatCurrency(
+  amount: number,
+  locale: string = 'en-US',
+  currency: string = 'USD',
+  options: Intl.NumberFormatOptions = {},
+) {
+  try {
+    // Merge default and custom options
+    const formatOptions: Intl.NumberFormatOptions = {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      ...options,
+    };
+
+    // Create a new Intl.NumberFormat instance
+    const formatter = new Intl.NumberFormat(locale, formatOptions);
+
+    // Format the amount
+    return formatter.format(amount);
+  } catch (error) {
+    console.error('Error formatting currency:', error);
+    return amount.toString(); // Fallback to a simple string representation
+  }
+}
+
+export function zodObjectKeys<T extends Record<string, unknown>>(obj: T) {
+  const keys = Object.keys(obj) as Extract<keyof T, string>[];
+  return z.enum(keys as [Extract<keyof T, string>, ...Extract<keyof T, string>[]]);
 }

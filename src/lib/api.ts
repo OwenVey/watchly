@@ -32,13 +32,15 @@ export const tmdbApi = createFetch({
         params: z.object({
           movieId: z.string(),
         }),
-        query: z
-          .object({
-            append_to_response: z.array(z.enum(['recommendations', 'similar', 'reviews', 'credits'])),
-          })
-          .default({
-            append_to_response: ['recommendations', 'reviews', 'similar'],
-          }),
+        query: z.object({
+          append_to_response: z.tuple([
+            z.literal('recommendations'),
+            z.literal('similar'),
+            z.literal('reviews'),
+            z.literal('credits'),
+            z.literal('release_dates'),
+          ]),
+        }),
         output: MovieDetailsOutputSchema,
       },
       '/watch/providers/movie': {

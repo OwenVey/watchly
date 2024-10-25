@@ -42,9 +42,15 @@
   --color-gray-10: var(--gray-10);
   --color-gray-11: var(--gray-11);
   --color-gray-12: var(--gray-12);
-  /* --color-gray-12: red */
+
+  --blur-xs: 2px;
+  /* --color-gray-12: red; */
 }
 
 html.dark {
   color-scheme: dark;
+}
+
+.glass {
+  @apply border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl;
 }

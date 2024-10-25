@@ -10,9 +10,9 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES, MOVIE_GENRES, RELEASE_TYPES } from '@/lib/constants';
+import { LANGUAGES_MAP, MOVIE_GENRES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
-import { Await, Link, Outlet, createFileRoute, useNavigate } from '@tanstack/react-router';
+import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon, MoveDownIcon } from 'lucide-react';
@@ -88,7 +88,7 @@ function FilterSidebar() {
   }, [runtimeMin, runtimeMax]);
 
   return (
-    <aside className="sticky top-[94px] left-4 m-4 mr-0 flex max-h-[calc(100vh-94px-16px)] w-80 flex-col overflow-y-auto rounded-xl border border-gray-11/15 bg-gray-3/60 p-4">
+    <aside className="glass sticky top-[94px] left-4 m-4 mr-0 flex max-h-[calc(100vh-94px-16px)] w-80 flex-col overflow-y-auto rounded-xl p-4">
       <h2 className="mb-4 text-lg font-semibold text-gray-12">Filters</h2>
 
       <div className="flex flex-1 flex-col gap-6">
@@ -228,15 +228,15 @@ function FilterSidebar() {
           <Label>Genres</Label>
           <MultipleSelector
             value={genres.map((value) => ({
-              value,
-              label: MOVIE_GENRES.find((option) => option.value === value)?.label ?? 'Unknown',
+              value: value.toString(),
+              label: MOVIE_GENRES_MAP[value as keyof typeof MOVIE_GENRES_MAP],
             }))}
             onChange={(options) =>
               navigate({
-                search: { genres: options.map(({ value }) => value) },
+                search: { genres: options.map(({ value }) => +value) },
               })
             }
-            defaultOptions={MOVIE_GENRES}
+            defaultOptions={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ label, value }))}
             placeholder="Select genre(s)"
             hidePlaceholderWhenSelected
           />
@@ -246,15 +246,15 @@ function FilterSidebar() {
           <Label>Release Type</Label>
           <MultipleSelector
             value={releaseTypes.map((value) => ({
-              value,
-              label: RELEASE_TYPES.find((option) => option.value === value)?.label ?? 'Unknown',
+              value: value.toString(),
+              label: RELEASE_TYPE_MAP[value],
             }))}
             onChange={(options) =>
               navigate({
-                search: { releaseTypes: options.map(({ value }) => value) },
+                search: { releaseTypes: options.map(({ value }) => +value) },
               })
             }
-            defaultOptions={RELEASE_TYPES}
+            defaultOptions={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
             placeholder="Select release type(s)"
             hidePlaceholderWhenSelected
           />
@@ -272,7 +272,7 @@ function FilterSidebar() {
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              {LANGUAGES.map(({ label, value }) => (
+              {Object.entries(LANGUAGES_MAP).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>

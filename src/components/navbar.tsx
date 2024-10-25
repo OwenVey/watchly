@@ -12,14 +12,14 @@ export function Navbar() {
       <Accordion.Item value="nav" asChild>
         <nav className="group sticky top-0 z-10 p-4 pb-0">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-1 from-[1rem]" />
-          <div className="rounded-xl border border-gray-11/15 bg-gray-3/60 py-3 px-4 backdrop-blur-xl">
+          <div className="glass rounded-xl py-3 px-4">
             <div className="flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
                 <Logo className="size-8 text-primary-9" />
                 Watchly
               </Link>
 
-              <div className="hidden items-center gap-4 text-sm sm:flex">
+              <div className="hidden items-center gap-4 text-sm md:flex">
                 <Link
                   to="/movies"
                   search={defaultMovieSearch}
@@ -37,11 +37,11 @@ export function Navbar() {
                 </Link>
               </div>
 
-              <div className="hidden sm:block">
+              <div className="hidden md:block">
                 <ModeToggle />
               </div>
 
-              <Accordion.Header className="sm:hidden">
+              <Accordion.Header className="md:hidden">
                 <Accordion.Trigger asChild>
                   <Button variant="ghost" size="icon" className="group text-gray-11 hover:text-gray-12 [&_svg]:size-6">
                     <XIcon className="hidden group-data-[state=open]:block" />
@@ -51,7 +51,7 @@ export function Navbar() {
               </Accordion.Header>
             </div>
 
-            <Accordion.Content className="mt-3 space-y-1 sm:hidden">
+            <Accordion.Content className="mt-3 space-y-1 md:hidden">
               <Accordion.Trigger asChild>
                 <Link
                   className="bg flex items-center gap-3 rounded-lg py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
