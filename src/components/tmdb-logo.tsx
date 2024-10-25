@@ -1,7 +1,8 @@
 import type { SVGProps } from 'react';
+
 export const TmdbLogo = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190.24 81.52" {...props}>
-    <title>TMDB Logo</title>
+    <title>TMDb Logo</title>
     <defs>
       <linearGradient id="a" x2={190.24} y1={40.76} y2={40.76} gradientUnits="userSpaceOnUse">
         <stop offset={0} stopColor="#90cea1" />

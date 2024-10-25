@@ -55,3 +55,56 @@ export const tmdbApi = createFetch({
   ),
   plugins: [logger({ enabled: import.meta.env.DEV })],
 });
+
+export const omdbApi = createFetch({
+  baseURL: 'https://www.omdbapi.com',
+  query: {
+    apikey: '3b1b9209',
+  },
+  retry: 3,
+  throw: true,
+  schema: createSchema(
+    {
+      '/': {
+        query: z.object({
+          apikey: z.string().default('3b1b9209'),
+          i: z.string(),
+        }),
+        output: z.object({
+          Title: z.string(),
+          Year: z.string(),
+          Rated: z.string(),
+          Released: z.string(),
+          Runtime: z.string(),
+          Genre: z.string(),
+          Director: z.string(),
+          Writer: z.string(),
+          Actors: z.string(),
+          Plot: z.string(),
+          Language: z.string(),
+          Country: z.string(),
+          Awards: z.string(),
+          Poster: z.string().url(),
+          Ratings: z.array(
+            z.object({
+              Source: z.string(),
+              Value: z.string(),
+            }),
+          ),
+          Metascore: z.string(),
+          imdbRating: z.string(),
+          imdbVotes: z.string(),
+          imdbID: z.string(),
+          Type: z.string(),
+          DVD: z.string(),
+          BoxOffice: z.string(),
+          Production: z.string(),
+          Website: z.string(),
+          Response: z.string(),
+        }),
+      },
+    },
+    { strict: true },
+  ),
+  plugins: [logger({ enabled: import.meta.env.DEV })],
+});

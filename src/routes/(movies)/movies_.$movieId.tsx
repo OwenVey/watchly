@@ -1,10 +1,13 @@
 import { Image } from '@/components/image';
+import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
+import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
+import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { tmdbApi } from '@/lib/api';
+import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import type { ReleaseType } from '@/types';
@@ -24,16 +27,20 @@ import React from 'react';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ params }) => {
-    return tmdbApi('/movie/:movieId', {
+    const movie = await tmdbApi('/movie/:movieId', {
       params,
       query: { append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates'] },
     });
+
+    const omdb = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
+
+    return { movie, omdb };
   },
   component: Movie,
 });
 
 function Movie() {
-  const movie = Route.useLoaderData();
+  const { movie, omdb } = Route.useLoaderData();
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
 
@@ -75,6 +82,17 @@ function Movie() {
     { label: 'Production Country', value: movie.production_countries.at(0)?.name },
     { label: 'Studio', value: movie.production_companies.at(0)?.name },
   ];
+
+  const ratings = [
+    { score: movie.vote_average, logo: TmdbLogo, tooltip: 'TMDb User Score', logoClass: 'w-7' },
+    {
+      score: omdb?.Ratings.find((r) => r.Source === 'Rotten Tomatoes')?.Value,
+      logo: RottenTomatoesLogo,
+      tooltip: 'Rotten Tomatoes Tomatometer',
+      logoClass: 'w-5',
+    },
+    { score: omdb?.imdbRating, logo: ImdbLogo, tooltip: 'IMDb Rating', logoClass: 'w-7' },
+  ].filter((rating) => rating.score);
 
   return (
     <div className="mx-auto max-w-6xl overflow-hidden p-4">
@@ -149,6 +167,17 @@ function Movie() {
             </div>
           )}
           <div className="glass h-fit rounded-xl">
+            <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
+              {ratings.map((rating, index) => (
+                <Tooltip key={index}>
+                  <TooltipTrigger className="flex items-center gap-1.5">
+                    <rating.logo className={rating.logoClass} />
+                    <span className="text-sm font-medium text-gray-11">{rating.score}</span>
+                  </TooltipTrigger>
+                  <TooltipContent>{rating.tooltip}</TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
             <dl className="divide-y divide-gray-5 text-sm">
               {movieDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-8 py-3 px-4">
@@ -237,7 +266,7 @@ function PersonCard({ profilePath, name, role }: { profilePath: string | null; n
   return (
     <Link
       to="/"
-      className="flex aspect-2/3 h-full flex-col items-center justify-center rounded-lg border border-gray-4 bg-gradient-to-t from-gray-2 to-gray-3 py-4 px-2"
+      className="flex aspect-2/3 h-full flex-col items-center justify-center rounded-lg border border-gray-4 bg-gradient-to-t from-gray-2 to-gray-3 py-4 px-2 transition-all hover:scale-105 hover:border-gray-7"
     >
       {profilePath ? (
         <Image

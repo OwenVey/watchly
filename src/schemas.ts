@@ -10,6 +10,10 @@ function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
     results: z.array(resultSchema),
   });
 }
+const VoteAverageSchema = z
+  .number()
+  .optional()
+  .transform((num) => (num ? `${Math.round(num * 10)}%` : undefined));
 
 export const MovieSchema = z.object({
   adult: z.boolean(),
@@ -28,10 +32,7 @@ export const MovieSchema = z.object({
     .pipe(z.coerce.date().optional()),
   title: z.string(),
   video: z.boolean().optional().default(false),
-  vote_average: z
-    .number()
-    .optional()
-    .transform((num) => (num ? `${Math.round(num * 10)}%` : undefined)),
+  vote_average: VoteAverageSchema,
   vote_count: z.number().optional(),
 });
 
@@ -236,7 +237,7 @@ export const MovieDetailsOutputSchema = z.object({
   tagline: z.string(),
   title: z.string(),
   video: z.boolean(),
-  vote_average: z.number(),
+  vote_average: VoteAverageSchema,
   vote_count: z.number(),
 });
 
