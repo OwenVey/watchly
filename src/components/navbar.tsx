@@ -1,6 +1,7 @@
 import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { DEFAULT_MOVIE_SEARCH as defaultMovieSearch } from '@/routes/(movies)/_layout.movies.js';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link } from '@tanstack/react-router';
@@ -12,7 +13,7 @@ export function Navbar() {
       <Accordion.Item value="nav" asChild>
         <nav className="group sticky top-0 z-10 p-4 pb-0">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-1 from-[1rem]" />
-          <div className="glass rounded-xl py-3 px-4">
+          <Card className="py-3 px-4">
             <div className="flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
                 <Logo className="size-8 text-primary-9" />
@@ -75,7 +76,7 @@ export function Navbar() {
                 </Link>
               </Accordion.Trigger>
             </Accordion.Content>
-          </div>
+          </Card>
         </nav>
       </Accordion.Item>
     </Accordion.Root>

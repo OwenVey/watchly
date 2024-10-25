@@ -50,7 +50,3 @@
 html.dark {
   color-scheme: dark;
 }
-
-.glass {
-  @apply border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl;
-}

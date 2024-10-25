@@ -4,6 +4,7 @@ import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
@@ -146,7 +147,7 @@ function Movie() {
 
         <div className="flex min-w-72 flex-col gap-2 md:max-w-80">
           {movie.belongs_to_collection && (
-            <div className="glass relative flex items-center justify-between overflow-hidden rounded-xl py-3 px-4">
+            <Card className="relative flex items-center justify-between overflow-hidden py-3 px-4">
               {movie.belongs_to_collection.backdrop_path && (
                 <img
                   className="absolute right-0 left-0 -z-10 w-full object-cover opacity-15 blur-xs"
@@ -162,9 +163,9 @@ function Movie() {
               <Link to="/" className={cn('', buttonVariants({ variant: 'outline', size: 'sm' }))}>
                 View
               </Link>
-            </div>
+            </Card>
           )}
-          <div className="glass h-fit rounded-xl">
+          <Card className="h-fit">
             <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
               {ratings.map((rating, index) => (
                 <Tooltip key={index}>
@@ -184,7 +185,7 @@ function Movie() {
                 </div>
               ))}
             </dl>
-          </div>
+          </Card>
         </div>
       </div>
 
@@ -262,23 +263,25 @@ function CardCarousel({ title, children }: { title: string; children: React.Reac
 
 function PersonCard({ profilePath, name, role }: { profilePath: string | null; name: string; role: string }) {
   return (
-    <Link
-      to="/"
-      className="flex aspect-2/3 h-full flex-col items-center justify-center rounded-lg border border-gray-4 bg-gradient-to-t from-gray-2 to-gray-3 py-4 px-2 transition-all hover:scale-105 hover:border-gray-7"
-    >
-      {profilePath ? (
-        <img
-          className="size-24 rounded-full border border-gray-5 object-cover"
-          src={getTmdbImage('profile', profilePath, 'w185')}
-          alt={`profile picture of ${name}`}
-        />
-      ) : (
-        <div className="grid size-24 place-items-center rounded-full border border-gray-5 bg-gray-4">
-          <UserRoundIcon className="size-8 text-gray-11" />
-        </div>
-      )}
-      <div className="mt-2 text-center font-medium text-gray-12">{name}</div>
-      <div className="text-center text-sm text-gray-11">{role}</div>
-    </Link>
+    <Card asChild hover>
+      <Link
+        to="/"
+        className="flex aspect-2/3 h-full flex-col items-center justify-center py-4 px-2 transition-all hover:scale-105"
+      >
+        {profilePath ? (
+          <img
+            className="size-24 rounded-full border border-gray-5 object-cover"
+            src={getTmdbImage('profile', profilePath, 'w185')}
+            alt={`profile picture of ${name}`}
+          />
+        ) : (
+          <div className="grid size-24 place-items-center rounded-full border border-gray-5 bg-gray-4">
+            <UserRoundIcon className="size-8 text-gray-11" />
+          </div>
+        )}
+        <div className="mt-2 text-center font-medium text-gray-12">{name}</div>
+        <div className="text-center text-sm text-gray-11">{role}</div>
+      </Link>
+    </Card>
   );
 }
