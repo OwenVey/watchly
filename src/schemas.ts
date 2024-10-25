@@ -186,7 +186,11 @@ export const MovieDetailsOutputSchema = z.object({
   ),
   production_countries: z.array(z.object({ iso_3166_1: z.string(), name: z.string() })),
   recommendations: RecommendationsOutputSchema,
-  release_date: z.string(),
+  release_date: z
+    .string()
+    .optional()
+    .transform((val) => (val === '' ? undefined : val))
+    .pipe(z.coerce.date().optional()),
   revenue: z.number(),
   reviews: ReviewsOutputSchema,
   runtime: z.number(),
