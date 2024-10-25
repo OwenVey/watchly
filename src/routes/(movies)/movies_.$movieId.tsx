@@ -124,12 +124,11 @@ function Movie() {
                 <span className="ml-1 text-base font-medium text-gray-11"> ({movie.release_date.getFullYear()})</span>
               )}
             </h1>
-            <div className="mt-1 flex items-center">
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
               <div className="flex items-center gap-1">
                 <ClockIcon className="size-4 text-gray-9" />
                 <span className="whitespace-nowrap text-sm font-medium">{formatMinutesToHHMM(movie.runtime)}</span>
               </div>
-              <span className="mx-2 text-gray-9">|</span>
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ name }) => (
                   <Badge key={name} variant="secondary">
