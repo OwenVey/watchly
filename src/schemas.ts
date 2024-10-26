@@ -246,7 +246,7 @@ export const MovieProvidersOutputSchema = z.object({
     z.object({
       // display_priorities: z.record(z.number()),
       display_priority: z.number(),
-      logo_path: z.string(),
+      logo_path: z.string().nullable(),
       provider_name: z.string(),
       provider_id: z.number(),
     }),

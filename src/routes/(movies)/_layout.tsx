@@ -310,11 +310,13 @@ function FilterSidebar() {
                                 : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
                             )}
                           >
-                            <img
-                              src={getTmdbImage('logo', provider.logo_path, 'w92')}
-                              alt={`${provider.provider_name} logo`}
-                              className="h-full w-full rounded-md"
-                            />
+                            {provider.logo_path && (
+                              <img
+                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                alt={`${provider.provider_name} logo`}
+                                className="h-full w-full rounded-md"
+                              />
+                            )}
                           </Link>
                         </TooltipTrigger>
                         <TooltipContent>{provider.provider_name}</TooltipContent>
