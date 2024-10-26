@@ -1,4 +1,5 @@
 import { MovieCard } from '@/components/movie-card';
+import type { Option } from '@/components/multi-select';
 import {} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
@@ -26,6 +27,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   sortDir: 'desc',
   genres: [] as number[],
   releaseTypes: [] as ReleaseType[],
+  keywords: [] as Option[],
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
@@ -74,6 +76,10 @@ const MovieSearchSchema = z.object({
   releaseTypes: fallback(z.array(ReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes).default(
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
+  keywords: fallback(
+    z.array(z.object({ value: z.string(), label: z.string() })),
+    DEFAULT_MOVIE_SEARCH.keywords,
+  ).default(DEFAULT_MOVIE_SEARCH.keywords),
   originalLanguage: z.string().optional(),
   watchProviders: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.watchProviders).default(
     DEFAULT_MOVIE_SEARCH.watchProviders,
@@ -126,6 +132,9 @@ const movieQueryOptions = (params: MovieSearchParams) =>
               }),
               ...(params.releaseTypes.length > 0 && {
                 with_release_type: params.releaseTypes.join('|'),
+              }),
+              ...(params.keywords.length > 0 && {
+                with_keywords: params.keywords.map((k) => k.value).join(','),
               }),
               ...(params.originalLanguage && {
                 with_original_language: params.originalLanguage,

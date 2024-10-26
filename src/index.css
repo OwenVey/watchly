@@ -47,6 +47,10 @@
   /* --color-gray-12: red; */
 }
 
+button {
+  cursor: pointer;
+}
+
 html.dark {
   color-scheme: dark;
 }

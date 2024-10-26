@@ -63,6 +63,7 @@ function FilterSidebar() {
     sortDir,
     genres,
     releaseTypes,
+    keywords,
     originalLanguage,
     watchProviders,
     adult,
@@ -93,6 +94,7 @@ function FilterSidebar() {
         <h2 className="mb-4 text-lg font-semibold text-gray-12">Filters</h2>
 
         <div className="flex flex-1 flex-col gap-6">
+          {/* Release Date */}
           <div className="flex flex-col gap-1.5">
             <Label>Release Date</Label>
             <div className="flex gap-2">
@@ -225,6 +227,7 @@ function FilterSidebar() {
             </div>
           </div>
 
+          {/* Genres */}
           <div className="flex flex-col gap-1.5">
             <Label>Genres</Label>
             <MultipleSelector
@@ -238,11 +241,12 @@ function FilterSidebar() {
                 })
               }
               defaultOptions={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ label, value }))}
-              placeholder="Select genre(s)"
+              placeholder="Select genres"
               hidePlaceholderWhenSelected
             />
           </div>
 
+          {/* Release Type */}
           <div className="flex flex-col gap-1.5">
             <Label>Release Type</Label>
             <MultipleSelector
@@ -256,7 +260,23 @@ function FilterSidebar() {
                 })
               }
               defaultOptions={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
-              placeholder="Select release type(s)"
+              placeholder="Select release types"
+              hidePlaceholderWhenSelected
+            />
+          </div>
+
+          {/* Keywords */}
+          <div className="flex flex-col gap-1.5">
+            <Label>Keywords</Label>
+            <MultipleSelector
+              onSearch={async (query) => {
+                const { results } = await tmdbApi('/search/keyword', { query: { query } });
+                return results.map((kw) => ({ value: kw.id.toString(), label: kw.name }));
+              }}
+              value={keywords}
+              onChange={(keywords) => navigate({ search: { keywords } })}
+              placeholder="Search keywords"
+              initialMessage="Start typing to search"
               hidePlaceholderWhenSelected
             />
           </div>
@@ -339,6 +359,7 @@ function FilterSidebar() {
           </div>
         </div>
 
+        {/* Clear Filters */}
         <Link
           to="/movies"
           search={DEFAULT_MOVIE_SEARCH}

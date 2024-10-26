@@ -45,6 +45,7 @@ export default tseslint.config(
       '@typescript-eslint/no-misused-promises': 'off',
       'react/prop-types': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
 );

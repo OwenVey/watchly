@@ -1,7 +1,7 @@
 'use client';
 
 import { Command as CommandPrimitive, useCommandState } from 'cmdk';
-import { X, XIcon } from 'lucide-react';
+import { LoaderIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
 
@@ -28,10 +28,9 @@ interface MultipleSelectorProps {
   /** manually controlled options */
   options?: Option[];
   placeholder?: string;
-  /** Loading component. */
-  loadingIndicator?: React.ReactNode;
   /** Empty component. */
   emptyIndicator?: React.ReactNode;
+  initialMessage?: string;
   /** Debounce time for async search. Only work with `onSearch`. */
   delay?: number;
   /**
@@ -176,8 +175,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       delay,
       onSearch,
       onSearchSync,
-      loadingIndicator,
       emptyIndicator = 'No results found',
+      initialMessage,
       maxSelected = Number.MAX_SAFE_INTEGER,
       onMaxSelected,
       hidePlaceholderWhenSelected,
@@ -385,21 +384,6 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       return undefined;
     };
 
-    const EmptyItem = React.useCallback(() => {
-      if (!emptyIndicator) return undefined;
-
-      // For async search that showing emptyIndicator
-      if (onSearch && !creatable && Object.keys(options).length === 0) {
-        return (
-          <CommandItem value="-" disabled>
-            {emptyIndicator}
-          </CommandItem>
-        );
-      }
-
-      return <CommandEmpty>{emptyIndicator}</CommandEmpty>;
-    }, [creatable, emptyIndicator, onSearch, options]);
-
     const selectables = React.useMemo<GroupOption>(() => removePickedOption(options, selected), [options, selected]);
 
     /** Avoid Creatable Selector freezing or lagging when paste a long string. */
@@ -431,10 +415,10 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'flex rounded-md border border-gray-7 bg-gray-1 text-sm ring-offset-gray-1 hover:border-gray-8',
+            'flex min-h-9 items-center rounded-md border border-gray-7 bg-gray-1 text-sm ring-offset-gray-1 hover:border-gray-8',
             // 'focus-within:ring-2 focus-within:ring-gray-12 focus-within:ring-offset-2',
             {
-              'py-1.5 px-3': selected.length !== 0,
+              'py-1.5 px-3': selected.length !== 0 || true,
               'cursor-text': !disabled && selected.length !== 0,
             },
             className,
@@ -475,7 +459,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="size-3" />
+                    <XIcon className="size-3" />
                   </button>
                 </Badge>
               );
@@ -506,13 +490,13 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 'flex-1 border-none bg-transparent outline-none placeholder:text-gray-9',
                 {
                   'w-full': hidePlaceholderWhenSelected,
-                  'h-[34px] py-2 px-3': selected.length === 0,
                   'ml-1': selected.length !== 0,
                 },
                 inputProps?.className,
               )}
             />
           </div>
+          {isLoading && <LoaderIcon className="size-4 animate-spin text-gray-9" />}
           <button
             type="button"
             onClick={() => {
@@ -520,8 +504,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               onChange?.(selected.filter((s) => s.fixed));
             }}
             className={cn(
-              'text-gray-12 hover:text-gray-9',
+              '-m-1 rounded-full p-1 text-gray-11 hover:bg-gray-4 hover:text-gray-12 active:bg-gray-5',
               (hideClearAllButton ||
+                isLoading ||
                 disabled ||
                 selected.length < 1 ||
                 selected.filter((s) => s.fixed).length === selected.length) &&
@@ -545,45 +530,42 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 inputRef?.current?.focus();
               }}
             >
-              {isLoading ? (
-                <>{loadingIndicator}</>
-              ) : (
-                <>
-                  {EmptyItem()}
-                  {CreatableItem()}
-                  {!selectFirstItem && <CommandItem value="-" className="hidden" />}
-                  {Object.entries(selectables).map(([key, dropdowns]) => (
-                    <CommandGroup key={key} heading={key} className="h-full overflow-auto">
-                      {dropdowns.map((option) => {
-                        return (
-                          <CommandItem
-                            key={option.value}
-                            value={option.value}
-                            disabled={option.disable}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            onSelect={() => {
-                              if (selected.length >= maxSelected) {
-                                onMaxSelected?.(selected.length);
-                                return;
-                              }
-                              setInputValue('');
-                              const newOptions = [...selected, option];
-                              setSelected(newOptions);
-                              onChange?.(newOptions);
-                            }}
-                            className={cn('cursor-pointer', option.disable && 'cursor-default text-gray-11')}
-                          >
-                            {option.label}
-                          </CommandItem>
-                        );
-                      })}
-                    </CommandGroup>
-                  ))}
-                </>
-              )}
+              <>
+                {!debouncedSearchTerm && initialMessage && <CommandEmpty>{initialMessage}</CommandEmpty>}
+                {debouncedSearchTerm && !isLoading && <CommandEmpty>{emptyIndicator}</CommandEmpty>}
+                {CreatableItem()}
+                {!selectFirstItem && <CommandItem value="-" className="hidden" />}
+                {Object.entries(selectables).map(([key, dropdowns]) => (
+                  <CommandGroup key={key} heading={key} className="h-full overflow-auto">
+                    {dropdowns.map((option) => {
+                      return (
+                        <CommandItem
+                          key={option.value}
+                          value={option.value}
+                          disabled={option.disable}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onSelect={() => {
+                            if (selected.length >= maxSelected) {
+                              onMaxSelected?.(selected.length);
+                              return;
+                            }
+                            setInputValue('');
+                            const newOptions = [...selected, option];
+                            setSelected(newOptions);
+                            onChange?.(newOptions);
+                          }}
+                          className={cn('cursor-pointer', option.disable && 'cursor-default text-gray-11')}
+                        >
+                          {option.label}
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                ))}
+              </>
             </CommandList>
           )}
         </div>

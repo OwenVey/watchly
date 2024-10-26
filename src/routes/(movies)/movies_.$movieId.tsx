@@ -161,12 +161,17 @@ function Movie() {
               <ul className="mt-4 flex flex-wrap gap-1">
                 {movie.keywords.keywords
                   .slice(0, showAllKeywords ? movie.keywords.keywords.length : 10)
-                  .map((keyword) => (
-                    <li key={keyword.id}>
+                  .map(({ id, name }) => (
+                    <li key={id}>
                       <Badge asChild variant="secondary">
-                        <Link to="/" className="hover:border-gray-8 hover:bg-gray-7">
+                        <Link
+                          from={Route.fullPath}
+                          to="/movies"
+                          search={{ keywords: [{ value: id.toString(), label: name }] }}
+                          className="hover:border-gray-8 hover:bg-gray-7"
+                        >
                           <TagIcon className="mr-1 size-3 text-gray-11" />
-                          {keyword.name}
+                          {name}
                         </Link>
                       </Badge>
                     </li>
@@ -175,7 +180,7 @@ function Movie() {
               {movie.keywords.keywords.length > 10 && (
                 <button
                   onClick={() => toggleShowAllKeywords()}
-                  className="mt-1 cursor-pointer text-sm text-gray-11 hover:text-gray-12"
+                  className="mt-1 text-sm text-gray-11 hover:text-gray-12"
                 >
                   {showAllKeywords ? 'Show Less' : 'Show More'}
                 </button>
@@ -308,7 +313,7 @@ function PersonCard({ profilePath, name, role }: { profilePath: string | null; n
     <Card asChild hover>
       <Link
         to="/"
-        className="flex aspect-2/3 h-full flex-col items-center justify-center py-4 px-2 transition-all hover:scale-105"
+        className="flex aspect-2/3 flex-col items-center justify-center py-4 px-2 transition-all hover:scale-105"
       >
         {profilePath ? (
           <img

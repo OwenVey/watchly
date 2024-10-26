@@ -51,6 +51,23 @@ export const tmdbApi = createFetch({
         }),
         output: MovieProvidersOutputSchema,
       },
+      '/search/keyword': {
+        query: z.object({
+          query: z.string(),
+          page: z.number().default(1),
+        }),
+        output: z.object({
+          page: z.number(),
+          results: z.array(
+            z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+          ),
+          total_pages: z.number(),
+          total_results: z.number(),
+        }),
+      },
     },
     { strict: true },
   ),
