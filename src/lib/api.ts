@@ -39,6 +39,7 @@ export const tmdbApi = createFetch({
             z.literal('reviews'),
             z.literal('credits'),
             z.literal('release_dates'),
+            z.literal('keywords'),
           ]),
         }),
         output: MovieDetailsOutputSchema,

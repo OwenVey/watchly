@@ -12,12 +12,15 @@ import { LANGUAGES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import type { ReleaseType } from '@/types';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
 import {
+  CircleArrowRightIcon,
   ClockIcon,
   CloudIcon,
   Disc3Icon,
   PopcornIcon,
+  TagIcon,
   TicketIcon,
   TvIcon,
   UserRoundIcon,
@@ -29,7 +32,7 @@ export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ params }) => {
     const movie = await tmdbApi('/movie/:movieId', {
       params,
-      query: { append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates'] },
+      query: { append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates', 'keywords'] },
     });
 
     const omdb = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
@@ -80,7 +83,16 @@ function Movie() {
     { label: 'Budget', value: formatCurrency(movie.budget) },
     { label: 'Original Language', value: LANGUAGES_MAP[movie.original_language] },
     { label: 'Production Country', value: movie.production_countries.at(0)?.name },
-    { label: 'Studio', value: movie.production_companies.at(0)?.name },
+    {
+      label: movie.production_companies.length > 1 ? 'Studios' : 'Studio',
+      value: (
+        <ul>
+          {movie.production_companies.map((studio) => (
+            <li key={studio.id}>{studio.name}</li>
+          ))}
+        </ul>
+      ),
+    },
   ];
 
   const ratings = [
@@ -93,6 +105,8 @@ function Movie() {
     },
     { score: omdb?.imdbRating, logo: ImdbLogo, tooltip: 'IMDb Rating', logoClass: 'w-7' },
   ].filter((rating) => rating.score);
+
+  const [showAllKeywords, toggleShowAllKeywords] = useToggle(false);
 
   return (
     <div className="mx-auto max-w-6xl overflow-hidden p-4">
@@ -111,14 +125,14 @@ function Movie() {
         <div className="mt-4 flex flex-col items-center gap-4 md:flex-row md:items-start">
           {movie.poster_path ? (
             <img
-              className="shad h-fit w-48 rounded-xl shadow-lg"
+              className="h-fit w-48 rounded-xl shadow-lg"
               src={getTmdbImage('poster', movie.poster_path, 'w342')}
               alt={`movie poster for ${movie.title}`}
             />
           ) : (
             <div>no poster</div>
           )}
-          <div className="flex flex-col items-center md:items-baseline">
+          <div className="flex max-w-md flex-col items-center md:items-baseline">
             <h1 className="text-center md:text-left">
               <span className="text-3xl font-bold text-gray-12">{movie.title}</span>
               {movie.release_date && (
@@ -141,7 +155,32 @@ function Movie() {
             {movie.tagline && (
               <p className="mt-4 text-center italic text-gray-11 md:text-left">&quot;{movie.tagline}&quot;</p>
             )}
-            <p className="mt-4 max-w-sm text-center text-gray-11 md:text-left">{movie.overview}</p>
+            <p className="mt-4 text-balance text-gray-11 md:text-left">{movie.overview}</p>
+
+            <div>
+              <ul className="mt-4 flex flex-wrap gap-1">
+                {movie.keywords.keywords
+                  .slice(0, showAllKeywords ? movie.keywords.keywords.length : 10)
+                  .map((keyword) => (
+                    <li key={keyword.id}>
+                      <Badge asChild variant="secondary">
+                        <Link to="/" className="hover:border-gray-8 hover:bg-gray-7">
+                          <TagIcon className="mr-1 size-3 text-gray-11" />
+                          {keyword.name}
+                        </Link>
+                      </Badge>
+                    </li>
+                  ))}
+              </ul>
+              {movie.keywords.keywords.length > 10 && (
+                <button
+                  onClick={() => toggleShowAllKeywords()}
+                  className="mt-1 cursor-pointer text-sm text-gray-11 hover:text-gray-12"
+                >
+                  {showAllKeywords ? 'Show Less' : 'Show More'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -191,7 +230,7 @@ function Movie() {
 
       <div className="mt-12 flex flex-col gap-8">
         {movie.credits.cast.length > 0 && (
-          <CardCarousel title="Cast">
+          <CardCarousel title="Cast" link="cast">
             {movie.credits.cast.map((person) => (
               <CarouselItem key={`${person.id}-${person.character}`}>
                 <PersonCard profilePath={person.profile_path} name={person.name} role={person.character} />
@@ -201,7 +240,7 @@ function Movie() {
         )}
 
         {movie.credits.crew.length > 0 && (
-          <CardCarousel title="Crew">
+          <CardCarousel title="Crew" link="crew">
             {movie.credits.crew.map((person) => (
               <CarouselItem key={`${person.id}-${person.job}`}>
                 <PersonCard profilePath={person.profile_path} name={person.name} role={person.job} />
@@ -211,7 +250,7 @@ function Movie() {
         )}
 
         {movie.recommendations.results.length > 0 && (
-          <CardCarousel title="Recommendations">
+          <CardCarousel title="Recommendations" link="recommendations">
             {movie.recommendations.results.map((movie) => (
               <CarouselItem key={movie.id}>
                 <MovieCard movie={movie} />
@@ -221,7 +260,7 @@ function Movie() {
         )}
 
         {movie.similar.results.length > 0 && (
-          <CardCarousel title="Similar Titles">
+          <CardCarousel title="Similar Titles" link="similar">
             {movie.similar.results.map((movie) => (
               <CarouselItem key={movie.id}>
                 <MovieCard movie={movie} />
@@ -234,7 +273,7 @@ function Movie() {
   );
 }
 
-function CardCarousel({ title, children }: { title: string; children: React.ReactNode }) {
+function CardCarousel({ title, children, link }: { title: string; children: React.ReactNode; link: string }) {
   return (
     <Carousel
       opts={{
@@ -250,7 +289,10 @@ function CardCarousel({ title, children }: { title: string; children: React.Reac
       }}
     >
       <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-semibold leading-5">{title}</h2>
+        <Link className="group flex items-center gap-1.5" from={Route.fullPath} to={link}>
+          <h2 className="text-2xl font-semibold leading-5 text-gray-12">{title}</h2>
+          <CircleArrowRightIcon className="size-6 text-gray-9 transition-colors group-hover:text-gray-12" />
+        </Link>
         <div className="flex gap-2">
           <CarouselPrevious />
           <CarouselNext />

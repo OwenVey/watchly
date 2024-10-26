@@ -5,7 +5,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
   hover?: boolean;
 }
-export function Card({ asChild = false, hover = false, className, children, ...rest }: Props) {
+export function Card({ asChild = false, hover = false, className, ...rest }: Props) {
   const Comp = asChild ? Slot : 'div';
 
   return (
@@ -16,8 +16,6 @@ export function Card({ asChild = false, hover = false, className, children, ...r
         hover && 'hover:border-gray-11/35 hover:bg-gray-3/90',
         className,
       )}
-    >
-      {children}
-    </Comp>
+    />
   );
 }

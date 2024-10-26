@@ -200,6 +200,14 @@ export const MovieDetailsOutputSchema = z.object({
   homepage: z.string(),
   id: z.number(),
   imdb_id: z.string().nullable(),
+  keywords: z.object({
+    keywords: z.array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+      }),
+    ),
+  }),
   origin_country: z.array(z.string()),
   original_language: zodObjectKeys(LANGUAGES_MAP),
   original_title: z.string(),
