@@ -145,9 +145,11 @@ function Movie() {
                 <span className="whitespace-nowrap text-sm font-medium">{formatMinutesToHHMM(movie.runtime)}</span>
               </div>
               <div className="flex flex-wrap gap-1">
-                {movie.genres.map(({ name }) => (
-                  <Badge key={name} variant="secondary">
-                    {name}
+                {movie.genres.map(({ id, name }) => (
+                  <Badge key={id} asChild variant="secondary" className="hover:border-gray-8 hover:bg-gray-7">
+                    <Link from={Route.fullPath} to="/movies" search={{ genres: [id] }}>
+                      {name}
+                    </Link>
                   </Badge>
                 ))}
               </div>
@@ -163,12 +165,11 @@ function Movie() {
                   .slice(0, showAllKeywords ? movie.keywords.keywords.length : 10)
                   .map(({ id, name }) => (
                     <li key={id}>
-                      <Badge asChild variant="secondary">
+                      <Badge asChild variant="secondary" className="hover:border-gray-8 hover:bg-gray-7">
                         <Link
                           from={Route.fullPath}
                           to="/movies"
                           search={{ keywords: [{ value: id.toString(), label: name }] }}
-                          className="hover:border-gray-8 hover:bg-gray-7"
                         >
                           <TagIcon className="mr-1 size-3 text-gray-11" />
                           {name}
