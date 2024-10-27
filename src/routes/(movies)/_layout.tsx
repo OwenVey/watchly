@@ -1,4 +1,5 @@
 import MultipleSelector from '@/components/multi-select';
+import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
 import { Card } from '@/components/ui/card';
@@ -17,7 +18,7 @@ import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } fr
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon, MoveDownIcon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 
 export const Route = createFileRoute('/(movies)/_layout')({
@@ -91,7 +92,7 @@ function Filters() {
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
   const [runtime, setRuntime] = React.useState([runtimeMin, runtimeMax]);
-  const [showMore, toggleShowMore] = useToggle(false);
+  const [showAllServices, toggleShowAllServices] = useToggle(false);
 
   useEffect(() => {
     setRating([ratingMin, ratingMax]);
@@ -107,7 +108,7 @@ function Filters() {
 
   return (
     <>
-      <div className="border-b border-gray-6 py-2 px-4">
+      <div className="border-b border-gray-6 px-4 py-2">
         <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
         <div className="text-sm text-gray-11">0 Active</div>
       </div>
@@ -350,7 +351,7 @@ function Filters() {
               {({ results: providers }) =>
                 providers
                   .sort((a, b) => a.display_priority - b.display_priority)
-                  .slice(0, showMore ? providers.length : 10)
+                  .slice(0, showAllServices ? providers.length : 10)
                   .map((provider) => (
                     <Tooltip key={provider.provider_id}>
                       <TooltipTrigger asChild>
@@ -380,11 +381,7 @@ function Filters() {
               }
             </Await>
           </div>
-          <Button onClick={() => toggleShowMore()} className="text-gray-10 hover:text-gray-11" variant="ghost">
-            <MoveDownIcon className={cn(showMore && 'rotate-180')} />
-            Show {showMore ? 'Less' : 'More'}
-            <MoveDownIcon className={cn(showMore && 'rotate-180')} />
-          </Button>
+          <ShowMoreButton className="mt-1 mx-auto" onClick={() => toggleShowAllServices()} showAll={showAllServices} />
         </div>
 
         {/* Adult Content */}

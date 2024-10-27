@@ -1,6 +1,7 @@
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
+import { ShowMoreButton } from '@/components/show-more-button';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
@@ -23,6 +24,7 @@ import {
   PopcornIcon,
   TagIcon,
   TicketIcon,
+  TicketSlashIcon,
   TvIcon,
   UserRoundIcon,
   type LucideIcon,
@@ -60,34 +62,47 @@ function Movie() {
 
   const RELEASE_TYPE_ICON_MAP = {
     1: PopcornIcon,
-    2: TicketIcon,
+    2: TicketSlashIcon,
     3: TicketIcon,
     4: CloudIcon,
     5: Disc3Icon,
     6: TvIcon,
   } satisfies Record<ReleaseType, LucideIcon>;
 
+  const [showAllReleaseDates, toggleShowAllReleaseDates] = useToggle(false); // Add toggle state for release dates
+
   const movieDetails = [
     { label: 'Status', value: movie.status },
     {
       label: 'Release Dates',
       value: (
-        <div className="grid grid-cols-[auto_1fr] items-center justify-items-end gap-x-2">
-          {usReleaseDates.map(({ type, release_date }) => {
-            const IconComponent = RELEASE_TYPE_ICON_MAP[type];
-            return (
-              <React.Fragment key={type}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <IconComponent className="size-4" />
-                  </TooltipTrigger>
-                  <TooltipContent side="left">{RELEASE_TYPE_MAP[type]}</TooltipContent>
-                </Tooltip>
-                {format(release_date, 'MMM d, yyyy')}
-              </React.Fragment>
-            );
-          })}
-        </div>
+        <>
+          <div className="grid grid-cols-[auto_1fr] items-center justify-items-end gap-x-2">
+            {usReleaseDates
+              .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
+              .map(({ type, release_date }) => {
+                const IconComponent = RELEASE_TYPE_ICON_MAP[type];
+                return (
+                  <React.Fragment key={type}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <IconComponent className="size-4" />
+                      </TooltipTrigger>
+                      <TooltipContent side="left">{RELEASE_TYPE_MAP[type]}</TooltipContent>
+                    </Tooltip>
+                    {format(release_date, 'MMM d, yyyy')}
+                  </React.Fragment>
+                );
+              })}
+          </div>
+          {usReleaseDates.length > 3 && ( // Show button only if there are more than 5 release dates
+            <ShowMoreButton
+              className="mt-1"
+              onClick={() => toggleShowAllReleaseDates()}
+              showAll={showAllReleaseDates}
+            />
+          )}
+        </>
       ),
     },
     { label: 'Revenue', value: formatCurrency(movie.revenue) },
@@ -174,7 +189,7 @@ function Movie() {
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
               <div className="flex items-center gap-1">
                 <ClockIcon className="size-4 text-gray-9" />
-                <span className="whitespace-nowrap text-sm font-medium">{formatMinutesToHHMM(movie.runtime)}</span>
+                <span className="text-sm font-medium whitespace-nowrap">{formatMinutesToHHMM(movie.runtime)}</span>
               </div>
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
@@ -187,7 +202,7 @@ function Movie() {
               </div>
             </div>
             {movie.tagline && (
-              <p className="mt-4 text-center italic text-gray-11 md:text-left">&quot;{movie.tagline}&quot;</p>
+              <p className="mt-4 text-center text-gray-11 italic md:text-left">&quot;{movie.tagline}&quot;</p>
             )}
             <p className="mt-4 text-balance text-gray-11 md:text-left">{movie.overview}</p>
 
@@ -211,12 +226,7 @@ function Movie() {
                   ))}
               </ul>
               {movie.keywords.keywords.length > 10 && (
-                <button
-                  onClick={() => toggleShowAllKeywords()}
-                  className="mt-1 text-sm text-gray-11 hover:text-gray-12"
-                >
-                  {showAllKeywords ? 'Show Less' : 'Show More'}
-                </button>
+                <ShowMoreButton className="mt-1" onClick={() => toggleShowAllKeywords()} showAll={showAllKeywords} />
               )}
             </div>
           </div>
@@ -224,7 +234,7 @@ function Movie() {
 
         <div className="flex min-w-72 flex-col gap-2 md:max-w-80">
           {movie.belongs_to_collection && (
-            <Card className="relative flex items-center justify-between overflow-hidden py-3 px-4">
+            <Card className="relative flex items-center justify-between overflow-hidden px-4 py-3">
               {movie.belongs_to_collection.backdrop_path && (
                 <img
                   className="absolute right-0 left-0 -z-10 w-full object-cover opacity-15 blur-xs"
@@ -236,7 +246,7 @@ function Movie() {
                   alt={`backdrop image for ${movie.title}`}
                 />
               )}
-              <div className="text-pretty font-medium text-gray-12">{movie.belongs_to_collection.name}</div>
+              <div className="font-medium text-pretty text-gray-12">{movie.belongs_to_collection.name}</div>
               <Link to="/" className={cn('', buttonVariants({ variant: 'outline', size: 'sm' }))}>
                 View
               </Link>
@@ -256,8 +266,8 @@ function Movie() {
             </div>
             <dl className="divide-y divide-gray-5 text-sm">
               {movieDetails.map(({ label, value }) => (
-                <div key={label} className="flex items-baseline justify-between gap-4 py-3 px-4">
-                  <dt className="whitespace-nowrap font-medium text-gray-12">{label}</dt>
+                <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">
+                  <dt className="font-medium whitespace-nowrap text-gray-12">{label}</dt>
                   <dd className="text-end text-gray-11">{value}</dd>
                 </div>
               ))}
@@ -328,7 +338,7 @@ function CardCarousel({ title, children, link }: { title: string; children: Reac
     >
       <div className="flex items-end justify-between">
         <Link className="group flex items-center gap-1.5" from={Route.fullPath} to={link}>
-          <h2 className="text-2xl font-semibold leading-5 text-gray-12">{title}</h2>
+          <h2 className="text-2xl leading-5 font-semibold text-gray-12">{title}</h2>
           <CircleArrowRightIcon className="size-6 text-gray-9 transition-colors group-hover:text-gray-12" />
         </Link>
         <div className="flex gap-2">
@@ -344,10 +354,7 @@ function CardCarousel({ title, children, link }: { title: string; children: Reac
 function PersonCard({ profilePath, name, role }: { profilePath: string | null; name: string; role: string }) {
   return (
     <Card asChild hover>
-      <Link
-        to="/"
-        className="flex aspect-2/3 flex-col items-center justify-center py-4 px-2 transition-all hover:scale-105"
-      >
+      <Link to="/" className="flex aspect-2/3 flex-col items-center px-2 pt-10 transition-all hover:scale-105">
         {profilePath ? (
           <img
             className="size-24 rounded-full border border-gray-5 object-cover"
