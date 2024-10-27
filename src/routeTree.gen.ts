@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TvImport } from './routes/tv'
+import { Route as TestImport } from './routes/test'
 import { Route as IndexImport } from './routes/index'
 import { Route as moviesLayoutImport } from './routes/(movies)/_layout'
 import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
@@ -34,6 +35,12 @@ const moviesRoute = moviesImport.update({
 const TvRoute = TvImport.update({
   id: '/tv',
   path: '/tv',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TestRoute = TestImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,6 +82,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestImport
       parentRoute: typeof rootRoute
     }
     '/tv': {
@@ -153,6 +167,7 @@ const moviesRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/': typeof moviesLayoutRouteWithChildren
+  '/test': typeof TestRoute
   '/tv': typeof TvRoute
   '/movies': typeof moviesLayoutMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
@@ -161,6 +176,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof moviesLayoutRouteWithChildren
+  '/test': typeof TestRoute
   '/tv': typeof TvRoute
   '/movies': typeof moviesLayoutMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
@@ -170,6 +186,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/test': typeof TestRoute
   '/tv': typeof TvRoute
   '/(movies)': typeof moviesRouteWithChildren
   '/(movies)/_layout': typeof moviesLayoutRouteWithChildren
@@ -182,15 +199,23 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/test'
     | '/tv'
     | '/movies'
     | '/movies/$movieId'
     | '/movies/$movieId/cast'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tv' | '/movies' | '/movies/$movieId' | '/movies/$movieId/cast'
+  to:
+    | '/'
+    | '/test'
+    | '/tv'
+    | '/movies'
+    | '/movies/$movieId'
+    | '/movies/$movieId/cast'
   id:
     | '__root__'
     | '/'
+    | '/test'
     | '/tv'
     | '/(movies)'
     | '/(movies)/_layout'
@@ -202,12 +227,14 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TestRoute: typeof TestRoute
   TvRoute: typeof TvRoute
   moviesRoute: typeof moviesRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TestRoute: TestRoute,
   TvRoute: TvRoute,
   moviesRoute: moviesRouteWithChildren,
 }
@@ -225,12 +252,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/test",
         "/tv",
         "/(movies)"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/test": {
+      "filePath": "test.tsx"
     },
     "/tv": {
       "filePath": "tv.tsx"
