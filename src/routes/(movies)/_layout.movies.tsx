@@ -215,14 +215,18 @@ function MovieCards() {
       {movies.pages.map(({ page, results }) => (
         <React.Fragment key={page}>
           {results.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <li key={movie.id}>
+              <MovieCard movie={movie} />
+            </li>
           ))}
         </React.Fragment>
       ))}
 
       {isFetchingNextPage &&
         Array.from({ length: 60 }).map((_, index) => (
-          <Skeleton className="aspect-[2/3] w-full border border-gray-5" key={`placeholder-${index}`} />
+          <li key={`placeholder-${index}`}>
+            <Skeleton className="aspect-[2/3] w-full border border-gray-5" />
+          </li>
         ))}
 
       <div ref={loadMoreRef} className="h-1" />
