@@ -212,9 +212,9 @@ function MovieCards() {
 
   return (
     <>
-      {movies.pages.map((page) => (
-        <React.Fragment key={page.page}>
-          {page.results.map((movie) => (
+      {movies.pages.map(({ page, results }) => (
+        <React.Fragment key={page}>
+          {results.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </React.Fragment>

@@ -40,8 +40,10 @@ function Layout() {
   return (
     <>
       <FilterSidebar />
-      <main className="grid flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
-        <Outlet />
+      <main className="flex-1">
+        <ul className="grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
+          <Outlet />
+        </ul>
       </main>
     </>
   );
