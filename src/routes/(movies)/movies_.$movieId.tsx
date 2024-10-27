@@ -81,7 +81,19 @@ function Movie() {
     },
     { label: 'Revenue', value: formatCurrency(movie.revenue) },
     { label: 'Budget', value: formatCurrency(movie.budget) },
-    { label: 'Original Language', value: LANGUAGES_MAP[movie.original_language] },
+    {
+      label: 'Original Language',
+      value: (
+        <Link
+          from={Route.fullPath}
+          to="/movies"
+          search={{ originalLanguage: movie.original_language }}
+          className="underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+        >
+          {LANGUAGES_MAP[movie.original_language]}
+        </Link>
+      ),
+    },
     { label: 'Production Country', value: movie.production_countries.at(0)?.name },
     {
       label: movie.production_companies.length > 1 ? 'Studios' : 'Studio',
