@@ -245,8 +245,8 @@ function Movie() {
             </div>
             <dl className="divide-y divide-gray-5 text-sm">
               {movieDetails.map(({ label, value }) => (
-                <div key={label} className="flex items-baseline justify-between gap-8 py-3 px-4">
-                  <dt className="font-medium text-gray-12">{label}</dt>
+                <div key={label} className="flex items-baseline justify-between gap-4 py-3 px-4">
+                  <dt className="whitespace-nowrap font-medium text-gray-12">{label}</dt>
                   <dd className="text-end text-gray-11">{value}</dd>
                 </div>
               ))}
