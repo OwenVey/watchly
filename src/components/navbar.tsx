@@ -2,7 +2,7 @@ import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DEFAULT_MOVIE_SEARCH as defaultMovieSearch } from '@/routes/(movies)/_layout.movies.js';
+import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_layout/movies';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link } from '@tanstack/react-router';
 import { FilmIcon, MenuIcon, TvIcon, XIcon } from 'lucide-react';
@@ -23,7 +23,7 @@ export function Navbar() {
               <div className="hidden items-center gap-4 text-sm md:flex">
                 <Link
                   to="/movies"
-                  search={defaultMovieSearch}
+                  search={DEFAULT_MOVIE_SEARCH}
                   className="flex items-center gap-2 rounded-md py-2 px-4 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
                 >
                   <FilmIcon className="size-5" />
@@ -58,7 +58,7 @@ export function Navbar() {
                   className="bg flex items-center gap-3 rounded-lg py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
                   activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
                   to="/movies"
-                  search={defaultMovieSearch}
+                  search={DEFAULT_MOVIE_SEARCH}
                 >
                   <FilmIcon className="size-6" />
                   Movies

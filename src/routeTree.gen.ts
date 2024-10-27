@@ -16,8 +16,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as TvImport } from './routes/tv'
 import { Route as IndexImport } from './routes/index'
 import { Route as moviesLayoutImport } from './routes/(movies)/_layout'
-import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_.$movieId'
-import { Route as moviesLayoutMoviesImport } from './routes/(movies)/_layout.movies'
+import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
+import { Route as moviesLayoutMoviesImport } from './routes/(movies)/_layout/movies'
+import { Route as moviesMoviesMovieIdCastImport } from './routes/(movies)/movies_/$movieId_/cast'
 
 // Create Virtual Routes
 
@@ -57,6 +58,12 @@ const moviesLayoutMoviesRoute = moviesLayoutMoviesImport.update({
   id: '/movies',
   path: '/movies',
   getParentRoute: () => moviesLayoutRoute,
+} as any)
+
+const moviesMoviesMovieIdCastRoute = moviesMoviesMovieIdCastImport.update({
+  id: '/movies_/$movieId_/cast',
+  path: '/movies/$movieId/cast',
+  getParentRoute: () => moviesRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -105,6 +112,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof moviesMoviesMovieIdImport
       parentRoute: typeof moviesImport
     }
+    '/(movies)/movies_/$movieId_/cast': {
+      id: '/(movies)/movies_/$movieId_/cast'
+      path: '/movies/$movieId/cast'
+      fullPath: '/movies/$movieId/cast'
+      preLoaderRoute: typeof moviesMoviesMovieIdCastImport
+      parentRoute: typeof moviesImport
+    }
   }
 }
 
@@ -125,11 +139,13 @@ const moviesLayoutRouteWithChildren = moviesLayoutRoute._addFileChildren(
 interface moviesRouteChildren {
   moviesLayoutRoute: typeof moviesLayoutRouteWithChildren
   moviesMoviesMovieIdRoute: typeof moviesMoviesMovieIdRoute
+  moviesMoviesMovieIdCastRoute: typeof moviesMoviesMovieIdCastRoute
 }
 
 const moviesRouteChildren: moviesRouteChildren = {
   moviesLayoutRoute: moviesLayoutRouteWithChildren,
   moviesMoviesMovieIdRoute: moviesMoviesMovieIdRoute,
+  moviesMoviesMovieIdCastRoute: moviesMoviesMovieIdCastRoute,
 }
 
 const moviesRouteWithChildren =
@@ -140,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/tv': typeof TvRoute
   '/movies': typeof moviesLayoutMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
 }
 
 export interface FileRoutesByTo {
@@ -147,6 +164,7 @@ export interface FileRoutesByTo {
   '/tv': typeof TvRoute
   '/movies': typeof moviesLayoutMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
 }
 
 export interface FileRoutesById {
@@ -157,13 +175,19 @@ export interface FileRoutesById {
   '/(movies)/_layout': typeof moviesLayoutRouteWithChildren
   '/(movies)/_layout/movies': typeof moviesLayoutMoviesRoute
   '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
+  '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/tv' | '/movies' | '/movies/$movieId'
+  fullPaths:
+    | '/'
+    | '/tv'
+    | '/movies'
+    | '/movies/$movieId'
+    | '/movies/$movieId/cast'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/tv' | '/movies' | '/movies/$movieId'
+  to: '/' | '/tv' | '/movies' | '/movies/$movieId' | '/movies/$movieId/cast'
   id:
     | '__root__'
     | '/'
@@ -172,6 +196,7 @@ export interface FileRouteTypes {
     | '/(movies)/_layout'
     | '/(movies)/_layout/movies'
     | '/(movies)/movies_/$movieId'
+    | '/(movies)/movies_/$movieId_/cast'
   fileRoutesById: FileRoutesById
 }
 
@@ -214,7 +239,8 @@ export const routeTree = rootRoute
       "filePath": "(movies)",
       "children": [
         "/(movies)/_layout",
-        "/(movies)/movies_/$movieId"
+        "/(movies)/movies_/$movieId",
+        "/(movies)/movies_/$movieId_/cast"
       ]
     },
     "/(movies)/_layout": {
@@ -225,11 +251,15 @@ export const routeTree = rootRoute
       ]
     },
     "/(movies)/_layout/movies": {
-      "filePath": "(movies)/_layout.movies.tsx",
+      "filePath": "(movies)/_layout/movies.tsx",
       "parent": "/(movies)/_layout"
     },
     "/(movies)/movies_/$movieId": {
-      "filePath": "(movies)/movies_.$movieId.tsx",
+      "filePath": "(movies)/movies_/$movieId.tsx",
+      "parent": "/(movies)"
+    },
+    "/(movies)/movies_/$movieId_/cast": {
+      "filePath": "(movies)/movies_/$movieId_/cast.tsx",
       "parent": "/(movies)"
     }
   }

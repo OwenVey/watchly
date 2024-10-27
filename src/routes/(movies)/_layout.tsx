@@ -12,12 +12,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { tmdbApi } from '@/lib/api.js';
 import { LANGUAGES_MAP, MOVIE_GENRES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_layout/movies';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterXIcon, MoveDownIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
-import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from './_layout.movies.js';
 
 async function getProviders() {
   // await new Promise((resolve) => setTimeout(resolve, 3000));

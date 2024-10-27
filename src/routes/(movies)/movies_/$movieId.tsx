@@ -11,6 +11,7 @@ import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import type { ReleaseType } from '@/types';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
@@ -28,22 +29,32 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
+export const movieIdQueryOptions = (movieId: string) =>
+  queryOptions({
+    queryKey: ['movie', movieId],
+    queryFn: async () =>
+      tmdbApi('/movie/:movieId', {
+        params: { movieId },
+        query: {
+          append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates', 'keywords'],
+        },
+      }),
+  });
+
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
-  loader: async ({ params }) => {
-    const movie = await tmdbApi('/movie/:movieId', {
-      params,
-      query: { append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates', 'keywords'] },
-    });
-
+  loader: async ({ context, params }) => {
+    const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     const omdb = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
-
-    return { movie, omdb };
+    return { omdb };
   },
   component: Movie,
 });
 
 function Movie() {
-  const { movie, omdb } = Route.useLoaderData();
+  const { movieId } = Route.useParams();
+  const { omdb } = Route.useLoaderData();
+
+  const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
 

@@ -1,6 +1,6 @@
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
-import { Route as MovieIdRoute } from '@/routes/(movies)/movies_.$movieId.js';
+import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
 import type { Movie } from '@/types';
 import { Link } from '@tanstack/react-router';
 
