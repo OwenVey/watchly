@@ -381,7 +381,7 @@ function Filters() {
               }
             </Await>
           </div>
-          <ShowMoreButton className="mt-1 mx-auto" onClick={() => toggleShowAllServices()} showAll={showAllServices} />
+          <ShowMoreButton className="mt-1 w-full" onClick={() => toggleShowAllServices()} showAll={showAllServices} />
         </div>
 
         {/* Adult Content */}

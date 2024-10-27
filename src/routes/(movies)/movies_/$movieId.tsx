@@ -97,7 +97,7 @@ function Movie() {
           </div>
           {usReleaseDates.length > 3 && ( // Show button only if there are more than 5 release dates
             <ShowMoreButton
-              className="mt-1"
+              className="mt-1 ml-auto"
               onClick={() => toggleShowAllReleaseDates()}
               showAll={showAllReleaseDates}
             />

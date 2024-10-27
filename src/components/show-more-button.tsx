@@ -10,17 +10,17 @@ export function ShowMoreButton({ showAll, className, ...buttonProps }: ShowMoreB
   return (
     <button
       className={cn(
-        'group flex items-center gap-1 text-sm text-gray-11 transition-colors hover:text-gray-12',
+        'group flex items-center justify-center gap-1 rounded border border-gray-6 bg-gray-4 px-3 py-1 text-xs font-medium text-gray-11 transition-colors hover:border-gray-7 hover:bg-gray-5 hover:text-gray-12 active:bg-gray-6',
         className,
       )}
       {...buttonProps}
     >
       <ChevronsDownIcon
-        className={cn('size-4 text-gray-9 transition-colors group-hover:text-gray-11', showAll && 'rotate-180')}
+        className={cn('size-4 text-gray-10 transition-colors group-hover:text-gray-11', showAll && 'rotate-180')}
       />
       {showAll ? 'Show Less' : 'Show More'}
       <ChevronsDownIcon
-        className={cn('size-4 text-gray-9 transition-colors group-hover:text-gray-11', showAll && 'rotate-180')}
+        className={cn('size-4 text-gray-10 transition-colors group-hover:text-gray-11', showAll && 'rotate-180')}
       />
     </button>
   );
