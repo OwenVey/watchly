@@ -13,7 +13,7 @@ function AboutComponent() {
       <div className="flex gap-4">
         <Button variant="default">Default</Button>
         <Button variant="outline">Outline</Button>
-        <Button variant="secondary">Secondary</Button>
+        <Button variant="glass">Glass</Button>
         <Button variant="ghost">Ghost</Button>
         <Button variant="link">Link</Button>
       </div>
@@ -26,9 +26,9 @@ function AboutComponent() {
           <SearchIcon className="mr-2 size-4" />
           Outline
         </Button>
-        <Button variant="secondary">
+        <Button variant="glass">
           <SearchIcon className="mr-2 size-4" />
-          Secondary
+          Glass
         </Button>
         <Button variant="ghost">
           <SearchIcon className="mr-2 size-4" />
@@ -48,9 +48,9 @@ function AboutComponent() {
           <SearchIcon className="mr-2 size-4" />
           Outline
         </Button>
-        <Button variant="secondary" loading>
+        <Button variant="glass" loading>
           <SearchIcon className="mr-2 size-4" />
-          Secondary
+          Glass
         </Button>
         <Button variant="ghost" loading>
           <SearchIcon className="mr-2 size-4" />

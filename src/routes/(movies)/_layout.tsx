@@ -1,11 +1,11 @@
 import MultipleSelector from '@/components/multi-select';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
-import { Card } from '@/components/ui/card.js';
+import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton.js';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
@@ -34,29 +34,23 @@ export const Route = createFileRoute('/(movies)/_layout')({
 function Layout() {
   return (
     <>
-      <Card asChild>
-        <aside className="sticky top-[94px] left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex">
-          <div className="border-b border-gray-6 py-2 px-4">
-            <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
-            <div className="text-sm text-gray-11">0 Active</div>
-          </div>
+      <Card
+        asChild
+        className="sticky top-[94px] left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
+      >
+        <aside>
           <Filters />
         </aside>
       </Card>
       <main className="flex flex-1 flex-col">
         <Sheet>
           <SheetTrigger asChild>
-            <Button className="mx-4 mt-4 md:hidden" variant="secondary">
+            <Button className="mx-4 mt-4 md:hidden" variant="glass">
               <FilterIcon />
               Filters
             </Button>
           </SheetTrigger>
-          <SheetContent className="border-gray-11/15 bg-gray-3/60 backdrop-blur-xl">
-            <SheetHeader className="border-b border-gray-6 py-2 px-4">
-              <SheetTitle>Filters</SheetTitle>
-              <SheetDescription>0 Active</SheetDescription>
-            </SheetHeader>
-
+          <SheetContent>
             <Filters />
           </SheetContent>
         </Sheet>
@@ -113,6 +107,11 @@ function Filters() {
 
   return (
     <>
+      <div className="border-b border-gray-6 py-2 px-4">
+        <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
+        <div className="text-sm text-gray-11">0 Active</div>
+      </div>
+
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
         {/* Release Date */}
         <div className="flex flex-col gap-1.5">
@@ -400,7 +399,7 @@ function Filters() {
         <Link
           to="/movies"
           search={DEFAULT_MOVIE_SEARCH}
-          className={cn('w-full', buttonVariants({ variant: 'secondary' }))}
+          className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />
           Clear Filters

@@ -1,3 +1,4 @@
+import { cardVariants } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import { type VariantProps, cva } from 'class-variance-authority';
@@ -12,8 +13,7 @@ const buttonVariants = cva(
         default: 'bg-primary-9 text-white shadow hover:bg-primary-10 active:bg-primary-11',
         outline:
           'border border-gray-7 bg-gray-1 text-gray-12 shadow-sm hover:border-gray-8 hover:bg-gray-3 active:bg-gray-4',
-        secondary:
-          'border border-gray-6 bg-gray-3 text-gray-12 shadow-sm hover:border-gray-7 hover:bg-gray-4 active:bg-gray-5',
+        glass: cn(cardVariants({ hover: true, rounded: false }), 'active:bg-gray-4'),
         ghost: 'text-gray-12 hover:bg-gray-4 active:bg-gray-5',
         link: 'text-gray-12 underline-offset-4 hover:underline',
       },

@@ -2,6 +2,7 @@ import * as SheetPrimitive from '@radix-ui/react-dialog';
 import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 
+import { cardVariants } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { XIcon } from 'lucide-react';
 
@@ -29,7 +30,10 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-  'fixed z-50 flex flex-col rounded-xl border border-gray-6 bg-gray-1 shadow-lg transition ease-in-out data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=closed]:animate-out',
+  [
+    cardVariants(),
+    'fixed z-50 flex flex-col shadow-lg transition ease-in-out data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=closed]:animate-out',
+  ],
   {
     variants: {
       side: {
@@ -55,7 +59,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
-        <SheetPrimitive.Close className="absolute top-4 right-4 -m-1 rounded-sm p-1 text-gray-11 transition-colors hover:text-gray-12 focus:ring-2 focus:ring-gray-12 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-gray-1">
+        <SheetPrimitive.Close className="absolute top-4 right-4 z-10 rounded-sm text-gray-11 transition-colors hover:text-gray-12 focus:ring-2 focus:ring-gray-12 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-gray-1">
           <XIcon className="size-6" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
