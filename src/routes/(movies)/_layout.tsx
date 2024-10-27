@@ -40,7 +40,7 @@ function Layout() {
   return (
     <>
       <FilterSidebar />
-      <main className="grid flex-1 grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
+      <main className="grid flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
         <Outlet />
       </main>
     </>
@@ -64,6 +64,7 @@ function FilterSidebar() {
     genres,
     releaseTypes,
     keywords,
+    studios,
     originalLanguage,
     watchProviders,
     adult,
@@ -271,11 +272,27 @@ function FilterSidebar() {
             <MultipleSelector
               onSearch={async (query) => {
                 const { results } = await tmdbApi('/search/keyword', { query: { query } });
-                return results.map((kw) => ({ value: kw.id.toString(), label: kw.name }));
+                return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
               }}
               value={keywords}
               onChange={(keywords) => navigate({ search: { keywords } })}
               placeholder="Search keywords"
+              initialMessage="Start typing to search"
+              hidePlaceholderWhenSelected
+            />
+          </div>
+
+          {/* Studio */}
+          <div className="flex flex-col gap-1.5">
+            <Label>Studio</Label>
+            <MultipleSelector
+              onSearch={async (query) => {
+                const { results } = await tmdbApi('/search/company', { query: { query } });
+                return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
+              }}
+              value={studios}
+              onChange={(studios) => navigate({ search: { studios } })}
+              placeholder="Search studios"
               initialMessage="Start typing to search"
               hidePlaceholderWhenSelected
             />

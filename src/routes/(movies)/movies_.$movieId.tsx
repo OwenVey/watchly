@@ -87,8 +87,17 @@ function Movie() {
       label: movie.production_companies.length > 1 ? 'Studios' : 'Studio',
       value: (
         <ul>
-          {movie.production_companies.map((studio) => (
-            <li key={studio.id}>{studio.name}</li>
+          {movie.production_companies.map(({ id, name }) => (
+            <li key={id}>
+              <Link
+                from={Route.fullPath}
+                to="/movies"
+                search={{ studios: [{ value: id.toString(), label: name }] }}
+                className="underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+              >
+                {name}
+              </Link>
+            </li>
           ))}
         </ul>
       ),

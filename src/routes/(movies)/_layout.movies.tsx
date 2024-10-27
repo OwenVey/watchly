@@ -28,6 +28,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   genres: [] as number[],
   releaseTypes: [] as ReleaseType[],
   keywords: [] as Option[],
+  studios: [] as Option[],
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
@@ -80,6 +81,9 @@ const MovieSearchSchema = z.object({
     z.array(z.object({ value: z.string(), label: z.string() })),
     DEFAULT_MOVIE_SEARCH.keywords,
   ).default(DEFAULT_MOVIE_SEARCH.keywords),
+  studios: fallback(z.array(z.object({ value: z.string(), label: z.string() })), DEFAULT_MOVIE_SEARCH.studios).default(
+    DEFAULT_MOVIE_SEARCH.studios,
+  ),
   originalLanguage: z.string().optional(),
   watchProviders: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.watchProviders).default(
     DEFAULT_MOVIE_SEARCH.watchProviders,
@@ -134,7 +138,10 @@ const movieQueryOptions = (params: MovieSearchParams) =>
                 with_release_type: params.releaseTypes.join('|'),
               }),
               ...(params.keywords.length > 0 && {
-                with_keywords: params.keywords.map((k) => k.value).join(','),
+                with_keywords: params.keywords.map(({ value }) => value).join(','),
+              }),
+              ...(params.studios.length > 0 && {
+                with_companies: params.studios.map(({ value }) => value).join(','),
               }),
               ...(params.originalLanguage && {
                 with_original_language: params.originalLanguage,

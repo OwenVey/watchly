@@ -3,6 +3,8 @@ import {
   DiscoverMoviesQuerySchema,
   MovieDetailsOutputSchema,
   MovieProvidersOutputSchema,
+  SearchCompanyOutputSchema,
+  SearchKeywordOutputSchema,
 } from '@/schemas';
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
@@ -56,17 +58,14 @@ export const tmdbApi = createFetch({
           query: z.string(),
           page: z.number().default(1),
         }),
-        output: z.object({
-          page: z.number(),
-          results: z.array(
-            z.object({
-              id: z.number(),
-              name: z.string(),
-            }),
-          ),
-          total_pages: z.number(),
-          total_results: z.number(),
+        output: SearchKeywordOutputSchema,
+      },
+      '/search/company': {
+        query: z.object({
+          query: z.string(),
+          page: z.number().default(1),
         }),
+        output: SearchCompanyOutputSchema,
       },
     },
     { strict: true },

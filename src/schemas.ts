@@ -156,6 +156,22 @@ export const ReviewsOutputSchema = paginated(
   }),
 );
 
+export const SearchKeywordOutputSchema = paginated(
+  z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+);
+
+export const SearchCompanyOutputSchema = paginated(
+  z.object({
+    id: z.number(),
+    logo_path: z.string().nullable(),
+    name: z.string(),
+    origin_country: z.string(),
+  }),
+);
+
 export const ReleaseTypeSchema = z.union([
   z.literal(1),
   z.literal(2),
