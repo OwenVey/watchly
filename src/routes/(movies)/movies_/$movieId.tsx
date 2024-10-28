@@ -169,7 +169,7 @@ function Movie() {
       )}
 
       <div className="flex flex-col justify-between gap-4 md:flex-row">
-        <div className="mt-4 flex flex-col items-center gap-4 md:flex-row md:items-start">
+        <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
           {movie.poster_path ? (
             <img
               className="h-fit w-48 rounded-xl shadow-lg"
