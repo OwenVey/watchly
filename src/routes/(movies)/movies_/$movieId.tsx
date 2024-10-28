@@ -18,10 +18,10 @@ import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
 import {
   CircleArrowRightIcon,
+  ClapperboardIcon,
   ClockIcon,
   CloudIcon,
   Disc3Icon,
-  PopcornIcon,
   TagIcon,
   TicketIcon,
   TicketSlashIcon,
@@ -61,7 +61,7 @@ function Movie() {
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
 
   const RELEASE_TYPE_ICON_MAP = {
-    1: PopcornIcon,
+    1: ClapperboardIcon,
     2: TicketSlashIcon,
     3: TicketIcon,
     4: CloudIcon,
