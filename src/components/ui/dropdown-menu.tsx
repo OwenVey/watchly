@@ -25,7 +25,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'flex cursor-pointer items-center rounded py-1.5 px-2 text-sm outline-none select-none focus:bg-gray-3 data-[state=open]:bg-gray-3',
+      'flex cursor-pointer items-center rounded px-2 py-1.5 text-sm outline-none select-none focus:bg-gray-3 data-[state=open]:bg-gray-3',
       inset && 'pl-8',
       className,
     )}
@@ -80,7 +80,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-pointer items-center gap-2 rounded py-1.5 px-2 text-sm outline-none transition-colors select-none focus:bg-gray-3 focus:text-gray-12 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+      'relative flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm outline-none transition-colors select-none focus:bg-gray-3 focus:text-gray-12 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
       inset && 'pl-8',
       className,
     )}
@@ -142,7 +142,7 @@ const DropdownMenuLabel = React.forwardRef<
 >(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn('py-1.5 px-2 text-sm font-semibold', inset && 'pl-8', className)}
+    className={cn('px-2 py-1.5 text-sm font-semibold', inset && 'pl-8', className)}
     {...props}
   />
 ));

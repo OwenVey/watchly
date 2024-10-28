@@ -36,8 +36,8 @@ export function MovieCard({ movie, className }: { movie: Movie; className?: stri
           </div>
         ) : null}
         {movie.release_date && <div className="text-sm font-medium text-white">{movie.release_date.getFullYear()}</div>}
-        <div className="text-balance text-lg font-bold leading-6 text-white">{movie.title}</div>
-        <div className="line-clamp-3 text-balance text-sm text-white/70">{movie.overview}</div>
+        <div className="text-lg leading-6 font-bold text-balance text-white">{movie.title}</div>
+        <div className="line-clamp-3 text-sm text-balance text-white/70">{movie.overview}</div>
       </div>
     </Link>
   );

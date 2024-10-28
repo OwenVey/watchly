@@ -418,7 +418,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
             'flex min-h-9 items-center rounded-md border border-gray-7 bg-gray-1 text-sm ring-offset-gray-1 hover:border-gray-8',
             // 'focus-within:ring-2 focus-within:ring-gray-12 focus-within:ring-offset-2',
             {
-              'py-1.5 px-3': selected.length !== 0 || true,
+              'px-3 py-1.5': selected.length !== 0 || true,
               'cursor-text': !disabled && selected.length !== 0,
             },
             className,
