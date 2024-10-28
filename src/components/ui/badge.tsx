@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-md border border-gray-6 px-2 py-0.5 text-xs font-medium transition-colors focus:ring-2 focus:ring-gray-1 focus:ring-offset-2 focus:outline-none',
+  'inline-flex items-center rounded-md border border-gray-6 px-2 py-0.5 text-xs font-medium transition-colors focus:ring-2 focus:ring-gray-12 focus:outline-none',
   {
     variants: {
       variant: {
@@ -13,7 +13,17 @@ const badgeVariants = cva(
         secondary: 'border-gray-6 bg-gray-5 text-gray-12',
         outline: 'text-gray-12',
       },
+      hover: {
+        true: '',
+      },
     },
+    compoundVariants: [
+      {
+        variant: 'secondary',
+        hover: true,
+        class: 'hover:border-gray-8 hover:bg-gray-7',
+      },
+    ],
     defaultVariants: {
       variant: 'default',
     },
@@ -24,9 +34,9 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, Varian
   asChild?: boolean;
 }
 
-function Badge({ className, asChild = false, variant, ...props }: BadgeProps) {
+function Badge({ className, asChild = false, variant, hover = false, ...props }: BadgeProps) {
   const Comp = asChild ? Slot : 'div';
-  return <Comp className={cn(badgeVariants({ variant }), className)} {...props} />;
+  return <Comp className={cn(badgeVariants({ variant, hover }), className)} {...props} />;
 }
 
 export { Badge, badgeVariants };

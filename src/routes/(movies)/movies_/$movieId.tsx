@@ -189,7 +189,7 @@ function Movie() {
               </div>
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
-                  <Badge key={id} asChild variant="secondary" className="hover:border-gray-8 hover:bg-gray-7">
+                  <Badge key={id} asChild variant="secondary" hover>
                     <Link from={Route.fullPath} to="/movies" search={{ genres: [id] }}>
                       {name}
                     </Link>
@@ -208,7 +208,7 @@ function Movie() {
                   .slice(0, showAllKeywords ? movie.keywords.keywords.length : 10)
                   .map(({ id, name }) => (
                     <li key={id}>
-                      <Badge asChild variant="secondary" className="hover:border-gray-8 hover:bg-gray-7">
+                      <Badge asChild variant="secondary" hover>
                         <Link
                           from={Route.fullPath}
                           to="/movies"
@@ -233,7 +233,7 @@ function Movie() {
             <Card className="relative flex items-center justify-between overflow-hidden px-4 py-3">
               {movie.belongs_to_collection.backdrop_path && (
                 <img
-                  className="absolute right-0 left-0 -z-10 w-full object-cover opacity-15 blur-xs"
+                  className="absolute right-0 left-0 -z-10 w-full object-cover opacity-20"
                   src={getTmdbImage(
                     'backdrop',
                     movie.belongs_to_collection.backdrop_path,
@@ -243,7 +243,7 @@ function Movie() {
                 />
               )}
               <div className="font-medium text-pretty text-gray-12">{movie.belongs_to_collection.name}</div>
-              <Link to="/" className={cn('', buttonVariants({ variant: 'outline', size: 'sm' }))}>
+              <Link to="/" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
                 View
               </Link>
             </Card>
