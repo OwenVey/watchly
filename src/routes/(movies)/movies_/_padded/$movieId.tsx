@@ -59,6 +59,10 @@ function Movie() {
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
+  const certification = usReleaseDates
+    .map(({ certification }) => certification)
+    .filter(Boolean)
+    .pop();
 
   const RELEASE_TYPE_ICON_MAP = {
     1: ClapperboardIcon,
@@ -196,9 +200,16 @@ function Movie() {
               )}
             </h1>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
+              {certification && (
+                <div className="rounded border p-0.5 text-xs leading-none font-medium text-gray-12 uppercase">
+                  {certification}
+                </div>
+              )}
               <div className="flex items-center gap-1">
                 <ClockIcon className="size-4 text-gray-9" />
-                <span className="text-sm font-medium whitespace-nowrap">{formatMinutesToHHMM(movie.runtime)}</span>
+                <span className="text-sm font-medium whitespace-nowrap text-gray-12">
+                  {formatMinutesToHHMM(movie.runtime)}
+                </span>
               </div>
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
