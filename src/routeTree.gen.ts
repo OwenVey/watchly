@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as TvImport } from './routes/tv'
 import { Route as TestImport } from './routes/test'
 import { Route as IndexImport } from './routes/index'
+import { Route as peoplePeopleImport } from './routes/(people)/people'
 import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
 import { Route as moviesMoviespaddedImport } from './routes/(movies)/movies_/_padded'
 import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
@@ -59,6 +60,12 @@ const moviesMoviesRoute = moviesMoviesImport.update({
   id: '/movies_',
   path: '/movies',
   getParentRoute: () => moviesRoute,
+} as any)
+
+const peoplePeopleRoute = peoplePeopleImport.update({
+  id: '/(people)/people',
+  path: '/people',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const moviesSidebarRoute = moviesSidebarImport.update({
@@ -149,6 +156,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof moviesSidebarImport
       parentRoute: typeof moviesRoute
+    }
+    '/(people)/people': {
+      id: '/(people)/people'
+      path: '/people'
+      fullPath: '/people'
+      preLoaderRoute: typeof peoplePeopleImport
+      parentRoute: typeof rootRoute
     }
     '/(movies)/_sidebar/movies': {
       id: '/(movies)/_sidebar/movies'
@@ -272,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/': typeof moviesSidebarRouteWithChildren
   '/test': typeof TestRoute
   '/tv': typeof TvRoute
+  '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesMoviespaddedRouteWithChildren
   '/movies/$movieId': typeof moviesMoviespaddedMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviespaddedMovieIdCastRoute
@@ -284,6 +299,7 @@ export interface FileRoutesByTo {
   '/': typeof moviesSidebarRouteWithChildren
   '/test': typeof TestRoute
   '/tv': typeof TvRoute
+  '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesMoviespaddedRouteWithChildren
   '/movies/$movieId': typeof moviesMoviespaddedMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviespaddedMovieIdCastRoute
@@ -299,6 +315,7 @@ export interface FileRoutesById {
   '/tv': typeof TvRoute
   '/(movies)': typeof moviesRouteWithChildren
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
+  '/(people)/people': typeof peoplePeopleRoute
   '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
   '/(movies)/movies_': typeof moviesMoviesRouteWithChildren
   '/(movies)/movies_/_padded': typeof moviesMoviespaddedRouteWithChildren
@@ -315,6 +332,7 @@ export interface FileRouteTypes {
     | '/'
     | '/test'
     | '/tv'
+    | '/people'
     | '/movies'
     | '/movies/$movieId'
     | '/movies/$movieId/cast'
@@ -326,6 +344,7 @@ export interface FileRouteTypes {
     | '/'
     | '/test'
     | '/tv'
+    | '/people'
     | '/movies'
     | '/movies/$movieId'
     | '/movies/$movieId/cast'
@@ -339,6 +358,7 @@ export interface FileRouteTypes {
     | '/tv'
     | '/(movies)'
     | '/(movies)/_sidebar'
+    | '/(people)/people'
     | '/(movies)/_sidebar/movies'
     | '/(movies)/movies_'
     | '/(movies)/movies_/_padded'
@@ -355,6 +375,7 @@ export interface RootRouteChildren {
   TestRoute: typeof TestRoute
   TvRoute: typeof TvRoute
   moviesRoute: typeof moviesRouteWithChildren
+  peoplePeopleRoute: typeof peoplePeopleRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -362,6 +383,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestRoute: TestRoute,
   TvRoute: TvRoute,
   moviesRoute: moviesRouteWithChildren,
+  peoplePeopleRoute: peoplePeopleRoute,
 }
 
 export const routeTree = rootRoute
@@ -379,7 +401,8 @@ export const routeTree = rootRoute
         "/",
         "/test",
         "/tv",
-        "/(movies)"
+        "/(movies)",
+        "/(people)/people"
       ]
     },
     "/": {
@@ -404,6 +427,9 @@ export const routeTree = rootRoute
       "children": [
         "/(movies)/_sidebar/movies"
       ]
+    },
+    "/(people)/people": {
+      "filePath": "(people)/people.tsx"
     },
     "/(movies)/_sidebar/movies": {
       "filePath": "(movies)/_sidebar/movies.tsx",

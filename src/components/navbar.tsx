@@ -5,7 +5,26 @@ import { Card } from '@/components/ui/card';
 import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_sidebar/movies';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link } from '@tanstack/react-router';
-import { FilmIcon, MenuIcon, TvIcon, XIcon } from 'lucide-react';
+import { FilmIcon, MenuIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
+
+const LINKS = [
+  {
+    to: '/movies',
+    label: 'Movies',
+    icon: FilmIcon,
+    search: DEFAULT_MOVIE_SEARCH,
+  },
+  {
+    to: '/tv',
+    label: 'TV Shows',
+    icon: TvIcon,
+  },
+  {
+    to: '/people',
+    label: 'People',
+    icon: UsersIcon,
+  },
+];
 
 export function Navbar() {
   return (
@@ -21,21 +40,18 @@ export function Navbar() {
               </Link>
 
               <div className="hidden items-center gap-4 text-sm md:flex">
-                <Link
-                  to="/movies"
-                  search={DEFAULT_MOVIE_SEARCH}
-                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
-                >
-                  <FilmIcon className="size-5" />
-                  Movies
-                </Link>
-                <Link
-                  to="/tv"
-                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
-                >
-                  <TvIcon className="size-5" />
-                  TV Shows
-                </Link>
+                {LINKS.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    search={link.search}
+                    className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12"
+                    activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9' }}
+                  >
+                    <link.icon className="size-5" />
+                    {link.label}
+                  </Link>
+                ))}
               </div>
 
               <div className="hidden md:block">
@@ -53,28 +69,19 @@ export function Navbar() {
             </div>
 
             <Accordion.Content className="mt-3 space-y-1 md:hidden">
-              <Accordion.Trigger asChild>
-                <Link
-                  className="bg flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
-                  activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
-                  to="/movies"
-                  search={DEFAULT_MOVIE_SEARCH}
-                >
-                  <FilmIcon className="size-6" />
-                  Movies
-                </Link>
-              </Accordion.Trigger>
-
-              <Accordion.Trigger asChild>
-                <Link
-                  className="bg flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
-                  activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
-                  to="/tv"
-                >
-                  <TvIcon className="size-6" />
-                  TV Shows
-                </Link>
-              </Accordion.Trigger>
+              {LINKS.map((link) => (
+                <Accordion.Trigger key={link.to} asChild>
+                  <Link
+                    to={link.to}
+                    search={link.search}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
+                    activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
+                  >
+                    <link.icon className="size-6" />
+                    {link.label}
+                  </Link>
+                </Accordion.Trigger>
+              ))}
             </Accordion.Content>
           </Card>
         </nav>
