@@ -161,7 +161,9 @@ const movieQueryOptions = (params: MovieSearchParams) =>
       const lastResponse = responses.at(-1);
       return {
         page: lastResponse?.page ?? 0,
-        results: responses.flatMap(({ results }) => results),
+        results: Array.from(
+          new Map(responses.flatMap(({ results }) => results.map((movie) => [movie.id, movie]))).values(), // remove duplicates
+        ),
         totalPages: lastResponse?.total_pages ?? 0,
         totalResults: lastResponse?.total_results ?? 0,
       };
@@ -171,7 +173,7 @@ const movieQueryOptions = (params: MovieSearchParams) =>
     getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
 
-export const Route = createFileRoute('/(movies)/_layout/movies')({
+export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: zodSearchValidator(MovieSearchSchema),
   search: {
     middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],

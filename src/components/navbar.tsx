@@ -2,7 +2,7 @@ import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_layout/movies';
+import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_sidebar/movies';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link } from '@tanstack/react-router';
 import { FilmIcon, MenuIcon, TvIcon, XIcon } from 'lucide-react';
@@ -13,7 +13,7 @@ export function Navbar() {
       <Accordion.Item value="nav" asChild>
         <nav className="group sticky top-0 z-10 p-4 pb-0">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-1 from-[1rem]" />
-          <Card className="py-3 px-4">
+          <Card className="px-4 py-3">
             <div className="flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
                 <Logo className="size-8 text-primary-9" />
@@ -24,14 +24,14 @@ export function Navbar() {
                 <Link
                   to="/movies"
                   search={DEFAULT_MOVIE_SEARCH}
-                  className="flex items-center gap-2 rounded-md py-2 px-4 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
+                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
                 >
                   <FilmIcon className="size-5" />
                   Movies
                 </Link>
                 <Link
                   to="/tv"
-                  className="flex items-center gap-2 rounded-md py-2 px-4 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
+                  className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12 data-[status]:bg-primary-9 data-[status]:text-white"
                 >
                   <TvIcon className="size-5" />
                   TV Shows
@@ -55,7 +55,7 @@ export function Navbar() {
             <Accordion.Content className="mt-3 space-y-1 md:hidden">
               <Accordion.Trigger asChild>
                 <Link
-                  className="bg flex items-center gap-3 rounded-lg py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
+                  className="bg flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
                   activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
                   to="/movies"
                   search={DEFAULT_MOVIE_SEARCH}
@@ -67,7 +67,7 @@ export function Navbar() {
 
               <Accordion.Trigger asChild>
                 <Link
-                  className="bg flex items-center gap-3 rounded-lg py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
+                  className="bg flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
                   activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
                   to="/tv"
                 >

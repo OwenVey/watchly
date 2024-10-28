@@ -14,14 +14,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { tmdbApi } from '@/lib/api.js';
 import { LANGUAGES_MAP, MOVIE_GENRES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
-import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_layout/movies';
+import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-export const Route = createFileRoute('/(movies)/_layout')({
+export const Route = createFileRoute('/(movies)/_sidebar')({
   loader: () => {
     return {
       providersPromise: tmdbApi('/watch/providers/movie', { query: { watch_region: 'US' } }),
@@ -29,10 +29,10 @@ export const Route = createFileRoute('/(movies)/_layout')({
   },
   gcTime: 0,
   shouldReload: false,
-  component: Layout,
+  component: SidebarLayout,
 });
 
-function Layout() {
+function SidebarLayout() {
   return (
     <>
       <Card
@@ -67,6 +67,7 @@ function Layout() {
 function Filters() {
   const { providersPromise } = Route.useLoaderData();
 
+  const search = MoviesRoute.useSearch();
   const {
     releasedAfter,
     releasedBefore,
@@ -85,7 +86,9 @@ function Filters() {
     originalLanguage,
     watchProviders,
     adult,
-  } = MoviesRoute.useSearch();
+  } = search;
+
+  console.log(search);
 
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -110,7 +113,15 @@ function Filters() {
     <>
       <div className="border-b border-gray-6 px-4 py-2">
         <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
-        <div className="text-sm text-gray-11">0 Active</div>
+        <div className="text-sm text-gray-11">
+          {
+            Object.keys(search).filter((key) => {
+              const typedKey = key as keyof typeof search;
+              return JSON.stringify(search[typedKey]) !== JSON.stringify(DEFAULT_MOVIE_SEARCH[typedKey]);
+            }).length
+          }{' '}
+          Active
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">

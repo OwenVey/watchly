@@ -16,9 +16,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as TvImport } from './routes/tv'
 import { Route as TestImport } from './routes/test'
 import { Route as IndexImport } from './routes/index'
-import { Route as moviesLayoutImport } from './routes/(movies)/_layout'
+import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
 import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
-import { Route as moviesLayoutMoviesImport } from './routes/(movies)/_layout/movies'
+import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
 import { Route as moviesMoviesMovieIdCastImport } from './routes/(movies)/movies_/$movieId_/cast'
 
 // Create Virtual Routes
@@ -50,8 +50,8 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const moviesLayoutRoute = moviesLayoutImport.update({
-  id: '/_layout',
+const moviesSidebarRoute = moviesSidebarImport.update({
+  id: '/_sidebar',
   getParentRoute: () => moviesRoute,
 } as any)
 
@@ -61,10 +61,10 @@ const moviesMoviesMovieIdRoute = moviesMoviesMovieIdImport.update({
   getParentRoute: () => moviesRoute,
 } as any)
 
-const moviesLayoutMoviesRoute = moviesLayoutMoviesImport.update({
+const moviesSidebarMoviesRoute = moviesSidebarMoviesImport.update({
   id: '/movies',
   path: '/movies',
-  getParentRoute: () => moviesLayoutRoute,
+  getParentRoute: () => moviesSidebarRoute,
 } as any)
 
 const moviesMoviesMovieIdCastRoute = moviesMoviesMovieIdCastImport.update({
@@ -105,19 +105,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof moviesImport
       parentRoute: typeof rootRoute
     }
-    '/(movies)/_layout': {
-      id: '/(movies)/_layout'
+    '/(movies)/_sidebar': {
+      id: '/(movies)/_sidebar'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof moviesLayoutImport
+      preLoaderRoute: typeof moviesSidebarImport
       parentRoute: typeof moviesRoute
     }
-    '/(movies)/_layout/movies': {
-      id: '/(movies)/_layout/movies'
+    '/(movies)/_sidebar/movies': {
+      id: '/(movies)/_sidebar/movies'
       path: '/movies'
       fullPath: '/movies'
-      preLoaderRoute: typeof moviesLayoutMoviesImport
-      parentRoute: typeof moviesLayoutImport
+      preLoaderRoute: typeof moviesSidebarMoviesImport
+      parentRoute: typeof moviesSidebarImport
     }
     '/(movies)/movies_/$movieId': {
       id: '/(movies)/movies_/$movieId'
@@ -138,26 +138,26 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-interface moviesLayoutRouteChildren {
-  moviesLayoutMoviesRoute: typeof moviesLayoutMoviesRoute
+interface moviesSidebarRouteChildren {
+  moviesSidebarMoviesRoute: typeof moviesSidebarMoviesRoute
 }
 
-const moviesLayoutRouteChildren: moviesLayoutRouteChildren = {
-  moviesLayoutMoviesRoute: moviesLayoutMoviesRoute,
+const moviesSidebarRouteChildren: moviesSidebarRouteChildren = {
+  moviesSidebarMoviesRoute: moviesSidebarMoviesRoute,
 }
 
-const moviesLayoutRouteWithChildren = moviesLayoutRoute._addFileChildren(
-  moviesLayoutRouteChildren,
+const moviesSidebarRouteWithChildren = moviesSidebarRoute._addFileChildren(
+  moviesSidebarRouteChildren,
 )
 
 interface moviesRouteChildren {
-  moviesLayoutRoute: typeof moviesLayoutRouteWithChildren
+  moviesSidebarRoute: typeof moviesSidebarRouteWithChildren
   moviesMoviesMovieIdRoute: typeof moviesMoviesMovieIdRoute
   moviesMoviesMovieIdCastRoute: typeof moviesMoviesMovieIdCastRoute
 }
 
 const moviesRouteChildren: moviesRouteChildren = {
-  moviesLayoutRoute: moviesLayoutRouteWithChildren,
+  moviesSidebarRoute: moviesSidebarRouteWithChildren,
   moviesMoviesMovieIdRoute: moviesMoviesMovieIdRoute,
   moviesMoviesMovieIdCastRoute: moviesMoviesMovieIdCastRoute,
 }
@@ -166,19 +166,19 @@ const moviesRouteWithChildren =
   moviesRoute._addFileChildren(moviesRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '/': typeof moviesLayoutRouteWithChildren
+  '/': typeof moviesSidebarRouteWithChildren
   '/test': typeof TestRoute
   '/tv': typeof TvRoute
-  '/movies': typeof moviesLayoutMoviesRoute
+  '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof moviesLayoutRouteWithChildren
+  '/': typeof moviesSidebarRouteWithChildren
   '/test': typeof TestRoute
   '/tv': typeof TvRoute
-  '/movies': typeof moviesLayoutMoviesRoute
+  '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
 }
@@ -189,8 +189,8 @@ export interface FileRoutesById {
   '/test': typeof TestRoute
   '/tv': typeof TvRoute
   '/(movies)': typeof moviesRouteWithChildren
-  '/(movies)/_layout': typeof moviesLayoutRouteWithChildren
-  '/(movies)/_layout/movies': typeof moviesLayoutMoviesRoute
+  '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
+  '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
   '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
   '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
 }
@@ -218,8 +218,8 @@ export interface FileRouteTypes {
     | '/test'
     | '/tv'
     | '/(movies)'
-    | '/(movies)/_layout'
-    | '/(movies)/_layout/movies'
+    | '/(movies)/_sidebar'
+    | '/(movies)/_sidebar/movies'
     | '/(movies)/movies_/$movieId'
     | '/(movies)/movies_/$movieId_/cast'
   fileRoutesById: FileRoutesById
@@ -269,21 +269,21 @@ export const routeTree = rootRoute
     "/(movies)": {
       "filePath": "(movies)",
       "children": [
-        "/(movies)/_layout",
+        "/(movies)/_sidebar",
         "/(movies)/movies_/$movieId",
         "/(movies)/movies_/$movieId_/cast"
       ]
     },
-    "/(movies)/_layout": {
-      "filePath": "(movies)/_layout.tsx",
+    "/(movies)/_sidebar": {
+      "filePath": "(movies)/_sidebar.tsx",
       "parent": "/(movies)",
       "children": [
-        "/(movies)/_layout/movies"
+        "/(movies)/_sidebar/movies"
       ]
     },
-    "/(movies)/_layout/movies": {
-      "filePath": "(movies)/_layout/movies.tsx",
-      "parent": "/(movies)/_layout"
+    "/(movies)/_sidebar/movies": {
+      "filePath": "(movies)/_sidebar/movies.tsx",
+      "parent": "/(movies)/_sidebar"
     },
     "/(movies)/movies_/$movieId": {
       "filePath": "(movies)/movies_/$movieId.tsx",
