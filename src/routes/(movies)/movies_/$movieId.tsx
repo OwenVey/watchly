@@ -76,8 +76,8 @@ function Movie() {
     {
       label: 'Release Dates',
       value: (
-        <>
-          <div className="grid grid-cols-[auto_1fr] items-center justify-items-end gap-x-2">
+        <div className="flex flex-col items-end gap-1">
+          <div className="grid grid-cols-[max-content_max-content] items-center justify-items-end gap-x-2">
             {usReleaseDates
               .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
               .map(({ type, release_date }) => {
@@ -95,14 +95,10 @@ function Movie() {
                 );
               })}
           </div>
-          {usReleaseDates.length > 3 && ( // Show button only if there are more than 5 release dates
-            <ShowMoreButton
-              className="mt-1 ml-auto"
-              onClick={() => toggleShowAllReleaseDates()}
-              showAll={showAllReleaseDates}
-            />
+          {usReleaseDates.length > 3 && (
+            <ShowMoreButton onClick={() => toggleShowAllReleaseDates()} showAll={showAllReleaseDates} />
           )}
-        </>
+        </div>
       ),
     },
     { label: 'Revenue', value: formatCurrency(movie.revenue) },
@@ -172,7 +168,7 @@ function Movie() {
         <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
           {movie.poster_path ? (
             <img
-              className="h-fit w-48 rounded-xl shadow-lg"
+              className="w-48 rounded-xl shadow-lg"
               src={getTmdbImage('poster', movie.poster_path, 'w342')}
               alt={`movie poster for ${movie.title}`}
             />
@@ -232,7 +228,7 @@ function Movie() {
           </div>
         </div>
 
-        <div className="flex min-w-72 flex-col gap-2 md:max-w-80">
+        <div className="flex min-w-72 flex-col gap-2 md:w-80">
           {movie.belongs_to_collection && (
             <Card className="relative flex items-center justify-between overflow-hidden px-4 py-3">
               {movie.belongs_to_collection.backdrop_path && (
