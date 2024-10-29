@@ -19,6 +19,7 @@ import { Route as SearchImport } from './routes/search'
 import { Route as IndexImport } from './routes/index'
 import { Route as peoplePeopleImport } from './routes/(people)/people'
 import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
+import { Route as peoplePeoplePersonIdImport } from './routes/(people)/people_/$personId'
 import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
 import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
 import { Route as moviesMoviesMovieIdSimilarImport } from './routes/(movies)/movies_/$movieId_/similar'
@@ -70,6 +71,12 @@ const peoplePeopleRoute = peoplePeopleImport.update({
 const moviesSidebarRoute = moviesSidebarImport.update({
   id: '/_sidebar',
   getParentRoute: () => moviesRoute,
+} as any)
+
+const peoplePeoplePersonIdRoute = peoplePeoplePersonIdImport.update({
+  id: '/(people)/people_/$personId',
+  path: '/people/$personId',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const moviesMoviesMovieIdRoute = moviesMoviesMovieIdImport.update({
@@ -178,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof moviesMoviesMovieIdImport
       parentRoute: typeof moviesImport
     }
+    '/(people)/people_/$personId': {
+      id: '/(people)/people_/$personId'
+      path: '/people/$personId'
+      fullPath: '/people/$personId'
+      preLoaderRoute: typeof peoplePeoplePersonIdImport
+      parentRoute: typeof rootRoute
+    }
     '/(movies)/movies_/$movieId_/cast': {
       id: '/(movies)/movies_/$movieId_/cast'
       path: '/movies/$movieId/cast'
@@ -253,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/people/$personId': typeof peoplePeoplePersonIdRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -267,6 +282,7 @@ export interface FileRoutesByTo {
   '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/people/$personId': typeof peoplePeoplePersonIdRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -284,6 +300,7 @@ export interface FileRoutesById {
   '/(people)/people': typeof peoplePeopleRoute
   '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
   '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
+  '/(people)/people_/$personId': typeof peoplePeoplePersonIdRoute
   '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
   '/(movies)/movies_/$movieId_/crew': typeof moviesMoviesMovieIdCrewRoute
   '/(movies)/movies_/$movieId_/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -300,6 +317,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/movies'
     | '/movies/$movieId'
+    | '/people/$personId'
     | '/movies/$movieId/cast'
     | '/movies/$movieId/crew'
     | '/movies/$movieId/recommendations'
@@ -313,6 +331,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/movies'
     | '/movies/$movieId'
+    | '/people/$personId'
     | '/movies/$movieId/cast'
     | '/movies/$movieId/crew'
     | '/movies/$movieId/recommendations'
@@ -328,6 +347,7 @@ export interface FileRouteTypes {
     | '/(people)/people'
     | '/(movies)/_sidebar/movies'
     | '/(movies)/movies_/$movieId'
+    | '/(people)/people_/$personId'
     | '/(movies)/movies_/$movieId_/cast'
     | '/(movies)/movies_/$movieId_/crew'
     | '/(movies)/movies_/$movieId_/recommendations'
@@ -342,6 +362,7 @@ export interface RootRouteChildren {
   TestRoute: typeof TestRoute
   moviesRoute: typeof moviesRouteWithChildren
   peoplePeopleRoute: typeof peoplePeopleRoute
+  peoplePeoplePersonIdRoute: typeof peoplePeoplePersonIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -351,6 +372,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestRoute: TestRoute,
   moviesRoute: moviesRouteWithChildren,
   peoplePeopleRoute: peoplePeopleRoute,
+  peoplePeoplePersonIdRoute: peoplePeoplePersonIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -370,7 +392,8 @@ export const routeTree = rootRoute
         "/series",
         "/test",
         "/(movies)",
-        "/(people)/people"
+        "/(people)/people",
+        "/(people)/people_/$personId"
       ]
     },
     "/": {
@@ -413,6 +436,9 @@ export const routeTree = rootRoute
     "/(movies)/movies_/$movieId": {
       "filePath": "(movies)/movies_/$movieId.tsx",
       "parent": "/(movies)"
+    },
+    "/(people)/people_/$personId": {
+      "filePath": "(people)/people_/$personId.tsx"
     },
     "/(movies)/movies_/$movieId_/cast": {
       "filePath": "(movies)/movies_/$movieId_/cast.tsx",

@@ -19,7 +19,7 @@ function Cast() {
       <h2 className="text-gray-11">{movie.title}</h2>
       <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
         {movie.credits.cast.map((person) => (
-          <PersonCard key={person.id} name={person.name} role={person.character} profilePath={person.profile_path} />
+          <PersonCard key={person.id} person={person} title={person.character} />
         ))}
       </div>
     </PaddedLayout>

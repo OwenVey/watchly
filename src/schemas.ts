@@ -311,3 +311,34 @@ export const SearchPersonOutputSchema = paginated(
     ),
   }),
 );
+
+export const PersonDetailsOutputSchema = z.object({
+  adult: z.boolean(),
+  also_known_as: z.array(z.string()),
+  biography: z.string(),
+  birthday: z.coerce.date(),
+  deathday: z.string().nullable(),
+  gender: z.number(),
+  homepage: z.string().nullable(),
+  id: z.number(),
+  imdb_id: z.string().nullable(),
+  known_for_department: z.string(),
+  name: z.string(),
+  place_of_birth: z.string().nullable(),
+  popularity: z.number(),
+  profile_path: z.string().nullable(),
+  combined_credits: z.object({
+    cast: z.array(
+      z.union([
+        MovieSchema.extend({ media_type: z.literal('movie'), character: z.string() }),
+        SeriesSchema.extend({ media_type: z.literal('tv'), character: z.string() }),
+      ]),
+    ),
+    crew: z.array(
+      z.union([
+        MovieSchema.extend({ media_type: z.literal('movie'), job: z.string() }),
+        SeriesSchema.extend({ media_type: z.literal('tv'), job: z.string() }),
+      ]),
+    ),
+  }),
+});

@@ -63,9 +63,7 @@ function Search() {
               <li key={result.id}>
                 {result.media_type === 'movie' && <MovieCard movie={result} showBadge />}
                 {result.media_type === 'tv' && <SeriesCard series={result} showBadge />}
-                {result.media_type === 'person' && (
-                  <PersonCard profilePath={result.profile_path} name={result.name} role={result.known_for_department} />
-                )}
+                {result.media_type === 'person' && <PersonCard person={result} title={result.known_for_department} />}
               </li>
             ))}
           </React.Fragment>

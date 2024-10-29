@@ -3,6 +3,7 @@ import {
   DiscoverMoviesQuerySchema,
   MovieDetailsOutputSchema,
   MovieProvidersOutputSchema,
+  PersonDetailsOutputSchema,
   SearchCompanyOutputSchema,
   SearchKeywordOutputSchema,
   SearchMovieOutputSchema,
@@ -96,6 +97,15 @@ export const tmdbApi = createFetch({
           page: z.number().default(1),
         }),
         output: SearchPersonOutputSchema,
+      },
+      '/person/:personId': {
+        params: z.object({
+          personId: z.string(),
+        }),
+        query: z.object({
+          append_to_response: z.tuple([z.literal('combined_credits')]),
+        }),
+        output: PersonDetailsOutputSchema,
       },
     },
     { strict: true },

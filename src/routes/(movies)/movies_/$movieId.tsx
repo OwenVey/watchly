@@ -24,6 +24,7 @@ import {
   ClockIcon,
   CloudIcon,
   Disc3Icon,
+  FilmIcon,
   TagIcon,
   TicketIcon,
   TicketSlashIcon,
@@ -74,7 +75,7 @@ function Movie() {
     6: TvIcon,
   } satisfies Record<ReleaseType, LucideIcon>;
 
-  const [showAllReleaseDates, toggleShowAllReleaseDates] = useToggle(false); // Add toggle state for release dates
+  const [showAllReleaseDates, toggleShowAllReleaseDates] = useToggle(false);
 
   const movieDetails = [
     { label: 'Status', value: movie.status },
@@ -191,7 +192,11 @@ function Movie() {
               alt={`movie poster for ${movie.title}`}
             />
           ) : (
-            <div>no poster</div>
+            <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-gray-3 shadow-lg">
+              <div className="grid size-24 place-items-center rounded-full border border-gray-6 bg-gray-5">
+                <FilmIcon className="size-8 text-gray-11" />
+              </div>
+            </div>
           )}
           <div className="flex max-w-md flex-col items-center md:items-baseline">
             <h1 className="text-center md:text-left">
@@ -304,7 +309,7 @@ function Movie() {
           <CardCarousel title="Cast" link="cast">
             {movie.credits.cast.map((person) => (
               <CarouselItem key={`${person.id}-${person.character}`}>
-                <PersonCard profilePath={person.profile_path} name={person.name} role={person.character} />
+                <PersonCard person={person} title={person.character} />
               </CarouselItem>
             ))}
           </CardCarousel>
@@ -314,7 +319,7 @@ function Movie() {
           <CardCarousel title="Crew" link="crew">
             {movie.credits.crew.map((person) => (
               <CarouselItem key={`${person.id}-${person.job}`}>
-                <PersonCard profilePath={person.profile_path} name={person.name} role={person.job} />
+                <PersonCard person={person} title={person.job} />
               </CarouselItem>
             ))}
           </CardCarousel>

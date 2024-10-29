@@ -48,7 +48,7 @@ function People() {
         <React.Fragment key={page}>
           {results.map((person) => (
             <li key={person.id}>
-              <PersonCard name={person.name} profilePath={person.profile_path} />
+              <PersonCard person={person} />
             </li>
           ))}
         </React.Fragment>
