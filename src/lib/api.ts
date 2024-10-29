@@ -91,6 +91,12 @@ export const tmdbApi = createFetch({
         }),
         output: SearchPersonOutputSchema,
       },
+      '/person/popular': {
+        query: z.object({
+          page: z.number().default(1),
+        }),
+        output: SearchPersonOutputSchema,
+      },
     },
     { strict: true },
   ),

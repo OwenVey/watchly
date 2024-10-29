@@ -93,6 +93,18 @@ const MovieSearchSchema = z.object({
 
 export type MovieSearchParams = z.infer<typeof MovieSearchSchema>;
 
+export const Route = createFileRoute('/(movies)/_sidebar/movies')({
+  validateSearch: zodSearchValidator(MovieSearchSchema),
+  search: {
+    middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],
+  },
+  loaderDeps: ({ search }) => search,
+  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
+  pendingMs: 0,
+  pendingComponent: SkeletonCards,
+  component: MovieCards,
+});
+
 const movieQueryOptions = (params: MovieSearchParams) =>
   infiniteQueryOptions({
     queryKey: ['movies', params],
@@ -172,18 +184,6 @@ const movieQueryOptions = (params: MovieSearchParams) =>
     getPreviousPageParam: (firstPage) => firstPage.page - 1,
     getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
-
-export const Route = createFileRoute('/(movies)/_sidebar/movies')({
-  validateSearch: zodSearchValidator(MovieSearchSchema),
-  search: {
-    middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],
-  },
-  loaderDeps: ({ search }) => search,
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
-  pendingMs: 0,
-  pendingComponent: SkeletonCards,
-  component: MovieCards,
-});
 
 function SkeletonCards() {
   return Array.from({ length: 60 }).map((_, index) => (
