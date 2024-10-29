@@ -14,7 +14,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
     <Link
       key={series.id}
       className={cn(
-        'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-gray-3 transition-all hover:scale-105 hover:border-gray-7',
+        'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-[#222] transition-all hover:scale-105 hover:border-gray-7',
         className,
       )}
       // to={MovieIdRoute.to}
