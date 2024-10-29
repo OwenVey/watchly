@@ -1,9 +1,11 @@
-import { PersonCard } from '@/components/person-card';
-import { movieIdQueryOptions } from '@/routes/(movies)/movies_/$movieId';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/(movies)/movies_/_padded/$movieId_/crew')({
+import { MovieCard } from '@/components/movie-card';
+import { PaddedLayout } from '@/components/padded-layout';
+import { movieIdQueryOptions } from '@/routes/(movies)/movies_/$movieId';
+import { useSuspenseQuery } from '@tanstack/react-query';
+
+export const Route = createFileRoute('/(movies)/movies_/$movieId_/recommendations')({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId)),
   component: Crew,
 });
@@ -13,14 +15,14 @@ function Crew() {
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
 
   return (
-    <>
-      <h1 className="text-2xl font-semibold text-gray-12">Crew</h1>
+    <PaddedLayout>
+      <h1 className="text-2xl font-semibold text-gray-12">Recommendations</h1>
       <h2 className="text-gray-11">{movie.title}</h2>
       <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-        {movie.credits.crew.map((person) => (
-          <PersonCard key={person.id} name={person.name} role={person.job} profilePath={person.profile_path} />
+        {movie.recommendations.results.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
-    </>
+    </PaddedLayout>
   );
 }
