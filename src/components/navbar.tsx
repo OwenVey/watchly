@@ -2,10 +2,11 @@ import { Logo } from '@/components/logo';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_sidebar/movies';
 import * as Accordion from '@radix-ui/react-accordion';
-import { Link } from '@tanstack/react-router';
-import { FilmIcon, MenuIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { FilmIcon, MenuIcon, SearchIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
 
 const LINKS = [
   {
@@ -15,8 +16,8 @@ const LINKS = [
     search: DEFAULT_MOVIE_SEARCH,
   },
   {
-    to: '/tv',
-    label: 'TV Shows',
+    to: '/series',
+    label: 'Series',
     icon: TvIcon,
   },
   {
@@ -27,6 +28,9 @@ const LINKS = [
 ];
 
 export function Navbar() {
+  const navigate = useNavigate();
+  const { query } = useSearch({ strict: false });
+
   return (
     <Accordion.Root type="single" collapsible asChild>
       <Accordion.Item value="nav" asChild>
@@ -34,28 +38,39 @@ export function Navbar() {
           <div className="absolute inset-0 bg-gradient-to-b from-gray-1 from-[1rem]" />
           <Card className="px-4 py-3">
             <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
-                <Logo className="size-8 text-primary-9" />
-                Watchly
-              </Link>
+              <div className="flex items-center">
+                <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
+                  <Logo className="size-8 text-primary-9" />
+                  Watchly
+                </Link>
 
-              <div className="hidden items-center gap-4 text-sm md:flex">
-                {LINKS.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    search={link.search}
-                    className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12"
-                    activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9' }}
-                  >
-                    <link.icon className="size-5" />
-                    {link.label}
-                  </Link>
-                ))}
+                <div className="ml-8 hidden items-center gap-2 text-sm md:flex">
+                  {LINKS.map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      search={link.search}
+                      className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12"
+                      activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9' }}
+                    >
+                      <link.icon className="size-5" />
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
 
-              <div className="hidden md:block">
-                <ModeToggle />
+              <div className="flex flex-1 justify-center gap-4 md:justify-end">
+                <Input
+                  value={query || ''}
+                  onChange={(e) => navigate({ to: '/search', search: { query: e.target.value } })}
+                  className="mr-6 ml-8 max-w-96 md:mr-0 md:ml-2 md:max-w-52"
+                  icon={SearchIcon}
+                  placeholder="Search"
+                />
+                <div className="hidden md:block">
+                  <ModeToggle />
+                </div>
               </div>
 
               <Accordion.Header className="md:hidden">

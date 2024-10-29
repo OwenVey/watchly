@@ -5,6 +5,9 @@ import {
   MovieProvidersOutputSchema,
   SearchCompanyOutputSchema,
   SearchKeywordOutputSchema,
+  SearchMovieOutputSchema,
+  SearchPersonOutputSchema,
+  SearchTvOutputSchema,
 } from '@/schemas';
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
@@ -17,7 +20,7 @@ export const tmdbApi = createFetch({
     token:
       'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ODVkYWNiNjA5ZTA1N2YyNmIxNTlhYTg3MjdjYTg2YiIsIm5iZiI6MTcyODc2Nzg2Ny4wNDA4NDksInN1YiI6IjYzYWIyZmRmMDlkZGE0MDA3Y2I5ZDFlZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.r3yoeC3McZsQGQPrVqYQyp7Wd1ZUnWstomt07OBhEBM',
   },
-  retry: 3,
+  // retry: 3,
   throw: true,
   schema: createSchema(
     {
@@ -67,6 +70,27 @@ export const tmdbApi = createFetch({
         }),
         output: SearchCompanyOutputSchema,
       },
+      '/search/movie': {
+        query: z.object({
+          query: z.string(),
+          page: z.number().default(1),
+        }),
+        output: SearchMovieOutputSchema,
+      },
+      '/search/tv': {
+        query: z.object({
+          query: z.string(),
+          page: z.number().default(1),
+        }),
+        output: SearchTvOutputSchema,
+      },
+      '/search/person': {
+        query: z.object({
+          query: z.string(),
+          page: z.number().default(1),
+        }),
+        output: SearchPersonOutputSchema,
+      },
     },
     { strict: true },
   ),
@@ -78,7 +102,7 @@ export const omdbApi = createFetch({
   query: {
     apikey: '3b1b9209',
   },
-  retry: 3,
+  // retry: 3,
   throw: true,
   schema: createSchema(
     {

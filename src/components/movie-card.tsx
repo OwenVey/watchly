@@ -4,18 +4,30 @@ import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/_padded/$movieI
 import type { Movie } from '@/types';
 import { Link } from '@tanstack/react-router';
 
-export function MovieCard({ movie, className }: { movie: Movie; className?: string }) {
+type Props = {
+  movie: Movie;
+  className?: string;
+  showBadge?: boolean;
+};
+
+export function MovieCard({ movie, className, showBadge = false }: Props) {
   return (
     <Link
       key={movie.id}
       className={cn(
-        'group relative grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-gray-3 transition-all hover:scale-105 hover:border-gray-7',
+        'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-gray-3 transition-all hover:scale-105 hover:border-gray-7',
         className,
       )}
       to={MovieIdRoute.to}
       params={{ movieId: movie.id.toString() }}
       preloadDelay={500}
     >
+      {showBadge && (
+        <span className="absolute top-0 right-0 z-10 m-2 rounded-full border border-blue-9 bg-blue-11 px-2 py-0.5 text-xs font-semibold tracking-wide text-blue-1">
+          MOVIE
+        </span>
+      )}
+
       {movie.poster_path && (
         <img
           src={getTmdbImage('poster', movie.poster_path, 'w342')}

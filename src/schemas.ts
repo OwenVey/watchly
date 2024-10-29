@@ -10,10 +10,46 @@ function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
     results: z.array(resultSchema),
   });
 }
+
+const StringToDateSchema = z
+  .string()
+  .optional()
+  .transform((val) => (val === '' ? undefined : val))
+  .pipe(z.coerce.date().optional());
+
 const VoteAverageSchema = z
   .number()
   .optional()
   .transform((num) => (num ? `${Math.round(num * 10)}%` : undefined));
+
+export const PersonSchema = z.object({
+  adult: z.boolean(),
+  gender: z.number(),
+  id: z.number(),
+  known_for_department: z.string().nullable(),
+  name: z.string(),
+  original_name: z.string(),
+  popularity: z.number(),
+  profile_path: z.string().nullable(),
+});
+
+export const CreditsOutputSchema = z.object({
+  cast: z.array(
+    PersonSchema.extend({
+      cast_id: z.number(),
+      credit_id: z.string(),
+      character: z.string(),
+      order: z.number(),
+    }),
+  ),
+  crew: z.array(
+    PersonSchema.extend({
+      credit_id: z.string(),
+      department: z.string(),
+      job: z.string(),
+    }),
+  ),
+});
 
 export const MovieSchema = z.object({
   adult: z.boolean(),
@@ -23,13 +59,9 @@ export const MovieSchema = z.object({
   original_language: zodObjectKeys(LANGUAGES_MAP),
   original_title: z.string(),
   overview: z.string(),
-  popularity: z.number().optional(),
+  popularity: z.number().optional().default(0),
   poster_path: z.string().nullable(),
-  release_date: z
-    .string()
-    .optional()
-    .transform((val) => (val === '' ? undefined : val))
-    .pipe(z.coerce.date().optional()),
+  release_date: StringToDateSchema,
   title: z.string(),
   video: z.boolean().optional().default(false),
   vote_average: VoteAverageSchema,
@@ -103,40 +135,6 @@ export const RecommendationsOutputSchema = paginated(
   }),
 );
 
-export const CreditsOutputSchema = z.object({
-  cast: z.array(
-    z.object({
-      adult: z.boolean(),
-      gender: z.number(),
-      id: z.number(),
-      known_for_department: z.string(),
-      name: z.string(),
-      original_name: z.string(),
-      popularity: z.number(),
-      profile_path: z.string().nullable(),
-      cast_id: z.number(),
-      character: z.string(),
-      credit_id: z.string(),
-      order: z.number(),
-    }),
-  ),
-  crew: z.array(
-    z.object({
-      adult: z.boolean(),
-      gender: z.number(),
-      id: z.number(),
-      known_for_department: z.string(),
-      name: z.string(),
-      original_name: z.string(),
-      popularity: z.number(),
-      profile_path: z.string().nullable(),
-      credit_id: z.string(),
-      department: z.string(),
-      job: z.string(),
-    }),
-  ),
-});
-
 export const SimilarMoviesOutputSchema = paginated(MovieSchema);
 
 export const ReviewsOutputSchema = paginated(
@@ -169,6 +167,12 @@ export const SearchCompanyOutputSchema = paginated(
     logo_path: z.string().nullable(),
     name: z.string(),
     origin_country: z.string(),
+  }),
+);
+
+export const SearchMovieOutputSchema = paginated(
+  MovieSchema.extend({
+    media_type: z.literal('movie').default('movie'),
   }),
 );
 
@@ -240,11 +244,7 @@ export const MovieDetailsOutputSchema = z.object({
   ),
   production_countries: z.array(z.object({ iso_3166_1: z.string(), name: z.string() })),
   recommendations: RecommendationsOutputSchema,
-  release_date: z
-    .string()
-    .optional()
-    .transform((val) => (val === '' ? undefined : val))
-    .pipe(z.coerce.date().optional()),
+  release_date: StringToDateSchema,
   release_dates: ReleaseDatesOutputSchema,
   revenue: z.number(),
   reviews: ReviewsOutputSchema,
@@ -276,3 +276,38 @@ export const MovieProvidersOutputSchema = z.object({
     }),
   ),
 });
+
+export const SeriesSchema = z.object({
+  adult: z.boolean(),
+  backdrop_path: z.string().nullable(),
+  genre_ids: z.array(z.number()),
+  id: z.number(),
+  origin_country: z.array(z.string()),
+  original_language: z.string(),
+  original_name: z.string(),
+  overview: z.string(),
+  popularity: z.number(),
+  poster_path: z.string().nullable(),
+  first_air_date: StringToDateSchema,
+  name: z.string(),
+  vote_average: VoteAverageSchema,
+  vote_count: z.number(),
+});
+
+export const SearchTvOutputSchema = paginated(
+  SeriesSchema.extend({
+    media_type: z.literal('tv').default('tv'),
+  }),
+);
+
+export const SearchPersonOutputSchema = paginated(
+  PersonSchema.extend({
+    media_type: z.literal('person').default('person'),
+    known_for: z.array(
+      z.union([
+        MovieSchema.extend({ media_type: z.literal('movie') }),
+        SeriesSchema.extend({ media_type: z.literal('tv') }),
+      ]),
+    ),
+  }),
+);

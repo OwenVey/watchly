@@ -88,8 +88,6 @@ function Filters() {
     adult,
   } = search;
 
-  console.log(search);
-
   const navigate = useNavigate({ from: Route.fullPath });
 
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
