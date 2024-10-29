@@ -20,8 +20,8 @@ import { Route as IndexImport } from './routes/index'
 import { Route as peoplePeopleImport } from './routes/(people)/people'
 import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
 import { Route as moviesMoviespaddedImport } from './routes/(movies)/movies_/_padded'
+import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
 import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
-import { Route as moviesMoviespaddedMovieIdImport } from './routes/(movies)/movies_/_padded/$movieId'
 import { Route as moviesMoviespaddedMovieIdSimilarImport } from './routes/(movies)/movies_/_padded/$movieId_/similar'
 import { Route as moviesMoviespaddedMovieIdRecommendationsImport } from './routes/(movies)/movies_/_padded/$movieId_/recommendations'
 import { Route as moviesMoviespaddedMovieIdCrewImport } from './routes/(movies)/movies_/_padded/$movieId_/crew'
@@ -85,16 +85,16 @@ const moviesMoviespaddedRoute = moviesMoviespaddedImport.update({
   getParentRoute: () => moviesMoviesRoute,
 } as any)
 
+const moviesMoviesMovieIdRoute = moviesMoviesMovieIdImport.update({
+  id: '/movies_/$movieId',
+  path: '/movies/$movieId',
+  getParentRoute: () => moviesRoute,
+} as any)
+
 const moviesSidebarMoviesRoute = moviesSidebarMoviesImport.update({
   id: '/movies',
   path: '/movies',
   getParentRoute: () => moviesSidebarRoute,
-} as any)
-
-const moviesMoviespaddedMovieIdRoute = moviesMoviespaddedMovieIdImport.update({
-  id: '/$movieId',
-  path: '/$movieId',
-  getParentRoute: () => moviesMoviespaddedRoute,
 } as any)
 
 const moviesMoviespaddedMovieIdSimilarRoute =
@@ -185,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof moviesSidebarMoviesImport
       parentRoute: typeof moviesSidebarImport
     }
+    '/(movies)/movies_/$movieId': {
+      id: '/(movies)/movies_/$movieId'
+      path: '/movies/$movieId'
+      fullPath: '/movies/$movieId'
+      preLoaderRoute: typeof moviesMoviesMovieIdImport
+      parentRoute: typeof moviesImport
+    }
     '/(movies)/movies_': {
       id: '/(movies)/movies_'
       path: '/movies'
@@ -198,13 +205,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/movies'
       preLoaderRoute: typeof moviesMoviespaddedImport
       parentRoute: typeof moviesMoviesRoute
-    }
-    '/(movies)/movies_/_padded/$movieId': {
-      id: '/(movies)/movies_/_padded/$movieId'
-      path: '/$movieId'
-      fullPath: '/movies/$movieId'
-      preLoaderRoute: typeof moviesMoviespaddedMovieIdImport
-      parentRoute: typeof moviesMoviespaddedImport
     }
     '/(movies)/movies_/_padded/$movieId_/cast': {
       id: '/(movies)/movies_/_padded/$movieId_/cast'
@@ -252,7 +252,6 @@ const moviesSidebarRouteWithChildren = moviesSidebarRoute._addFileChildren(
 )
 
 interface moviesMoviespaddedRouteChildren {
-  moviesMoviespaddedMovieIdRoute: typeof moviesMoviespaddedMovieIdRoute
   moviesMoviespaddedMovieIdCastRoute: typeof moviesMoviespaddedMovieIdCastRoute
   moviesMoviespaddedMovieIdCrewRoute: typeof moviesMoviespaddedMovieIdCrewRoute
   moviesMoviespaddedMovieIdRecommendationsRoute: typeof moviesMoviespaddedMovieIdRecommendationsRoute
@@ -260,7 +259,6 @@ interface moviesMoviespaddedRouteChildren {
 }
 
 const moviesMoviespaddedRouteChildren: moviesMoviespaddedRouteChildren = {
-  moviesMoviespaddedMovieIdRoute: moviesMoviespaddedMovieIdRoute,
   moviesMoviespaddedMovieIdCastRoute: moviesMoviespaddedMovieIdCastRoute,
   moviesMoviespaddedMovieIdCrewRoute: moviesMoviespaddedMovieIdCrewRoute,
   moviesMoviespaddedMovieIdRecommendationsRoute:
@@ -285,11 +283,13 @@ const moviesMoviesRouteWithChildren = moviesMoviesRoute._addFileChildren(
 
 interface moviesRouteChildren {
   moviesSidebarRoute: typeof moviesSidebarRouteWithChildren
+  moviesMoviesMovieIdRoute: typeof moviesMoviesMovieIdRoute
   moviesMoviesRoute: typeof moviesMoviesRouteWithChildren
 }
 
 const moviesRouteChildren: moviesRouteChildren = {
   moviesSidebarRoute: moviesSidebarRouteWithChildren,
+  moviesMoviesMovieIdRoute: moviesMoviesMovieIdRoute,
   moviesMoviesRoute: moviesMoviesRouteWithChildren,
 }
 
@@ -303,7 +303,7 @@ export interface FileRoutesByFullPath {
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesMoviespaddedRouteWithChildren
-  '/movies/$movieId': typeof moviesMoviespaddedMovieIdRoute
+  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviespaddedMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviespaddedMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviespaddedMovieIdRecommendationsRoute
@@ -317,7 +317,7 @@ export interface FileRoutesByTo {
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
   '/movies': typeof moviesMoviespaddedRouteWithChildren
-  '/movies/$movieId': typeof moviesMoviespaddedMovieIdRoute
+  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/movies/$movieId/cast': typeof moviesMoviespaddedMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviespaddedMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviespaddedMovieIdRecommendationsRoute
@@ -334,9 +334,9 @@ export interface FileRoutesById {
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
   '/(people)/people': typeof peoplePeopleRoute
   '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
+  '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
   '/(movies)/movies_': typeof moviesMoviesRouteWithChildren
   '/(movies)/movies_/_padded': typeof moviesMoviespaddedRouteWithChildren
-  '/(movies)/movies_/_padded/$movieId': typeof moviesMoviespaddedMovieIdRoute
   '/(movies)/movies_/_padded/$movieId_/cast': typeof moviesMoviespaddedMovieIdCastRoute
   '/(movies)/movies_/_padded/$movieId_/crew': typeof moviesMoviespaddedMovieIdCrewRoute
   '/(movies)/movies_/_padded/$movieId_/recommendations': typeof moviesMoviespaddedMovieIdRecommendationsRoute
@@ -380,9 +380,9 @@ export interface FileRouteTypes {
     | '/(movies)/_sidebar'
     | '/(people)/people'
     | '/(movies)/_sidebar/movies'
+    | '/(movies)/movies_/$movieId'
     | '/(movies)/movies_'
     | '/(movies)/movies_/_padded'
-    | '/(movies)/movies_/_padded/$movieId'
     | '/(movies)/movies_/_padded/$movieId_/cast'
     | '/(movies)/movies_/_padded/$movieId_/crew'
     | '/(movies)/movies_/_padded/$movieId_/recommendations'
@@ -444,6 +444,7 @@ export const routeTree = rootRoute
       "filePath": "(movies)",
       "children": [
         "/(movies)/_sidebar",
+        "/(movies)/movies_/$movieId",
         "/(movies)/movies_"
       ]
     },
@@ -461,6 +462,10 @@ export const routeTree = rootRoute
       "filePath": "(movies)/_sidebar/movies.tsx",
       "parent": "/(movies)/_sidebar"
     },
+    "/(movies)/movies_/$movieId": {
+      "filePath": "(movies)/movies_/$movieId.tsx",
+      "parent": "/(movies)"
+    },
     "/(movies)/movies_": {
       "filePath": "(movies)/movies_",
       "parent": "/(movies)",
@@ -472,16 +477,11 @@ export const routeTree = rootRoute
       "filePath": "(movies)/movies_/_padded.tsx",
       "parent": "/(movies)/movies_",
       "children": [
-        "/(movies)/movies_/_padded/$movieId",
         "/(movies)/movies_/_padded/$movieId_/cast",
         "/(movies)/movies_/_padded/$movieId_/crew",
         "/(movies)/movies_/_padded/$movieId_/recommendations",
         "/(movies)/movies_/_padded/$movieId_/similar"
       ]
-    },
-    "/(movies)/movies_/_padded/$movieId": {
-      "filePath": "(movies)/movies_/_padded/$movieId.tsx",
-      "parent": "/(movies)/movies_/_padded"
     },
     "/(movies)/movies_/_padded/$movieId_/cast": {
       "filePath": "(movies)/movies_/_padded/$movieId_/cast.tsx",

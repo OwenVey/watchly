@@ -1,5 +1,5 @@
 import { MovieCard } from '@/components/movie-card';
-import { movieIdQueryOptions } from '@/routes/(movies)/movies_/_padded/$movieId';
+import { movieIdQueryOptions } from '@/routes/(movies)/movies_/$movieId';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 

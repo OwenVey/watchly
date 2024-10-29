@@ -1,5 +1,6 @@
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
+import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
 import { ShowMoreButton } from '@/components/show-more-button';
@@ -43,7 +44,7 @@ export const movieIdQueryOptions = (movieId: string) =>
       }),
   });
 
-export const Route = createFileRoute('/(movies)/movies_/_padded/$movieId')({
+export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     const omdb = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
@@ -169,7 +170,7 @@ function Movie() {
   const [showAllKeywords, toggleShowAllKeywords] = useToggle(false);
 
   return (
-    <div className="">
+    <PaddedLayout>
       {movie.backdrop_path && (
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
@@ -339,7 +340,7 @@ function Movie() {
           </CardCarousel>
         )}
       </div>
-    </div>
+    </PaddedLayout>
   );
 }
 
