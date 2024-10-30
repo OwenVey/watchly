@@ -32,6 +32,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
+  query: '',
 } as const;
 
 const MovieSearchSchema = z.object({

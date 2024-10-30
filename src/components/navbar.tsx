@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_sidebar/movies';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useDebounce } from '@uidotdev/usehooks';
 import { FilmIcon, MenuIcon, SearchIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const LINKS = [
   {
@@ -30,6 +32,17 @@ const LINKS = [
 export function Navbar() {
   const navigate = useNavigate();
   const { query } = useSearch({ strict: false });
+
+  const [search, setSearch] = useState(query ?? '');
+  const debouncedSearch = useDebounce(search, 500);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      void navigate({ to: '/search', search: { query: debouncedSearch } });
+    } else {
+      void navigate({ to: '.' });
+    }
+  }, [debouncedSearch, navigate]);
 
   return (
     <Accordion.Root type="single" collapsible asChild>
@@ -62,8 +75,8 @@ export function Navbar() {
 
               <div className="flex flex-1 justify-center gap-4 md:justify-end">
                 <Input
-                  value={query || ''}
-                  onChange={(e) => navigate({ to: '/search', search: { query: e.target.value } })}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="mr-6 ml-8 max-w-96 md:mr-0 md:ml-2 md:max-w-52"
                   icon={SearchIcon}
                   placeholder="Search"
