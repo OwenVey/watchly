@@ -38,21 +38,21 @@ function Person() {
     person.combined_credits.cast
       .reduce((acc, result) => {
         if (!acc.has(result.id)) acc.set(result.id, { ...result, characters: [] });
-        acc.get(result.id)!.characters.push(result.character);
+        if (result.character) acc.get(result.id)!.characters.push(result.character);
         return acc;
       }, new Map<number, (typeof person.combined_credits.cast)[number] & { characters: string[] }>())
       .values(),
   );
 
-  const crew = [
-    ...person.combined_credits.crew
+  const crew = Array.from(
+    person.combined_credits.crew
       .reduce((acc, result) => {
         if (!acc.has(result.id)) acc.set(result.id, { ...result, jobs: [] });
-        acc.get(result.id)!.jobs.push(result.job);
+        if (result.job) acc.get(result.id)!.jobs.push(result.job);
         return acc;
       }, new Map<number, (typeof person.combined_credits.crew)[number] & { jobs: string[] }>())
       .values(),
-  ];
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fade, setFade] = useState(true);
