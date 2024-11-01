@@ -161,7 +161,7 @@ function Movie() {
       logoClass: 'w-5',
     },
     {
-      score: omdb?.imdbRating,
+      score: omdb?.imdbRating !== 'N/A' && omdb?.imdbRating,
       logo: ImdbLogo,
       tooltip: 'IMDb Rating',
       logoClass: 'w-7',
@@ -281,17 +281,19 @@ function Movie() {
             </Card>
           )}
           <Card className="h-fit">
-            <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
-              {ratings.map((rating, index) => (
-                <Tooltip key={index}>
-                  <TooltipTrigger className="flex items-center gap-1.5">
-                    <rating.logo className={rating.logoClass} />
-                    <span className="text-sm font-medium text-gray-11">{rating.score}</span>
-                  </TooltipTrigger>
-                  <TooltipContent>{rating.tooltip}</TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
+            {ratings.length > 0 && (
+              <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
+                {ratings.map((rating, index) => (
+                  <Tooltip key={index}>
+                    <TooltipTrigger className="flex items-center gap-1.5">
+                      <rating.logo className={rating.logoClass} />
+                      <span className="text-sm font-medium text-gray-11">{rating.score}</span>
+                    </TooltipTrigger>
+                    <TooltipContent>{rating.tooltip}</TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            )}
             <dl className="divide-y divide-gray-5 text-sm">
               {movieDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">

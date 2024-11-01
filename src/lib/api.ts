@@ -141,7 +141,7 @@ export const omdbApi = createFetch({
           Language: z.string(),
           Country: z.string(),
           Awards: z.string(),
-          Poster: z.string().url(),
+          Poster: z.string(),
           Ratings: z.array(
             z.object({
               Source: z.string(),
