@@ -175,8 +175,8 @@ function Movie() {
       {movie.backdrop_path && (
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
-            className="h-[45rem] w-full object-cover opacity-10 blur-sm"
-            src={getTmdbImage('backdrop', movie.backdrop_path, 'w300')}
+            className="h-[45rem] w-full object-cover opacity-15 blur-sm"
+            src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
             alt={`backdrop image for ${movie.title}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-gradient-to-t from-gray-1" />
