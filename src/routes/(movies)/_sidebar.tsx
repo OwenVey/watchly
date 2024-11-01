@@ -379,7 +379,7 @@ function Filters() {
                             <img
                               src={getTmdbImage('logo', provider.logo_path, 'w92')}
                               alt={`${provider.provider_name} logo`}
-                              className="h-full w-full rounded-md"
+                              className="rounded-md"
                             />
                           )}
                         </Link>
