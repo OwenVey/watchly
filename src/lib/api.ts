@@ -1,4 +1,5 @@
 import {
+  CollectionOutputSchema,
   DiscoverMoviesOutputSchema,
   DiscoverMoviesQuerySchema,
   MovieDetailsOutputSchema,
@@ -106,6 +107,12 @@ export const tmdbApi = createFetch({
           append_to_response: z.tuple([z.literal('combined_credits')]),
         }),
         output: PersonDetailsOutputSchema,
+      },
+      '/collection/:collectionId': {
+        params: z.object({
+          collectionId: z.string(),
+        }),
+        output: CollectionOutputSchema,
       },
     },
     { strict: true },

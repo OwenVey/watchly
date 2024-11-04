@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import type { ReleaseType } from '@/types';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
@@ -275,7 +276,11 @@ function Movie() {
                 />
               )}
               <div className="font-medium text-pretty text-gray-12">{movie.belongs_to_collection.name}</div>
-              <Link to="/" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
+              <Link
+                to={CollectionIdRoute.fullPath}
+                params={{ collectionId: movie.belongs_to_collection.id.toString() }}
+                className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+              >
                 View
               </Link>
             </Card>

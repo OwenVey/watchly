@@ -26,7 +26,7 @@ export const PersonSchema = z.object({
   adult: z.boolean(),
   gender: z.number(),
   id: z.number(),
-  known_for_department: z.string().nullable(),
+  known_for_department: z.string().nullable().optional(),
   name: z.string(),
   original_name: z.string(),
   popularity: z.number(),
@@ -341,4 +341,13 @@ export const PersonDetailsOutputSchema = z.object({
       ]),
     ),
   }),
+});
+
+export const CollectionOutputSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  overview: z.string(),
+  poster_path: z.string(),
+  backdrop_path: z.string(),
+  parts: z.array(MovieSchema),
 });
