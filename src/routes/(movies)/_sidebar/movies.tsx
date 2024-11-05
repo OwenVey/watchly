@@ -1,9 +1,7 @@
 import { MovieCard } from '@/components/movie-card';
-import type { Option } from '@/components/multi-select';
-import {} from '@/components/ui/select';
+import type { Option } from '@/components/ui/multiselect';
 import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
-import {} from '@/lib/constants';
 import { ReleaseTypeSchema } from '@/schemas';
 import type { ReleaseType } from '@/types';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';

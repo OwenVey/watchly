@@ -1,9 +1,9 @@
-import MultipleSelector from '@/components/multi-select';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Multiselect } from '@/components/ui/multiselect';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -258,71 +258,61 @@ function Filters() {
 
         {/* Genres */}
         <div className="flex flex-col gap-1.5">
-          <Label>Genres</Label>
-          <MultipleSelector
+          <Label htmlFor="genres">Genres</Label>
+          <Multiselect
+            id="genres"
+            placeholder="Select genres"
             value={genres.map((value) => ({
               value: value.toString(),
               label: MOVIE_GENRES_MAP[value as keyof typeof MOVIE_GENRES_MAP],
             }))}
-            onChange={(options) =>
-              navigate({
-                search: { genres: options.map(({ value }) => +value) },
-              })
-            }
-            defaultOptions={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ label, value }))}
-            placeholder="Select genres"
-            hidePlaceholderWhenSelected
+            onValueChange={(options) => navigate({ search: { genres: options.map(({ value }) => +value) } })}
+            options={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
         </div>
 
         {/* Release Type */}
         <div className="flex flex-col gap-1.5">
           <Label>Release Type</Label>
-          <MultipleSelector
+          <Multiselect
+            id="release-types"
+            placeholder="Select release types"
             value={releaseTypes.map((value) => ({
               value: value.toString(),
               label: RELEASE_TYPE_MAP[value],
             }))}
-            onChange={(options) =>
-              navigate({
-                search: { releaseTypes: options.map(({ value }) => +value) },
-              })
-            }
-            defaultOptions={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
-            placeholder="Select release types"
-            hidePlaceholderWhenSelected
+            onValueChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => +value) } })}
+            options={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
         </div>
 
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">
-          <Label>Keywords</Label>
-          <MultipleSelector
+          <Label htmlFor="keywords">Keywords</Label>
+          <Multiselect
+            id="keywords"
+            placeholder="Select keywords"
+            value={keywords}
+            onValueChange={(keywords) => navigate({ search: { keywords } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/keyword', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
-            value={keywords}
-            onChange={(keywords) => navigate({ search: { keywords } })}
-            placeholder="Search keywords"
-            initialMessage="Start typing to search"
-            hidePlaceholderWhenSelected
           />
         </div>
 
         {/* Studio */}
         <div className="flex flex-col gap-1.5">
           <Label>Studio</Label>
-          <MultipleSelector
+          <Multiselect
+            id="studio"
+            placeholder="Select studios"
+            value={studios}
+            onValueChange={(studios) => navigate({ search: { studios } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
-            value={studios}
-            onChange={(studios) => navigate({ search: { studios } })}
-            placeholder="Search studios"
-            initialMessage="Start typing to search"
-            hidePlaceholderWhenSelected
           />
         </div>
 

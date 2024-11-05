@@ -1,9 +1,18 @@
 import { type ClassValue, clsx } from 'clsx';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function useContextSafely<T>(context: React.Context<T>): NonNullable<T> {
+  const value = React.useContext(context);
+  if (value == null) {
+    throw new Error(`${context.displayName} cannot be used outside of provider`);
+  }
+  return value;
 }
 
 type ImageTypeToSizeMap = {
