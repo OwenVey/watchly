@@ -77,8 +77,10 @@
   /* --color-gray-12: red; */
 }
 
-button {
+button,
+a {
   cursor: pointer;
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-gray-12;
 }
 
 html.dark {

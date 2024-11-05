@@ -52,7 +52,7 @@ export function Navbar() {
           <Card className="px-4 py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-gray-12">
+                <Link to="/" className="-m-1 flex items-center gap-2 rounded-lg p-1 text-lg font-semibold text-gray-12">
                   <Logo className="size-8 text-primary-9" />
                   Watchly
                 </Link>

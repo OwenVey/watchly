@@ -117,7 +117,7 @@ function Movie() {
           from={Route.fullPath}
           to="/movies"
           search={{ originalLanguage: movie.original_language }}
-          className="underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+          className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
         >
           {LANGUAGES_MAP[movie.original_language]}
         </Link>
@@ -137,7 +137,7 @@ function Movie() {
                 from={Route.fullPath}
                 to="/movies"
                 search={{ studios: [{ value: id.toString(), label: name }] }}
-                className="underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+                className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
               >
                 {name}
               </Link>
@@ -290,7 +290,7 @@ function Movie() {
               <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
                 {ratings.map((rating, index) => (
                   <Tooltip key={index}>
-                    <TooltipTrigger className="flex items-center gap-1.5">
+                    <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
                       <rating.logo className={rating.logoClass} />
                       <span className="text-sm font-medium text-gray-11">{rating.score}</span>
                     </TooltipTrigger>
@@ -372,7 +372,7 @@ function CardCarousel({ title, children, link }: { title: string; children: Reac
       }}
     >
       <div className="flex items-end justify-between">
-        <Link className="group flex items-center gap-1.5" from={Route.fullPath} to={link}>
+        <Link className="group -m-1 flex items-center gap-1.5 rounded-md p-1" from={Route.fullPath} to={link}>
           <h2 className="text-2xl leading-5 font-semibold text-gray-12">{title}</h2>
           <CircleArrowRightIcon className="size-6 text-gray-9 transition-colors group-hover:text-gray-12" />
         </Link>
