@@ -14,10 +14,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TestImport } from './routes/test'
-import { Route as SeriesImport } from './routes/series'
 import { Route as SearchImport } from './routes/search'
 import { Route as IndexImport } from './routes/index'
 import { Route as CollectionsCollectionIdImport } from './routes/collections/$collectionId'
+import { Route as seriesSeriesImport } from './routes/(series)/series'
 import { Route as peoplePeopleImport } from './routes/(people)/people'
 import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
 import { Route as peoplePeoplePersonIdImport } from './routes/(people)/people_/$personId'
@@ -45,12 +45,6 @@ const TestRoute = TestImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const SeriesRoute = SeriesImport.update({
-  id: '/series',
-  path: '/series',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const SearchRoute = SearchImport.update({
   id: '/search',
   path: '/search',
@@ -66,6 +60,12 @@ const IndexRoute = IndexImport.update({
 const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
   id: '/collections/$collectionId',
   path: '/collections/$collectionId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const seriesSeriesRoute = seriesSeriesImport.update({
+  id: '/(series)/series',
+  path: '/series',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -143,13 +143,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchImport
       parentRoute: typeof rootRoute
     }
-    '/series': {
-      id: '/series'
-      path: '/series'
-      fullPath: '/series'
-      preLoaderRoute: typeof SeriesImport
-      parentRoute: typeof rootRoute
-    }
     '/test': {
       id: '/test'
       path: '/test'
@@ -176,6 +169,13 @@ declare module '@tanstack/react-router' {
       path: '/people'
       fullPath: '/people'
       preLoaderRoute: typeof peoplePeopleImport
+      parentRoute: typeof rootRoute
+    }
+    '/(series)/series': {
+      id: '/(series)/series'
+      path: '/series'
+      fullPath: '/series'
+      preLoaderRoute: typeof seriesSeriesImport
       parentRoute: typeof rootRoute
     }
     '/collections/$collectionId': {
@@ -276,9 +276,9 @@ const moviesRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof moviesSidebarRouteWithChildren
   '/search': typeof SearchRoute
-  '/series': typeof SeriesRoute
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
+  '/series': typeof seriesSeriesRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
@@ -292,9 +292,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof moviesSidebarRouteWithChildren
   '/search': typeof SearchRoute
-  '/series': typeof SeriesRoute
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
+  '/series': typeof seriesSeriesRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
@@ -309,11 +309,11 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
-  '/series': typeof SeriesRoute
   '/test': typeof TestRoute
   '/(movies)': typeof moviesRouteWithChildren
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
   '/(people)/people': typeof peoplePeopleRoute
+  '/(series)/series': typeof seriesSeriesRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
   '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
@@ -329,9 +329,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/search'
-    | '/series'
     | '/test'
     | '/people'
+    | '/series'
     | '/collections/$collectionId'
     | '/movies'
     | '/movies/$movieId'
@@ -344,9 +344,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/search'
-    | '/series'
     | '/test'
     | '/people'
+    | '/series'
     | '/collections/$collectionId'
     | '/movies'
     | '/movies/$movieId'
@@ -359,11 +359,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/search'
-    | '/series'
     | '/test'
     | '/(movies)'
     | '/(movies)/_sidebar'
     | '/(people)/people'
+    | '/(series)/series'
     | '/collections/$collectionId'
     | '/(movies)/_sidebar/movies'
     | '/(movies)/movies_/$movieId'
@@ -378,10 +378,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SearchRoute: typeof SearchRoute
-  SeriesRoute: typeof SeriesRoute
   TestRoute: typeof TestRoute
   moviesRoute: typeof moviesRouteWithChildren
   peoplePeopleRoute: typeof peoplePeopleRoute
+  seriesSeriesRoute: typeof seriesSeriesRoute
   CollectionsCollectionIdRoute: typeof CollectionsCollectionIdRoute
   peoplePeoplePersonIdRoute: typeof peoplePeoplePersonIdRoute
 }
@@ -389,10 +389,10 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SearchRoute: SearchRoute,
-  SeriesRoute: SeriesRoute,
   TestRoute: TestRoute,
   moviesRoute: moviesRouteWithChildren,
   peoplePeopleRoute: peoplePeopleRoute,
+  seriesSeriesRoute: seriesSeriesRoute,
   CollectionsCollectionIdRoute: CollectionsCollectionIdRoute,
   peoplePeoplePersonIdRoute: peoplePeoplePersonIdRoute,
 }
@@ -409,10 +409,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/search",
-        "/series",
         "/test",
         "/(movies)",
         "/(people)/people",
+        "/(series)/series",
         "/collections/$collectionId",
         "/(people)/people_/$personId"
       ]
@@ -422,9 +422,6 @@ export const routeTree = rootRoute
     },
     "/search": {
       "filePath": "search.tsx"
-    },
-    "/series": {
-      "filePath": "series.tsx"
     },
     "/test": {
       "filePath": "test.tsx"
@@ -449,6 +446,9 @@ export const routeTree = rootRoute
     },
     "/(people)/people": {
       "filePath": "(people)/people.tsx"
+    },
+    "/(series)/series": {
+      "filePath": "(series)/series.tsx"
     },
     "/collections/$collectionId": {
       "filePath": "collections/$collectionId.tsx"
