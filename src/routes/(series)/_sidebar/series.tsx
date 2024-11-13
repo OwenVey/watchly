@@ -22,6 +22,7 @@ export const DEFAULT_SERIES_SEARCH = {
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as number[],
+  status: '',
   types: [] as TvShowType[],
   keywords: [] as Option[],
   studios: [] as Option[],
@@ -61,6 +62,7 @@ const SeriesSearchSchema = z.object({
   ).default(DEFAULT_SERIES_SEARCH.sort),
   sortDir: fallback(z.enum(['asc', 'desc']), DEFAULT_SERIES_SEARCH.sortDir).default(DEFAULT_SERIES_SEARCH.sortDir),
   genres: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.genres).default(DEFAULT_SERIES_SEARCH.genres),
+  status: fallback(z.string(), DEFAULT_SERIES_SEARCH.status).default(DEFAULT_SERIES_SEARCH.status),
   types: fallback(z.array(TvShowTypeSchema), DEFAULT_SERIES_SEARCH.types).default(DEFAULT_SERIES_SEARCH.types),
   keywords: fallback(
     z.array(z.object({ value: z.string(), label: z.string() })),
@@ -127,6 +129,9 @@ const seriesQueryOptions = (params: SeriesSearchParams) =>
               }),
               ...(params.genres.length > 0 && {
                 with_genres: params.genres.join(','),
+              }),
+              ...(params.status.length > 0 && {
+                with_status: params.status,
               }),
               ...(params.types.length > 0 && {
                 with_type: params.types.join('|'),

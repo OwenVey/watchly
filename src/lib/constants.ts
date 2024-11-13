@@ -1,4 +1,4 @@
-import type { MovieReleaseType, TvShowType } from '@/types';
+import type { MovieReleaseType, TvShowStatus, TvShowType } from '@/types';
 
 export const MOVIE_RELEASE_TYPE_MAP = {
   1: 'Premiere',
@@ -18,6 +18,15 @@ export const TV_SHOW_TYPE_MAP = {
   5: 'Talk Show',
   6: 'Video',
 } satisfies Record<TvShowType, string>;
+
+export const TV_SHOW_STATUS_MAP = {
+  0: 'Returning Series',
+  1: 'Planned',
+  2: 'In Production',
+  3: 'Ended',
+  4: 'Canceled',
+  5: 'Pilot',
+} satisfies Record<TvShowStatus, string>;
 
 export const MOVIE_GENRES_MAP = {
   28: 'Action',

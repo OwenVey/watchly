@@ -12,7 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES_MAP, SERIES_GENRES_MAP, TV_SHOW_TYPE_MAP } from '@/lib/constants';
+import { LANGUAGES_MAP, SERIES_GENRES_MAP, TV_SHOW_STATUS_MAP, TV_SHOW_TYPE_MAP } from '@/lib/constants';
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import {
   DEFAULT_SERIES_SEARCH,
@@ -82,6 +82,7 @@ function Filters() {
     sort,
     sortDir,
     genres,
+    status,
     types,
     keywords,
     originalLanguage,
@@ -248,6 +249,23 @@ function Filters() {
             onValueChange={(options) => navigate({ search: { genres: options.map(({ value }) => +value) } })}
             options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
+        </div>
+
+        {/* Status */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="status">Status</Label>
+          <Select key={status} value={status} onValueChange={(status) => navigate({ search: { status } })}>
+            <SelectTrigger id="status">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Type */}
