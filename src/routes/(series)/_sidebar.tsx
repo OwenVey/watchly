@@ -12,7 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES_MAP, SERIES_GENRES_MAP } from '@/lib/constants';
+import { LANGUAGES_MAP, SERIES_GENRES_MAP, TV_SHOW_TYPE_MAP } from '@/lib/constants';
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import {
   DEFAULT_SERIES_SEARCH,
@@ -82,6 +82,7 @@ function Filters() {
     sort,
     sortDir,
     genres,
+    types,
     keywords,
     originalLanguage,
     studios,
@@ -249,20 +250,20 @@ function Filters() {
           />
         </div>
 
-        {/* // Release Type
+        {/* Type */}
         <div className="flex flex-col gap-1.5">
-          <Label>Release Type</Label>
+          <Label>Types</Label>
           <Multiselect
-            id="release-types"
-            placeholder="Select release types"
-            value={releaseTypes.map((value) => ({
+            id="types"
+            placeholder="Select show types"
+            value={types.map((value) => ({
               value: value.toString(),
-              label: RELEASE_TYPE_MAP[value],
+              label: TV_SHOW_TYPE_MAP[value],
             }))}
-            onValueChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => +value) } })}
-            options={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            onValueChange={(options) => navigate({ search: { types: options.map(({ value }) => +value) } })}
+            options={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
-        </div> */}
+        </div>
 
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">

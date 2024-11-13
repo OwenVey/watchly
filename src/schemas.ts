@@ -229,7 +229,17 @@ export const SearchMovieOutputSchema = paginated(
   }),
 );
 
-export const ReleaseTypeSchema = z.union([
+export const MovieReleaseTypeSchema = z.union([
+  z.literal(1),
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+]);
+
+export const TvShowTypeSchema = z.union([
+  z.literal(0),
   z.literal(1),
   z.literal(2),
   z.literal(3),
@@ -249,7 +259,7 @@ export const ReleaseDatesOutputSchema = z.object({
           iso_639_1: z.string(),
           note: z.string(),
           release_date: z.coerce.date(),
-          type: ReleaseTypeSchema,
+          type: MovieReleaseTypeSchema,
         }),
       ),
     }),

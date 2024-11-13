@@ -2,6 +2,8 @@ import { SeriesCard } from '@/components/series-card';
 import type { Option } from '@/components/ui/multiselect';
 import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
+import { TvShowTypeSchema } from '@/schemas';
+import type { TvShowType } from '@/types';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
@@ -20,7 +22,7 @@ export const DEFAULT_SERIES_SEARCH = {
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as number[],
-  // releaseTypes: [] as ReleaseType[],
+  types: [] as TvShowType[],
   keywords: [] as Option[],
   studios: [] as Option[],
   originalLanguage: undefined,
@@ -59,6 +61,7 @@ const SeriesSearchSchema = z.object({
   ).default(DEFAULT_SERIES_SEARCH.sort),
   sortDir: fallback(z.enum(['asc', 'desc']), DEFAULT_SERIES_SEARCH.sortDir).default(DEFAULT_SERIES_SEARCH.sortDir),
   genres: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.genres).default(DEFAULT_SERIES_SEARCH.genres),
+  types: fallback(z.array(TvShowTypeSchema), DEFAULT_SERIES_SEARCH.types).default(DEFAULT_SERIES_SEARCH.types),
   keywords: fallback(
     z.array(z.object({ value: z.string(), label: z.string() })),
     DEFAULT_SERIES_SEARCH.keywords,
@@ -125,9 +128,9 @@ const seriesQueryOptions = (params: SeriesSearchParams) =>
               ...(params.genres.length > 0 && {
                 with_genres: params.genres.join(','),
               }),
-              // ...(params.releaseTypes.length > 0 && {
-              //   with_release_type: params.releaseTypes.join('|'),
-              // }),
+              ...(params.types.length > 0 && {
+                with_type: params.types.join('|'),
+              }),
               ...(params.keywords.length > 0 && {
                 with_keywords: params.keywords.map(({ value }) => value).join(','),
               }),

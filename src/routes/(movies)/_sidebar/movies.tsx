@@ -2,8 +2,8 @@ import { MovieCard } from '@/components/movie-card';
 import type { Option } from '@/components/ui/multiselect';
 import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
-import { ReleaseTypeSchema } from '@/schemas';
-import type { ReleaseType } from '@/types';
+import { MovieReleaseTypeSchema } from '@/schemas';
+import type { MovieReleaseType } from '@/types';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
@@ -24,7 +24,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   sort: 'popularity',
   sortDir: 'desc',
   genres: [] as number[],
-  releaseTypes: [] as ReleaseType[],
+  releaseTypes: [] as MovieReleaseType[],
   keywords: [] as Option[],
   studios: [] as Option[],
   originalLanguage: undefined,
@@ -73,7 +73,7 @@ const MovieSearchSchema = z.object({
   ).default(DEFAULT_MOVIE_SEARCH.sort),
   sortDir: fallback(z.enum(['asc', 'desc']), DEFAULT_MOVIE_SEARCH.sortDir).default(DEFAULT_MOVIE_SEARCH.sortDir),
   genres: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.genres).default(DEFAULT_MOVIE_SEARCH.genres),
-  releaseTypes: fallback(z.array(ReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes).default(
+  releaseTypes: fallback(z.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes).default(
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
   keywords: fallback(

@@ -12,7 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES_MAP, MOVIE_GENRES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
+import { LANGUAGES_MAP, MOVIE_GENRES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
@@ -279,10 +279,10 @@ function Filters() {
             placeholder="Select release types"
             value={releaseTypes.map((value) => ({
               value: value.toString(),
-              label: RELEASE_TYPE_MAP[value],
+              label: MOVIE_RELEASE_TYPE_MAP[value],
             }))}
             onValueChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => +value) } })}
-            options={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            options={Object.entries(MOVIE_RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
         </div>
 

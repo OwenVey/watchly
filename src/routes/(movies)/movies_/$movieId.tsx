@@ -11,10 +11,10 @@ import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
-import { LANGUAGES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
+import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
-import type { ReleaseType } from '@/types';
+import type { MovieReleaseType } from '@/types';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
@@ -74,7 +74,7 @@ function Movie() {
     4: CloudIcon,
     5: Disc3Icon,
     6: TvIcon,
-  } satisfies Record<ReleaseType, LucideIcon>;
+  } satisfies Record<MovieReleaseType, LucideIcon>;
 
   const [showAllReleaseDates, toggleShowAllReleaseDates] = useToggle(false);
 
@@ -95,7 +95,7 @@ function Movie() {
                       <TooltipTrigger asChild>
                         <IconComponent className="size-4" />
                       </TooltipTrigger>
-                      <TooltipContent side="left">{RELEASE_TYPE_MAP[type]}</TooltipContent>
+                      <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type]}</TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}
                   </React.Fragment>
