@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { DEFAULT_MOVIE_SEARCH } from '@/routes/(movies)/_sidebar/movies';
+import { DEFAULT_SERIES_SEARCH } from '@/routes/(series)/_sidebar/series';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -21,6 +22,7 @@ const LINKS = [
     to: '/series',
     label: 'Series',
     icon: TvIcon,
+    search: DEFAULT_SERIES_SEARCH,
   },
   {
     to: '/people',

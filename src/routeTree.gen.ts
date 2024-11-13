@@ -17,9 +17,10 @@ import { Route as TestImport } from './routes/test'
 import { Route as SearchImport } from './routes/search'
 import { Route as IndexImport } from './routes/index'
 import { Route as CollectionsCollectionIdImport } from './routes/collections/$collectionId'
-import { Route as seriesSeriesImport } from './routes/(series)/series'
+import { Route as seriesSidebarImport } from './routes/(series)/_sidebar'
 import { Route as peoplePeopleImport } from './routes/(people)/people'
 import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
+import { Route as seriesSidebarSeriesImport } from './routes/(series)/_sidebar/series'
 import { Route as peoplePeoplePersonIdImport } from './routes/(people)/people_/$personId'
 import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
 import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
@@ -30,9 +31,15 @@ import { Route as moviesMoviesMovieIdCastImport } from './routes/(movies)/movies
 
 // Create Virtual Routes
 
+const seriesImport = createFileRoute('/(series)')()
 const moviesImport = createFileRoute('/(movies)')()
 
 // Create/Update Routes
+
+const seriesRoute = seriesImport.update({
+  id: '/(series)',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const moviesRoute = moviesImport.update({
   id: '/(movies)',
@@ -63,10 +70,9 @@ const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const seriesSeriesRoute = seriesSeriesImport.update({
-  id: '/(series)/series',
-  path: '/series',
-  getParentRoute: () => rootRoute,
+const seriesSidebarRoute = seriesSidebarImport.update({
+  id: '/_sidebar',
+  getParentRoute: () => seriesRoute,
 } as any)
 
 const peoplePeopleRoute = peoplePeopleImport.update({
@@ -78,6 +84,12 @@ const peoplePeopleRoute = peoplePeopleImport.update({
 const moviesSidebarRoute = moviesSidebarImport.update({
   id: '/_sidebar',
   getParentRoute: () => moviesRoute,
+} as any)
+
+const seriesSidebarSeriesRoute = seriesSidebarSeriesImport.update({
+  id: '/series',
+  path: '/series',
+  getParentRoute: () => seriesSidebarRoute,
 } as any)
 
 const peoplePeoplePersonIdRoute = peoplePeoplePersonIdImport.update({
@@ -171,12 +183,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof peoplePeopleImport
       parentRoute: typeof rootRoute
     }
-    '/(series)/series': {
-      id: '/(series)/series'
-      path: '/series'
-      fullPath: '/series'
-      preLoaderRoute: typeof seriesSeriesImport
+    '/(series)': {
+      id: '/(series)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof seriesImport
       parentRoute: typeof rootRoute
+    }
+    '/(series)/_sidebar': {
+      id: '/(series)/_sidebar'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof seriesSidebarImport
+      parentRoute: typeof seriesRoute
     }
     '/collections/$collectionId': {
       id: '/collections/$collectionId'
@@ -205,6 +224,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/people/$personId'
       preLoaderRoute: typeof peoplePeoplePersonIdImport
       parentRoute: typeof rootRoute
+    }
+    '/(series)/_sidebar/series': {
+      id: '/(series)/_sidebar/series'
+      path: '/series'
+      fullPath: '/series'
+      preLoaderRoute: typeof seriesSidebarSeriesImport
+      parentRoute: typeof seriesSidebarImport
     }
     '/(movies)/movies_/$movieId_/cast': {
       id: '/(movies)/movies_/$movieId_/cast'
@@ -273,16 +299,39 @@ const moviesRouteChildren: moviesRouteChildren = {
 const moviesRouteWithChildren =
   moviesRoute._addFileChildren(moviesRouteChildren)
 
+interface seriesSidebarRouteChildren {
+  seriesSidebarSeriesRoute: typeof seriesSidebarSeriesRoute
+}
+
+const seriesSidebarRouteChildren: seriesSidebarRouteChildren = {
+  seriesSidebarSeriesRoute: seriesSidebarSeriesRoute,
+}
+
+const seriesSidebarRouteWithChildren = seriesSidebarRoute._addFileChildren(
+  seriesSidebarRouteChildren,
+)
+
+interface seriesRouteChildren {
+  seriesSidebarRoute: typeof seriesSidebarRouteWithChildren
+}
+
+const seriesRouteChildren: seriesRouteChildren = {
+  seriesSidebarRoute: seriesSidebarRouteWithChildren,
+}
+
+const seriesRouteWithChildren =
+  seriesRoute._addFileChildren(seriesRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof moviesSidebarRouteWithChildren
+  '/': typeof seriesSidebarRouteWithChildren
   '/search': typeof SearchRoute
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
-  '/series': typeof seriesSeriesRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/people/$personId': typeof peoplePeoplePersonIdRoute
+  '/series': typeof seriesSidebarSeriesRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -290,15 +339,15 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/': typeof moviesSidebarRouteWithChildren
+  '/': typeof seriesSidebarRouteWithChildren
   '/search': typeof SearchRoute
   '/test': typeof TestRoute
   '/people': typeof peoplePeopleRoute
-  '/series': typeof seriesSeriesRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
   '/movies/$movieId': typeof moviesMoviesMovieIdRoute
   '/people/$personId': typeof peoplePeoplePersonIdRoute
+  '/series': typeof seriesSidebarSeriesRoute
   '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
   '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
   '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -313,11 +362,13 @@ export interface FileRoutesById {
   '/(movies)': typeof moviesRouteWithChildren
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
   '/(people)/people': typeof peoplePeopleRoute
-  '/(series)/series': typeof seriesSeriesRoute
+  '/(series)': typeof seriesRouteWithChildren
+  '/(series)/_sidebar': typeof seriesSidebarRouteWithChildren
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
   '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
   '/(people)/people_/$personId': typeof peoplePeoplePersonIdRoute
+  '/(series)/_sidebar/series': typeof seriesSidebarSeriesRoute
   '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
   '/(movies)/movies_/$movieId_/crew': typeof moviesMoviesMovieIdCrewRoute
   '/(movies)/movies_/$movieId_/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
@@ -331,11 +382,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/test'
     | '/people'
-    | '/series'
     | '/collections/$collectionId'
     | '/movies'
     | '/movies/$movieId'
     | '/people/$personId'
+    | '/series'
     | '/movies/$movieId/cast'
     | '/movies/$movieId/crew'
     | '/movies/$movieId/recommendations'
@@ -346,11 +397,11 @@ export interface FileRouteTypes {
     | '/search'
     | '/test'
     | '/people'
-    | '/series'
     | '/collections/$collectionId'
     | '/movies'
     | '/movies/$movieId'
     | '/people/$personId'
+    | '/series'
     | '/movies/$movieId/cast'
     | '/movies/$movieId/crew'
     | '/movies/$movieId/recommendations'
@@ -363,11 +414,13 @@ export interface FileRouteTypes {
     | '/(movies)'
     | '/(movies)/_sidebar'
     | '/(people)/people'
-    | '/(series)/series'
+    | '/(series)'
+    | '/(series)/_sidebar'
     | '/collections/$collectionId'
     | '/(movies)/_sidebar/movies'
     | '/(movies)/movies_/$movieId'
     | '/(people)/people_/$personId'
+    | '/(series)/_sidebar/series'
     | '/(movies)/movies_/$movieId_/cast'
     | '/(movies)/movies_/$movieId_/crew'
     | '/(movies)/movies_/$movieId_/recommendations'
@@ -381,7 +434,7 @@ export interface RootRouteChildren {
   TestRoute: typeof TestRoute
   moviesRoute: typeof moviesRouteWithChildren
   peoplePeopleRoute: typeof peoplePeopleRoute
-  seriesSeriesRoute: typeof seriesSeriesRoute
+  seriesRoute: typeof seriesRouteWithChildren
   CollectionsCollectionIdRoute: typeof CollectionsCollectionIdRoute
   peoplePeoplePersonIdRoute: typeof peoplePeoplePersonIdRoute
 }
@@ -392,7 +445,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestRoute: TestRoute,
   moviesRoute: moviesRouteWithChildren,
   peoplePeopleRoute: peoplePeopleRoute,
-  seriesSeriesRoute: seriesSeriesRoute,
+  seriesRoute: seriesRouteWithChildren,
   CollectionsCollectionIdRoute: CollectionsCollectionIdRoute,
   peoplePeoplePersonIdRoute: peoplePeoplePersonIdRoute,
 }
@@ -412,7 +465,7 @@ export const routeTree = rootRoute
         "/test",
         "/(movies)",
         "/(people)/people",
-        "/(series)/series",
+        "/(series)",
         "/collections/$collectionId",
         "/(people)/people_/$personId"
       ]
@@ -447,8 +500,18 @@ export const routeTree = rootRoute
     "/(people)/people": {
       "filePath": "(people)/people.tsx"
     },
-    "/(series)/series": {
-      "filePath": "(series)/series.tsx"
+    "/(series)": {
+      "filePath": "(series)",
+      "children": [
+        "/(series)/_sidebar"
+      ]
+    },
+    "/(series)/_sidebar": {
+      "filePath": "(series)/_sidebar.tsx",
+      "parent": "/(series)",
+      "children": [
+        "/(series)/_sidebar/series"
+      ]
     },
     "/collections/$collectionId": {
       "filePath": "collections/$collectionId.tsx"
@@ -463,6 +526,10 @@ export const routeTree = rootRoute
     },
     "/(people)/people_/$personId": {
       "filePath": "(people)/people_/$personId.tsx"
+    },
+    "/(series)/_sidebar/series": {
+      "filePath": "(series)/_sidebar/series.tsx",
+      "parent": "/(series)/_sidebar"
     },
     "/(movies)/movies_/$movieId_/cast": {
       "filePath": "(movies)/movies_/$movieId_/cast.tsx",

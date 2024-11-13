@@ -2,9 +2,11 @@ import {
   CollectionOutputSchema,
   DiscoverMoviesOutputSchema,
   DiscoverMoviesQuerySchema,
+  DiscoverSeriesOutputSchema,
+  DiscoverSeriesQuerySchema,
   MovieDetailsOutputSchema,
-  MovieProvidersOutputSchema,
   PersonDetailsOutputSchema,
+  ProvidersOutputSchema,
   SearchCompanyOutputSchema,
   SearchKeywordOutputSchema,
   SearchMovieOutputSchema,
@@ -29,6 +31,10 @@ export const tmdbApi = createFetch({
       '/discover/movie': {
         query: DiscoverMoviesQuerySchema,
         output: DiscoverMoviesOutputSchema,
+      },
+      '/discover/tv': {
+        query: DiscoverSeriesQuerySchema,
+        output: DiscoverSeriesOutputSchema,
       },
       '/genre/movie/list': {
         output: z.object({
@@ -56,7 +62,14 @@ export const tmdbApi = createFetch({
           language: z.string().optional(),
           watch_region: z.string(),
         }),
-        output: MovieProvidersOutputSchema,
+        output: ProvidersOutputSchema,
+      },
+      '/watch/providers/tv': {
+        query: z.object({
+          language: z.string().optional(),
+          watch_region: z.string(),
+        }),
+        output: ProvidersOutputSchema,
       },
       '/search/keyword': {
         query: z.object({

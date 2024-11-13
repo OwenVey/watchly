@@ -18,7 +18,7 @@ export const DEFAULT_MOVIE_SEARCH = {
   ratingMin: 0,
   ratingMax: 10,
   voteCountMin: 0,
-  voteCountMax: 50_000,
+  voteCountMax: 1_000,
   runtimeMin: 0,
   runtimeMax: 300,
   sort: 'popularity',
@@ -115,6 +115,9 @@ const movieQueryOptions = (params: MovieSearchParams) =>
           tmdbApi('/discover/movie', {
             query: {
               page,
+              ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && {
+                include_adult: params.adult,
+              }),
               ...(params.releasedAfter !== DEFAULT_MOVIE_SEARCH.releasedAfter && {
                 'primary_release_date.gte': format(params.releasedAfter, 'yyyy-M-d'),
               }),
@@ -160,9 +163,6 @@ const movieQueryOptions = (params: MovieSearchParams) =>
               ...(params.watchProviders.length > 0 && {
                 watch_region: 'US',
                 with_watch_providers: params.watchProviders.join('|'),
-              }),
-              ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && {
-                include_adult: params.adult,
               }),
             },
           }),

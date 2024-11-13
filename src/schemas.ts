@@ -71,9 +71,9 @@ export const MovieSchema = z.object({
 export const DiscoverMoviesQuerySchema = z
   .object({
     certification: z.string().optional(),
-    certification_country: z.string().optional(),
     'certification.gte': z.string().optional(),
     'certification.lte': z.string().optional(),
+    certification_country: z.string().optional(),
     include_adult: z.boolean().optional(),
     include_video: z.boolean().optional(),
     language: z.string().optional(),
@@ -124,6 +124,59 @@ export const DiscoverMoviesQuerySchema = z
     without_genres: z.string().optional(),
     without_keywords: z.string().optional(),
     year: z.number().int().optional(),
+  })
+  .optional();
+
+export const DiscoverSeriesQuerySchema = z
+  .object({
+    'air_date.gte': z.string().optional(),
+    'air_date.lte': z.string().optional(),
+    first_air_date_year: z.number().optional(),
+    'first_air_date.gte': z.string().optional(),
+    'first_air_date.lte': z.string().optional(),
+    include_adult: z.boolean().optional(),
+    include_null_first_air_dates: z.boolean().optional(),
+    language: z.string().optional(),
+    page: z.number().int().min(1).optional(),
+    screened_theatrically: z.boolean().optional(),
+    sort_by: z
+      .enum([
+        'first_air_date.asc',
+        'first_air_date.desc',
+        'name.asc',
+        'name.desc',
+        'original_name.asc',
+        'original_name.desc',
+        'popularity.asc',
+        'popularity.desc',
+        'vote_average.asc',
+        'vote_average.desc',
+        'vote_count.asc',
+        'vote_count.desc',
+      ])
+      .optional(),
+    timezone: z.string().optional(),
+    'vote_average.gte': z.number().optional(),
+    'vote_average.lte': z.number().optional(),
+    'vote_count.gte': z.number().int().optional(),
+    'vote_count.lte': z.number().int().optional(),
+    watch_region: z.string().optional(),
+    with_companies: z.string().optional(),
+    with_genres: z.string().optional(),
+    with_keywords: z.string().optional(),
+    with_networks: z.number().optional(),
+    with_origin_country: z.string().optional(),
+    with_original_language: z.string().optional(),
+    'with_runtime.gte': z.number().int().optional(),
+    'with_runtime.lte': z.number().int().optional(),
+    with_status: z.string().optional(),
+    with_watch_monetization_types: z.string().optional(),
+    with_watch_providers: z.string().optional(),
+    without_companies: z.string().optional(),
+    without_genres: z.string().optional(),
+    without_keywords: z.string().optional(),
+    without_watch_providers: z.string().optional(),
+    with_type: z.string().optional(),
   })
   .optional();
 
@@ -265,7 +318,7 @@ export const MovieDetailsOutputSchema = z.object({
   vote_count: z.number(),
 });
 
-export const MovieProvidersOutputSchema = z.object({
+export const ProvidersOutputSchema = z.object({
   results: z.array(
     z.object({
       // display_priorities: z.record(z.number()),
@@ -293,6 +346,8 @@ export const SeriesSchema = z.object({
   vote_average: VoteAverageSchema,
   vote_count: z.number(),
 });
+
+export const DiscoverSeriesOutputSchema = paginated(SeriesSchema);
 
 export const SearchTvOutputSchema = paginated(
   SeriesSchema.extend({

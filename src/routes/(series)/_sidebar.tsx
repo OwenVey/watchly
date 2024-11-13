@@ -12,27 +12,31 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES_MAP, MOVIE_GENRES_MAP, RELEASE_TYPE_MAP } from '@/lib/constants';
-import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
-import { DEFAULT_MOVIE_SEARCH, type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
+import { LANGUAGES_MAP, SERIES_GENRES_MAP } from '@/lib/constants';
+import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import {
+  DEFAULT_SERIES_SEARCH,
+  Route as SeriesRoute,
+  type SeriesSearchParams,
+} from '@/routes/(series)/_sidebar/series';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-export const Route = createFileRoute('/(movies)/_sidebar')({
+export const Route = createFileRoute('/(series)/_sidebar')({
   loader: () => {
     return {
-      providersPromise: tmdbApi('/watch/providers/movie', { query: { watch_region: 'US' } }),
+      providersPromise: tmdbApi('/watch/providers/tv', { query: { watch_region: 'US' } }),
     };
   },
   gcTime: 0,
   shouldReload: false,
-  component: MoviesSidebar,
+  component: SeriesSidebar,
 });
 
-function MoviesSidebar() {
+function SeriesSidebar() {
   return (
     <>
       <Card
@@ -67,23 +71,20 @@ function MoviesSidebar() {
 function Filters() {
   const { providersPromise } = Route.useLoaderData();
 
-  const search = MoviesRoute.useSearch();
+  const search = SeriesRoute.useSearch();
   const {
-    releasedAfter,
-    releasedBefore,
+    firstAirDateAfter,
+    firstAirDateBefore,
     ratingMin,
     ratingMax,
     voteCountMin,
     voteCountMax,
-    runtimeMin,
-    runtimeMax,
     sort,
     sortDir,
     genres,
-    releaseTypes,
     keywords,
-    studios,
     originalLanguage,
+    studios,
     watchProviders,
     adult,
   } = search;
@@ -92,7 +93,6 @@ function Filters() {
 
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
-  const [runtime, setRuntime] = React.useState([runtimeMin, runtimeMax]);
   const [showAllServices, toggleShowAllServices] = useToggle(false);
 
   useEffect(() => {
@@ -103,10 +103,6 @@ function Filters() {
     setVoteCount([voteCountMin, voteCountMax]);
   }, [voteCountMin, voteCountMax]);
 
-  useEffect(() => {
-    setRuntime([runtimeMin, runtimeMax]);
-  }, [runtimeMin, runtimeMax]);
-
   return (
     <>
       <div className="border-b border-gray-6 px-4 py-2">
@@ -115,7 +111,7 @@ function Filters() {
           {
             Object.keys(search).filter((key) => {
               const typedKey = key as keyof typeof search;
-              return JSON.stringify(search[typedKey]) !== JSON.stringify(DEFAULT_MOVIE_SEARCH[typedKey]);
+              return JSON.stringify(search[typedKey]) !== JSON.stringify(DEFAULT_SERIES_SEARCH[typedKey]);
             }).length
           }{' '}
           Active
@@ -123,9 +119,9 @@ function Filters() {
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
-        {/* Release Date */}
+        {/* First Air Date */}
         <div className="flex flex-col gap-1.5">
-          <Label>Release Date</Label>
+          <Label>First Air Date</Label>
           <div className="flex gap-2">
             <Popover>
               <PopoverTrigger asChild>
@@ -133,18 +129,18 @@ function Filters() {
                   variant="outline"
                   className={cn(
                     'flex-1 justify-start px-3 text-left font-normal',
-                    !releasedAfter && 'text-muted-foreground',
+                    !firstAirDateAfter && 'text-muted-foreground',
                   )}
                 >
                   <CalendarIcon className="text-gray-9" />
-                  {releasedAfter ? format(releasedAfter, 'P') : <span className="text-gray-9">After</span>}
+                  {firstAirDateAfter ? format(firstAirDateAfter, 'P') : <span className="text-gray-9">After</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedAfter}
-                  onSelect={(releasedAfter) => navigate({ search: { releasedAfter } })}
+                  selected={firstAirDateAfter}
+                  onSelect={(firstAirDateAfter) => navigate({ search: { firstAirDateAfter } })}
                 />
               </PopoverContent>
             </Popover>
@@ -155,18 +151,18 @@ function Filters() {
                   variant="outline"
                   className={cn(
                     'flex-1 justify-start px-3 text-left font-normal',
-                    !releasedBefore && 'text-muted-foreground',
+                    !firstAirDateBefore && 'text-muted-foreground',
                   )}
                 >
                   <CalendarIcon className="text-gray-9" />
-                  {releasedBefore ? format(releasedBefore, 'P') : <span className="text-gray-9">Before</span>}
+                  {firstAirDateBefore ? format(firstAirDateBefore, 'P') : <span className="text-gray-9">Before</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedBefore}
-                  onSelect={(releasedBefore) => navigate({ search: { releasedBefore } })}
+                  selected={firstAirDateBefore}
+                  onSelect={(firstAirDateBefore) => navigate({ search: { firstAirDateBefore } })}
                 />
               </PopoverContent>
             </Popover>
@@ -181,9 +177,9 @@ function Filters() {
             value={rating}
             onValueChange={setRating}
             onValueCommit={([ratingMin, ratingMax]) => navigate({ search: { ratingMin, ratingMax } })}
-            defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
-            min={DEFAULT_MOVIE_SEARCH.ratingMin}
-            max={DEFAULT_MOVIE_SEARCH.ratingMax}
+            defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
+            min={DEFAULT_SERIES_SEARCH.ratingMin}
+            max={DEFAULT_SERIES_SEARCH.ratingMax}
             step={1}
             minStepsBetweenThumbs={1}
             label={(value) => value}
@@ -198,29 +194,12 @@ function Filters() {
             value={voteCount}
             onValueChange={setVoteCount}
             onValueCommit={([voteCountMin, voteCountMax]) => navigate({ search: { voteCountMin, voteCountMax } })}
-            defaultValue={[DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]}
-            min={DEFAULT_MOVIE_SEARCH.voteCountMin}
-            max={DEFAULT_MOVIE_SEARCH.voteCountMax}
+            defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
+            min={DEFAULT_SERIES_SEARCH.voteCountMin}
+            max={DEFAULT_SERIES_SEARCH.voteCountMax}
             step={1}
             minStepsBetweenThumbs={1}
-            label={(value) => `${value?.toLocaleString()}${value === DEFAULT_MOVIE_SEARCH.voteCountMax ? '+' : ''}`}
-          />
-        </div>
-
-        {/* Runtime */}
-        <div className="flex flex-col gap-1.5">
-          <Label>Runtime</Label>
-          <Slider
-            className="mt-1 mb-4"
-            value={runtime}
-            onValueChange={setRuntime}
-            onValueCommit={([runtimeMin, runtimeMax]) => navigate({ search: { runtimeMin, runtimeMax } })}
-            defaultValue={[DEFAULT_MOVIE_SEARCH.runtimeMin, DEFAULT_MOVIE_SEARCH.runtimeMax]}
-            min={DEFAULT_MOVIE_SEARCH.runtimeMin}
-            max={DEFAULT_MOVIE_SEARCH.runtimeMax}
-            step={1}
-            minStepsBetweenThumbs={1}
-            label={(value) => formatMinutesToHHMM(value ?? 0)}
+            label={(value) => `${value?.toLocaleString()}${value === DEFAULT_SERIES_SEARCH.voteCountMax ? '+' : ''}`}
           />
         </div>
 
@@ -231,17 +210,16 @@ function Filters() {
             <Select
               defaultValue="popularity"
               value={sort}
-              onValueChange={(sort: MovieSearchParams['sort']) => navigate({ search: { sort } })}
+              onValueChange={(sort: SeriesSearchParams['sort']) => navigate({ search: { sort } })}
             >
               <SelectTrigger id="sort">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="first_air_date">First Air Date</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
                 <SelectItem value="vote_average">Rating</SelectItem>
-                <SelectItem value="primary_release_date">Release Date</SelectItem>
-                <SelectItem value="revenue">Revenue</SelectItem>
                 <SelectItem value="popularity">Popularity</SelectItem>
-                <SelectItem value="title">Title</SelectItem>
                 <SelectItem value="vote_count">Vote Count</SelectItem>
               </SelectContent>
             </Select>
@@ -264,14 +242,14 @@ function Filters() {
             placeholder="Select genres"
             value={genres.map((value) => ({
               value: value.toString(),
-              label: MOVIE_GENRES_MAP[value as keyof typeof MOVIE_GENRES_MAP],
+              label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
             }))}
             onValueChange={(options) => navigate({ search: { genres: options.map(({ value }) => +value) } })}
-            options={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ value, label }))}
+            options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
         </div>
 
-        {/* Release Type */}
+        {/* // Release Type
         <div className="flex flex-col gap-1.5">
           <Label>Release Type</Label>
           <Multiselect
@@ -284,7 +262,7 @@ function Filters() {
             onValueChange={(options) => navigate({ search: { releaseTypes: options.map(({ value }) => +value) } })}
             options={Object.entries(RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
-        </div>
+        </div> */}
 
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">
@@ -393,8 +371,8 @@ function Filters() {
       <div className="border-t border-gray-6 p-4">
         {/* Clear Filters */}
         <Link
-          to="/movies"
-          search={DEFAULT_MOVIE_SEARCH}
+          to="/series"
+          search={DEFAULT_SERIES_SEARCH}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />
