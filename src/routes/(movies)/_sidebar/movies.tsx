@@ -101,7 +101,7 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
     ],
   },
   loaderDeps: ({ search }) => search,
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
+  loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   pendingMs: 0,
   pendingComponent: SkeletonCards,
   component: MovieCards,

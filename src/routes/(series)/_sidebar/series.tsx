@@ -89,7 +89,7 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
     ],
   },
   loaderDeps: ({ search }) => search,
-  loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(seriesQueryOptions(deps)),
+  loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(seriesQueryOptions(deps)),
   pendingMs: 0,
   pendingComponent: SkeletonCards,
   component: SeriesCards,
