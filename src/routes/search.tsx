@@ -6,12 +6,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { fallback, zodSearchValidator } from '@tanstack/router-zod-adapter';
+import { fallback, zodValidator } from '@tanstack/zod-adapter';
 import React from 'react';
 import { z } from 'zod';
 
 export const Route = createFileRoute('/search')({
-  validateSearch: zodSearchValidator(
+  validateSearch: zodValidator(
     z.object({
       query: fallback(z.string(), '').default(''),
     }),
