@@ -30,7 +30,6 @@ export const DEFAULT_MOVIE_SEARCH = {
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
-  query: '',
 } as const;
 
 const MovieSearchSchema = z.object({
@@ -95,7 +94,11 @@ export type MovieSearchParams = z.infer<typeof MovieSearchSchema>;
 export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: zodValidator(MovieSearchSchema),
   search: {
-    middlewares: [stripSearchParams(DEFAULT_MOVIE_SEARCH), retainSearchParams(true)],
+    middlewares: [
+      stripSearchParams(DEFAULT_MOVIE_SEARCH),
+      // retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
+      retainSearchParams(true),
+    ],
   },
   loaderDeps: ({ search }) => search,
   loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),

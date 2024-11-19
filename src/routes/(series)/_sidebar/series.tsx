@@ -29,7 +29,6 @@ export const DEFAULT_SERIES_SEARCH = {
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
-  query: '',
 } as const;
 
 const SeriesSearchSchema = z.object({
@@ -83,7 +82,11 @@ export type SeriesSearchParams = z.infer<typeof SeriesSearchSchema>;
 export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: zodValidator(SeriesSearchSchema),
   search: {
-    middlewares: [stripSearchParams(DEFAULT_SERIES_SEARCH), retainSearchParams(true)],
+    middlewares: [
+      stripSearchParams(DEFAULT_SERIES_SEARCH),
+      // retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
+      retainSearchParams(true),
+    ],
   },
   loaderDeps: ({ search }) => search,
   loader: ({ context: { queryClient }, deps }) => queryClient.ensureInfiniteQueryData(seriesQueryOptions(deps)),
