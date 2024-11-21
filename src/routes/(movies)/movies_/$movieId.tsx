@@ -1,3 +1,4 @@
+import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
@@ -8,7 +9,7 @@ import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
@@ -20,7 +21,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
 import {
-  CircleArrowRightIcon,
   ClapperboardIcon,
   ClockIcon,
   CloudIcon,
@@ -353,35 +353,5 @@ function Movie() {
         )}
       </div>
     </PaddedLayout>
-  );
-}
-
-function CardCarousel({ title, children, link }: { title: string; children: React.ReactNode; link: string }) {
-  return (
-    <Carousel
-      opts={{
-        align: 'start',
-        slidesToScroll: 1,
-        breakpoints: {
-          '(min-width: 380px)': { slidesToScroll: 2 },
-          '(min-width: 560px)': { slidesToScroll: 3 },
-          '(min-width: 740px)': { slidesToScroll: 4 },
-          '(min-width: 920px)': { slidesToScroll: 5 },
-          '(min-width: 1080px)': { slidesToScroll: 6 },
-        },
-      }}
-    >
-      <div className="flex items-end justify-between">
-        <Link className="group -m-1 flex items-center gap-1.5 rounded-md p-1" from={Route.fullPath} to={link}>
-          <h2 className="text-2xl leading-5 font-semibold text-gray-12">{title}</h2>
-          <CircleArrowRightIcon className="size-6 text-gray-9 transition-colors group-hover:text-gray-12" />
-        </Link>
-        <div className="flex gap-2">
-          <CarouselPrevious />
-          <CarouselNext />
-        </div>
-      </div>
-      <CarouselContent className="mt-3 grid shrink-0 auto-cols-[160px] grid-flow-col gap-4">{children}</CarouselContent>
-    </Carousel>
   );
 }

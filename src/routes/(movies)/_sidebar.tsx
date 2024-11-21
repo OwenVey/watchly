@@ -247,7 +247,7 @@ function Filters() {
             </Select>
 
             <Link
-              to="."
+              to="/movies"
               search={{ sortDir: sortDir === 'asc' ? 'desc' : 'asc' }}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >

@@ -11,8 +11,11 @@ function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
   });
 }
 
+export const OptionsSchema = z.array(z.object({ value: z.string(), label: z.string() }));
+
 const StringToDateSchema = z
   .string()
+  .nullable()
   .optional()
   .transform((val) => (val === '' ? undefined : val))
   .pipe(z.coerce.date().optional());
@@ -36,7 +39,7 @@ export const PersonSchema = z.object({
 export const CreditsOutputSchema = z.object({
   cast: z.array(
     PersonSchema.extend({
-      cast_id: z.number(),
+      cast_id: z.number().optional(),
       credit_id: z.string(),
       character: z.string(),
       order: z.number(),
@@ -164,7 +167,7 @@ export const DiscoverSeriesQuerySchema = z
     with_companies: z.string().optional(),
     with_genres: z.string().optional(),
     with_keywords: z.string().optional(),
-    with_networks: z.number().optional(),
+    with_networks: z.string().optional(),
     with_origin_country: z.string().optional(),
     with_original_language: z.string().optional(),
     'with_runtime.gte': z.number().int().optional(),
@@ -181,14 +184,6 @@ export const DiscoverSeriesQuerySchema = z
   .optional();
 
 export const DiscoverMoviesOutputSchema = paginated(MovieSchema);
-
-export const RecommendationsOutputSchema = paginated(
-  MovieSchema.extend({
-    media_type: z.enum(['movie', 'tv']),
-  }),
-);
-
-export const SimilarMoviesOutputSchema = paginated(MovieSchema);
 
 export const ReviewsOutputSchema = paginated(
   z.object({
@@ -315,13 +310,13 @@ export const MovieDetailsOutputSchema = z.object({
     }),
   ),
   production_countries: z.array(z.object({ iso_3166_1: z.string(), name: z.string() })),
-  recommendations: RecommendationsOutputSchema,
+  recommendations: paginated(MovieSchema),
   release_date: StringToDateSchema,
   release_dates: ReleaseDatesOutputSchema,
   revenue: z.number(),
   reviews: ReviewsOutputSchema,
   runtime: z.number(),
-  similar: SimilarMoviesOutputSchema,
+  similar: paginated(MovieSchema),
   spoken_languages: z.array(
     z.object({
       english_name: z.string(),
@@ -335,18 +330,6 @@ export const MovieDetailsOutputSchema = z.object({
   video: z.boolean(),
   vote_average: VoteAverageSchema,
   vote_count: z.number(),
-});
-
-export const ProvidersOutputSchema = z.object({
-  results: z.array(
-    z.object({
-      // display_priorities: z.record(z.number()),
-      display_priority: z.number(),
-      logo_path: z.string().nullable(),
-      provider_name: z.string(),
-      provider_id: z.number(),
-    }),
-  ),
 });
 
 export const SeriesSchema = z.object({
@@ -364,6 +347,224 @@ export const SeriesSchema = z.object({
   name: z.string(),
   vote_average: VoteAverageSchema,
   vote_count: z.number(),
+});
+
+export const SeriesDetailsOutputSchema = z.object({
+  adult: z.boolean(),
+  backdrop_path: z.string().nullable(),
+  content_ratings: z.object({
+    results: z.array(
+      z.object({
+        iso_3166_1: z.string(),
+        rating: z.string(),
+      }),
+    ),
+  }),
+  created_by: z.array(
+    z.object({
+      id: z.number(),
+      credit_id: z.string(),
+      name: z.string(),
+      original_name: z.string(),
+      gender: z.number(),
+      profile_path: z.string().nullable(),
+    }),
+  ),
+  credits: CreditsOutputSchema,
+  episode_run_time: z.array(z.number()),
+  external_ids: z.object({
+    imdb_id: z.string().nullable(),
+    freebase_mid: z.string().nullable(),
+    freebase_id: z.string().nullable(),
+    tvdb_id: z.number().nullable(),
+    tvrage_id: z.number().nullable(),
+    wikidata_id: z.string().nullable(),
+    facebook_id: z.string().nullable(),
+    instagram_id: z.string().nullable(),
+    twitter_id: z.string().nullable(),
+  }),
+  first_air_date: StringToDateSchema,
+  genres: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+    }),
+  ),
+  homepage: z.string(),
+  id: z.number(),
+  in_production: z.boolean(),
+  keywords: z.object({
+    results: z.array(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+      }),
+    ),
+  }),
+  languages: z.array(z.string()),
+  last_air_date: StringToDateSchema,
+  last_episode_to_air: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+      overview: z.string(),
+      vote_average: VoteAverageSchema,
+      vote_count: z.number(),
+      air_date: StringToDateSchema,
+      episode_number: z.number(),
+      episode_type: z.string(),
+      production_code: z.string(),
+      runtime: z.number().nullable(),
+      season_number: z.number(),
+      show_id: z.number().optional(),
+      still_path: z.string().nullable(),
+    })
+    .nullable(),
+  name: z.string(),
+  next_episode_to_air: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+      overview: z.string(),
+      vote_average: VoteAverageSchema,
+      vote_count: z.number(),
+      air_date: StringToDateSchema,
+      episode_number: z.number(),
+      episode_type: z.string(),
+      production_code: z.string(),
+      runtime: z.number().nullable(),
+      season_number: z.number(),
+      show_id: z.number().optional(),
+      still_path: z.string().nullable(),
+    })
+    .nullable(),
+  networks: z.array(
+    z.object({
+      id: z.number(),
+      logo_path: z.string(),
+      name: z.string(),
+      origin_country: z.string(),
+    }),
+  ),
+  number_of_episodes: z.number().nullable(),
+  number_of_seasons: z.number(),
+  origin_country: z.array(z.string()),
+  original_language: zodObjectKeys(LANGUAGES_MAP),
+  original_name: z.string(),
+  overview: z.string(),
+  popularity: z.number(),
+  poster_path: z.string().nullable(),
+  production_companies: z.array(
+    z.object({
+      id: z.number(),
+      logo_path: z.string().nullable(),
+      name: z.string(),
+      origin_country: z.string(),
+    }),
+  ),
+  production_countries: z.array(
+    z.object({
+      iso_3166_1: z.string(),
+      name: z.string(),
+    }),
+  ),
+  recommendations: paginated(SeriesSchema),
+  reviews: ReviewsOutputSchema,
+  seasons: z.array(
+    z.object({
+      air_date: StringToDateSchema,
+      episode_count: z.number(),
+      id: z.number(),
+      name: z.string(),
+      overview: z.string(),
+      poster_path: z.string().nullable(),
+      season_number: z.number(),
+      vote_average: VoteAverageSchema,
+    }),
+  ),
+  similar: paginated(SeriesSchema),
+  spoken_languages: z.array(
+    z.object({
+      english_name: z.string(),
+      iso_639_1: z.string(),
+      name: z.string(),
+    }),
+  ),
+  status: z.string(),
+  tagline: z.string(),
+  type: z.string(),
+  vote_average: VoteAverageSchema,
+  vote_count: z.number(),
+});
+
+export const SeasonOutputSchema = z.object({
+  _id: z.string(),
+  air_date: z.string(),
+  episodes: z.array(
+    z.object({
+      air_date: z.string(),
+      episode_number: z.number(),
+      episode_type: z.string(),
+      id: z.number(),
+      name: z.string(),
+      overview: z.string(),
+      production_code: z.string(),
+      runtime: z.number().nullable(),
+      season_number: z.number(),
+      show_id: z.number(),
+      still_path: z.string().nullable(),
+      vote_average: z.number(),
+      vote_count: z.number(),
+      crew: z.array(
+        z.object({
+          job: z.string(),
+          department: z.string(),
+          credit_id: z.string(),
+          adult: z.boolean(),
+          gender: z.number(),
+          id: z.number(),
+          known_for_department: z.string(),
+          name: z.string(),
+          original_name: z.string(),
+          popularity: z.number(),
+          profile_path: z.string().nullable(),
+        }),
+      ),
+      guest_stars: z.array(
+        z.object({
+          character: z.string(),
+          credit_id: z.string(),
+          order: z.number(),
+          adult: z.boolean(),
+          gender: z.number(),
+          id: z.number(),
+          known_for_department: z.string(),
+          name: z.string(),
+          original_name: z.string(),
+          popularity: z.number(),
+          profile_path: z.string().nullable(),
+        }),
+      ),
+    }),
+  ),
+  name: z.string(),
+  overview: z.string(),
+  id: z.number(),
+  poster_path: z.string().nullable(),
+  season_number: z.number(),
+  vote_average: z.number(),
+});
+
+export const ProvidersOutputSchema = z.object({
+  results: z.array(
+    z.object({
+      // display_priorities: z.record(z.number()),
+      display_priority: z.number(),
+      logo_path: z.string().nullable(),
+      provider_name: z.string(),
+      provider_id: z.number(),
+    }),
+  ),
 });
 
 export const DiscoverSeriesOutputSchema = paginated(SeriesSchema);

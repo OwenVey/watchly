@@ -1,5 +1,6 @@
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
+import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 import type { Series } from '@/types';
 import { Link } from '@tanstack/react-router';
 
@@ -17,8 +18,8 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
         'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-[#222] transition-all hover:scale-105 hover:border-gray-7',
         className,
       )}
-      // to={MovieIdRoute.to}
-      // params={{ movieId: series.id.toString() }}
+      to={SeriesIdRoute.to}
+      params={{ seriesId: series.id.toString() }}
       preloadDelay={500}
     >
       {showBadge && (

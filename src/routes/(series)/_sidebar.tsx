@@ -86,6 +86,7 @@ function Filters() {
     types,
     keywords,
     originalLanguage,
+    networks,
     studios,
     watchProviders,
     adult,
@@ -227,7 +228,7 @@ function Filters() {
             </Select>
 
             <Link
-              to="."
+              to="/series"
               search={{ sortDir: sortDir === 'asc' ? 'desc' : 'asc' }}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
@@ -298,14 +299,29 @@ function Filters() {
           />
         </div>
 
-        {/* Studio */}
+        {/* Studios */}
         <div className="flex flex-col gap-1.5">
-          <Label>Studio</Label>
+          <Label htmlFor="studios">Studios</Label>
           <Multiselect
-            id="studio"
+            id="studios"
             placeholder="Select studios"
             value={studios}
             onValueChange={(studios) => navigate({ search: { studios } })}
+            onSearch={async (query) => {
+              const { results } = await tmdbApi('/search/company', { query: { query } });
+              return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
+            }}
+          />
+        </div>
+
+        {/* Networks */}
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="networks">Networks</Label>
+          <Multiselect
+            id="networks"
+            placeholder="Select networks"
+            value={networks}
+            onValueChange={(networks) => navigate({ search: { networks } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));

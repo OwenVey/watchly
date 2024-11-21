@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 
-export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl', {
+export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl transition-all', {
   variants: {
     rounded: {
       true: 'rounded-xl',

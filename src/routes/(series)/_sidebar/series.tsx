@@ -2,7 +2,7 @@ import { SeriesCard } from '@/components/series-card';
 import type { Option } from '@/components/ui/multiselect';
 import { Skeleton } from '@/components/ui/skeleton';
 import { tmdbApi } from '@/lib/api';
-import { TvShowTypeSchema } from '@/schemas';
+import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 import type { TvShowType } from '@/types';
 import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
@@ -26,6 +26,7 @@ export const DEFAULT_SERIES_SEARCH = {
   types: [] as TvShowType[],
   keywords: [] as Option[],
   studios: [] as Option[],
+  networks: [] as Option[],
   originalLanguage: undefined,
   watchProviders: [] as number[],
   adult: false,
@@ -63,13 +64,9 @@ const SeriesSearchSchema = z.object({
   genres: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.genres).default(DEFAULT_SERIES_SEARCH.genres),
   status: fallback(z.string(), DEFAULT_SERIES_SEARCH.status).default(DEFAULT_SERIES_SEARCH.status),
   types: fallback(z.array(TvShowTypeSchema), DEFAULT_SERIES_SEARCH.types).default(DEFAULT_SERIES_SEARCH.types),
-  keywords: fallback(
-    z.array(z.object({ value: z.string(), label: z.string() })),
-    DEFAULT_SERIES_SEARCH.keywords,
-  ).default(DEFAULT_SERIES_SEARCH.keywords),
-  studios: fallback(z.array(z.object({ value: z.string(), label: z.string() })), DEFAULT_SERIES_SEARCH.studios).default(
-    DEFAULT_SERIES_SEARCH.studios,
-  ),
+  keywords: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.keywords).default(DEFAULT_SERIES_SEARCH.keywords),
+  studios: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.studios).default(DEFAULT_SERIES_SEARCH.studios),
+  networks: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.networks).default(DEFAULT_SERIES_SEARCH.networks),
   originalLanguage: z.string().optional(),
   watchProviders: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.watchProviders).default(
     DEFAULT_SERIES_SEARCH.watchProviders,
@@ -144,6 +141,9 @@ const seriesQueryOptions = (params: SeriesSearchParams) =>
               }),
               ...(params.studios.length > 0 && {
                 with_companies: params.studios.map(({ value }) => value).join(','),
+              }),
+              ...(params.networks.length > 0 && {
+                with_networks: params.networks.map(({ value }) => value).join(','),
               }),
               ...(params.originalLanguage && {
                 with_original_language: params.originalLanguage,
