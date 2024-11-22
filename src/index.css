@@ -12,20 +12,6 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  input,
-  textarea,
-  select,
-  button {
-    border: 0px solid;
-    border-radius: 0;
-    padding: 0;
-    color: inherit;
-    background-color: transparent;
-    color: inherit;
-  }
-}
-
 @theme {
   --font-family-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
