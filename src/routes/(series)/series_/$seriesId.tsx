@@ -293,12 +293,12 @@ function RouteComponent() {
                         />
                       </Accordion.Trigger>
                     </Accordion.Header>
-                    <Accordion.Content className="rounded-b-lg border-x border-b border-gray-11/15">
+                    <Accordion.Content className="rounded-b-lg border-x border-b border-gray-11/25">
                       {(() => {
                         const currentSeasonDetails = seasonDetails.get(season.season_number.toString());
                         if (!currentSeasonDetails) return <div className="p-4 text-gray-11">Loading...</div>;
                         return (
-                          <ul className="divide-y divide-gray-6">
+                          <ul className="divide-y divide-gray-11/25">
                             {currentSeasonDetails.episodes.map((episode) => (
                               <li key={episode.id} className="relative flex gap-4 p-4">
                                 {episode.vote_average && (
@@ -307,14 +307,18 @@ function RouteComponent() {
                                     {episode.vote_average}
                                   </Badge>
                                 )}
-                                {episode.still_path && (
+                                {episode.still_path ? (
                                   <img
                                     width={142}
                                     height={80}
-                                    className="h-20 rounded shadow-lg"
+                                    className="h-20 w-auto rounded shadow-lg"
                                     src={getTmdbImage('still', episode.still_path, 'w300')}
                                     alt={`episode still of ${episode.name}`}
                                   />
+                                ) : (
+                                  <div className="grid h-20 w-[142px] place-items-center rounded-md bg-gray-4 shadow-lg">
+                                    <ImageIcon className="size-6 text-gray-10" />
+                                  </div>
                                 )}
                                 <div className="flex flex-col">
                                   <div className="flex items-baseline gap-2">
