@@ -1,4 +1,45 @@
+import type { Option } from '@/components/ui/multiselect';
 import type { MovieReleaseType, TvShowStatus, TvShowType } from '@/types';
+
+export const DEFAULT_MOVIE_SEARCH = {
+  releasedAfter: undefined,
+  releasedBefore: undefined,
+  ratingMin: 0,
+  ratingMax: 10,
+  voteCountMin: 0,
+  voteCountMax: 1_000,
+  runtimeMin: 0,
+  runtimeMax: 300,
+  sort: 'popularity',
+  sortDir: 'desc',
+  genres: [] as number[],
+  releaseTypes: [] as MovieReleaseType[],
+  keywords: [] as Option[],
+  studios: [] as Option[],
+  originalLanguage: undefined,
+  watchProviders: [] as number[],
+  adult: false,
+} as const;
+
+export const DEFAULT_SERIES_SEARCH = {
+  firstAirDateAfter: undefined,
+  firstAirDateBefore: undefined,
+  ratingMin: 0,
+  ratingMax: 10,
+  voteCountMin: 0,
+  voteCountMax: 1_000,
+  sort: 'popularity',
+  sortDir: 'desc',
+  genres: [] as number[],
+  status: '',
+  types: [] as TvShowType[],
+  keywords: [] as Option[],
+  studios: [] as Option[],
+  networks: [] as Option[],
+  originalLanguage: undefined,
+  watchProviders: [] as number[],
+  adult: false,
+} as const;
 
 export const MOVIE_RELEASE_TYPE_MAP = {
   1: 'Premiere',

@@ -1,6 +1,6 @@
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
-import { movieIdQueryOptions } from '@/routes/(movies)/movies_/$movieId';
+import { movieIdQueryOptions } from '@/query-options';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 

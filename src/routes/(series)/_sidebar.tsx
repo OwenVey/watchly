@@ -12,13 +12,15 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { LANGUAGES_MAP, SERIES_GENRES_MAP, TV_SHOW_STATUS_MAP, TV_SHOW_TYPE_MAP } from '@/lib/constants';
-import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import {
   DEFAULT_SERIES_SEARCH,
-  Route as SeriesRoute,
-  type SeriesSearchParams,
-} from '@/routes/(series)/_sidebar/series';
+  LANGUAGES_MAP,
+  SERIES_GENRES_MAP,
+  TV_SHOW_STATUS_MAP,
+  TV_SHOW_TYPE_MAP,
+} from '@/lib/constants';
+import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';

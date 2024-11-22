@@ -11,12 +11,13 @@ import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { omdbApi, tmdbApi } from '@/lib/api';
+import { omdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import type { MovieReleaseType } from '@/types';
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
@@ -33,18 +34,6 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
-
-export const movieIdQueryOptions = (movieId: string) =>
-  queryOptions({
-    queryKey: ['movie', movieId],
-    queryFn: async () =>
-      tmdbApi('/movie/:movieId', {
-        params: { movieId },
-        query: {
-          append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates', 'keywords'],
-        },
-      }),
-  });
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {
@@ -184,11 +173,13 @@ function Movie() {
         </div>
       )}
 
-      <div className="flex flex-col justify-between gap-4 md:flex-row">
+      <div className="flex flex-col justify-between gap-16 md:flex-row">
         <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
           {movie.poster_path ? (
             <img
               className="w-48 rounded-xl shadow-lg"
+              width={192}
+              height={288}
               src={getTmdbImage('poster', movie.poster_path, 'w342')}
               alt={`movie poster for ${movie.title}`}
             />
@@ -199,7 +190,7 @@ function Movie() {
               </div>
             </div>
           )}
-          <div className="flex max-w-md flex-col items-center md:items-baseline">
+          <div className="flex flex-col items-center md:items-baseline">
             <h1 className="text-center md:text-left">
               <span className="text-3xl font-bold text-gray-12">{movie.title}</span>
               {movie.release_date && (

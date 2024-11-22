@@ -12,38 +12,18 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
-import { getTmdbImage } from '@/lib/utils';
+import { formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { seriesIdQueryOptions } from '@/query-options';
 import type { Season } from '@/types';
 import * as Accordion from '@radix-ui/react-accordion';
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { ChevronDownIcon, TagIcon, TvIcon } from 'lucide-react';
+import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
 import { useState } from 'react';
 
-export const seriesIdQueryOptions = (seriesId: string) =>
-  queryOptions({
-    queryKey: ['series', seriesId],
-    queryFn: async () =>
-      tmdbApi('/tv/:seriesId', {
-        params: { seriesId },
-        query: {
-          append_to_response: [
-            'recommendations',
-            'similar',
-            'reviews',
-            'credits',
-            'external_ids',
-            'content_ratings',
-            'keywords',
-          ],
-        },
-      }),
-  });
-
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
-  // loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
     const imdbId = series.external_ids.imdb_id;
@@ -172,12 +152,14 @@ function RouteComponent() {
         </div>
       )}
 
-      <div className="flex flex-col justify-between gap-4 md:flex-row">
+      <div className="flex flex-col justify-between gap-16 md:flex-row">
         <div className="flex w-full flex-col gap-8">
           <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
             {series.poster_path ? (
               <img
                 className="w-48 rounded-xl shadow-lg"
+                width={192}
+                height={288}
                 src={getTmdbImage('poster', series.poster_path, 'w342')}
                 alt={`movie poster for ${series.name}`}
               />
@@ -188,7 +170,7 @@ function RouteComponent() {
                 </div>
               </div>
             )}
-            <div className="flex max-w-md flex-col items-center md:items-baseline">
+            <div className="flex flex-col items-center md:items-baseline">
               <h1 className="text-center md:text-left">
                 <span className="text-3xl font-bold text-gray-12">{series.name}</span>
                 {series.first_air_date && (
@@ -267,23 +249,90 @@ function RouteComponent() {
                 }}
               >
                 {series.seasons.map((season) => (
-                  <Accordion.Item key={season.id} value={season.season_number.toString()}>
+                  <Accordion.Item
+                    key={season.id}
+                    value={season.season_number.toString()}
+                    disabled={season.episode_count === 0}
+                  >
                     <Accordion.Header>
-                      <Accordion.Trigger className="group flex w-full justify-between border border-gray-11/15 bg-gray-3/60 px-4 py-2 backdrop-blur-xl hover:border-gray-11/35 hover:bg-gray-3/90 data-[state=closed]:rounded-lg data-[state=open]:rounded-t-lg [&[data-state=open]>svg]:rotate-180">
-                        <div className="flex items-center">
-                          <span className="font-medium text-gray-12">{season.name}</span>
-                          <Badge variant="secondary" className="ml-2 rounded-full">
-                            {season.episode_count} Episodes
+                      <Accordion.Trigger className="group relative flex w-full items-center justify-between border border-gray-11/15 bg-gray-3/60 p-2 backdrop-blur-xl transition-all hover:border-gray-11/35 hover:bg-gray-3/90 data-disabled:pointer-events-none data-[state=closed]:rounded-lg data-[state=open]:rounded-t-lg [&[data-state=open]>svg]:rotate-180">
+                        {season.vote_average && (
+                          <Badge variant="secondary" className="absolute top-2 right-2">
+                            <StarIcon className="mr-1 size-3 text-gray-10" fill="currentColor" />
+                            {season.vote_average}
                           </Badge>
+                        )}
+                        <div className="flex gap-4">
+                          {season.poster_path ? (
+                            <img
+                              className="w-12 rounded-md shadow-lg"
+                              width={76}
+                              height={48}
+                              src={getTmdbImage('poster', season.poster_path, 'w92')}
+                              alt={`season poster of ${season.name}`}
+                            />
+                          ) : (
+                            <div className="grid aspect-2/3 h-auto w-12 place-items-center rounded-md bg-gray-4 shadow-lg">
+                              <ImageIcon className="size-6 text-gray-10" />
+                            </div>
+                          )}
+                          <div className="text-left">
+                            <div className="text-lg font-semibold text-gray-12">{season.name}</div>
+                            <div className="text-sm font-medium text-gray-11/70">
+                              {season.air_date && `${season.air_date.getFullYear()} ⋅ `}
+                              {season.episode_count} Episodes
+                            </div>
+                            {season.overview && (
+                              <p className="mt-2 line-clamp-1 text-sm text-gray-11 italic">{season.overview}</p>
+                            )}
+                          </div>
                         </div>
-                        <ChevronDownIcon className="text-gray-11 group-hover:text-gray-12" aria-hidden />
+                        <ChevronDownIcon
+                          className="mr-2 shrink-0 text-gray-11 transition-colors group-hover:text-gray-12 in-data-disabled:hidden"
+                          aria-hidden
+                        />
                       </Accordion.Trigger>
                     </Accordion.Header>
-                    <Accordion.Content className="rounded-b-lg border-x border-b border-gray-11/15 px-4 py-2">
+                    <Accordion.Content className="rounded-b-lg border-x border-b border-gray-11/15">
                       {(() => {
                         const currentSeasonDetails = seasonDetails.get(season.season_number.toString());
-                        if (!currentSeasonDetails) return;
-                        return <pre className="text-xs">{JSON.stringify(currentSeasonDetails, null, 2)}</pre>;
+                        if (!currentSeasonDetails) return <div className="p-4 text-gray-11">Loading...</div>;
+                        return (
+                          <ul className="divide-y divide-gray-6">
+                            {currentSeasonDetails.episodes.map((episode) => (
+                              <li key={episode.id} className="relative flex gap-4 p-4">
+                                {episode.vote_average && (
+                                  <Badge variant="secondary" className="absolute top-4 right-4">
+                                    <StarIcon className="mr-1 size-3 text-gray-10" fill="currentColor" />
+                                    {episode.vote_average}
+                                  </Badge>
+                                )}
+                                {episode.still_path && (
+                                  <img
+                                    width={142}
+                                    height={80}
+                                    className="h-20 rounded shadow-lg"
+                                    src={getTmdbImage('still', episode.still_path, 'w300')}
+                                    alt={`episode still of ${episode.name}`}
+                                  />
+                                )}
+                                <div className="flex flex-col">
+                                  <div className="flex items-baseline gap-2">
+                                    <div className="font-medium text-gray-10">{episode.episode_number}.</div>
+                                    <div className="flex flex-col">
+                                      <div className="leading-none font-medium text-gray-12">{episode.name}</div>
+                                      <div className="mt-0.5 text-sm font-medium text-gray-10">
+                                        {episode.air_date && format(episode.air_date, 'MMM d, yyyy')}
+                                        {episode.runtime && ` ⋅ ${formatMinutesToHHMM(episode.runtime)}`}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <p className="mt-4 text-sm text-gray-11 italic">{episode.overview}</p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        );
                       })()}
                     </Accordion.Content>
                   </Accordion.Item>

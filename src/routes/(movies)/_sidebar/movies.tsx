@@ -1,36 +1,14 @@
 import { MovieCard } from '@/components/movie-card';
-import type { Option } from '@/components/ui/multiselect';
 import { Skeleton } from '@/components/ui/skeleton';
-import { tmdbApi } from '@/lib/api';
+import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
+import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
-import type { MovieReleaseType } from '@/types';
-import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodValidator } from '@tanstack/zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
 import React from 'react';
 import { z } from 'zod';
-
-export const DEFAULT_MOVIE_SEARCH = {
-  releasedAfter: undefined,
-  releasedBefore: undefined,
-  ratingMin: 0,
-  ratingMax: 10,
-  voteCountMin: 0,
-  voteCountMax: 1_000,
-  runtimeMin: 0,
-  runtimeMax: 300,
-  sort: 'popularity',
-  sortDir: 'desc',
-  genres: [] as number[],
-  releaseTypes: [] as MovieReleaseType[],
-  keywords: [] as Option[],
-  studios: [] as Option[],
-  originalLanguage: undefined,
-  watchProviders: [] as number[],
-  adult: false,
-} as const;
 
 const MovieSearchSchema = z.object({
   releasedAfter: z.string().optional().pipe(z.coerce.date().optional()),
@@ -106,86 +84,6 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   pendingComponent: SkeletonCards,
   component: MovieCards,
 });
-
-const movieQueryOptions = (params: MovieSearchParams) =>
-  infiniteQueryOptions({
-    queryKey: ['movies', params],
-    queryFn: async ({ pageParam }) => {
-      const pagesToFetch = [pageParam, pageParam + 1, pageParam + 2];
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
-      const responses = await Promise.all(
-        pagesToFetch.map((page) =>
-          tmdbApi('/discover/movie', {
-            query: {
-              page,
-              ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && {
-                include_adult: params.adult,
-              }),
-              ...(params.releasedAfter !== DEFAULT_MOVIE_SEARCH.releasedAfter && {
-                'primary_release_date.gte': format(params.releasedAfter, 'yyyy-M-d'),
-              }),
-              ...(params.releasedBefore !== DEFAULT_MOVIE_SEARCH.releasedBefore && {
-                'primary_release_date.lte': format(params.releasedBefore, 'yyyy-M-d'),
-              }),
-              ...(params.ratingMin !== DEFAULT_MOVIE_SEARCH.ratingMin && {
-                'vote_average.gte': params.ratingMin,
-              }),
-              ...(params.ratingMax !== DEFAULT_MOVIE_SEARCH.ratingMax && {
-                'vote_average.lte': params.ratingMax,
-              }),
-              ...(params.voteCountMin !== DEFAULT_MOVIE_SEARCH.voteCountMin && {
-                'vote_count.gte': params.voteCountMin,
-              }),
-              ...(params.voteCountMax !== DEFAULT_MOVIE_SEARCH.voteCountMax && {
-                'vote_count.lte': params.voteCountMax,
-              }),
-              ...(params.runtimeMin !== DEFAULT_MOVIE_SEARCH.runtimeMin && {
-                'with_runtime.gte': params.runtimeMin,
-              }),
-              ...(params.runtimeMax !== DEFAULT_MOVIE_SEARCH.runtimeMax && {
-                'with_runtime.lte': params.runtimeMax,
-              }),
-              ...((params.sort !== DEFAULT_MOVIE_SEARCH.sort || params.sortDir !== DEFAULT_MOVIE_SEARCH.sortDir) && {
-                sort_by: `${params.sort}.${params.sortDir}`,
-              }),
-              ...(params.genres.length > 0 && {
-                with_genres: params.genres.join(','),
-              }),
-              ...(params.releaseTypes.length > 0 && {
-                with_release_type: params.releaseTypes.join('|'),
-              }),
-              ...(params.keywords.length > 0 && {
-                with_keywords: params.keywords.map(({ value }) => value).join(','),
-              }),
-              ...(params.studios.length > 0 && {
-                with_companies: params.studios.map(({ value }) => value).join(','),
-              }),
-              ...(params.originalLanguage && {
-                with_original_language: params.originalLanguage,
-              }),
-              ...(params.watchProviders.length > 0 && {
-                watch_region: 'US',
-                with_watch_providers: params.watchProviders.join('|'),
-              }),
-            },
-          }),
-        ),
-      );
-
-      const lastResponse = responses.at(-1);
-      return {
-        page: lastResponse?.page ?? 0,
-        results: Array.from(
-          new Map(responses.flatMap(({ results }) => results.map((movie) => [movie.id, movie]))).values(), // remove duplicates
-        ),
-        totalPages: lastResponse?.total_pages ?? 0,
-        totalResults: lastResponse?.total_results ?? 0,
-      };
-    },
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage) => firstPage.page - 1,
-    getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
-  });
 
 function SkeletonCards() {
   return Array.from({ length: 60 }).map((_, index) => (

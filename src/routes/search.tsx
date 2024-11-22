@@ -3,8 +3,8 @@ import { PersonCard } from '@/components/person-card';
 import { SeriesCard } from '@/components/series-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { tmdbApi } from '@/lib/api';
-import { infiniteQueryOptions, useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { searchQueryOptions } from '@/query-options';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { fallback, zodValidator } from '@tanstack/zod-adapter';
 import React from 'react';
@@ -34,28 +34,6 @@ export const Route = createFileRoute('/search')({
   ),
   component: Search,
 });
-
-const searchQueryOptions = (query: string) =>
-  infiniteQueryOptions({
-    queryKey: ['search', query],
-    queryFn: async ({ pageParam: page }) => {
-      const [movies, shows, people] = await Promise.all([
-        tmdbApi('/search/movie', { query: { query, page } }),
-        tmdbApi('/search/tv', { query: { query, page } }),
-        tmdbApi('/search/person', { query: { query, page } }),
-      ]);
-
-      return {
-        results: [...movies.results, ...shows.results, ...people.results].sort((a, b) => b.popularity - a.popularity),
-        page,
-        total_pages: Math.max(movies.total_pages, shows.total_pages, people.total_pages),
-        total_results: Math.max(movies.total_results, shows.total_results, people.total_results),
-      };
-    },
-    initialPageParam: 1,
-    getPreviousPageParam: (firstPage) => firstPage.page - 1,
-    getNextPageParam: (lastPage) => (lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined),
-  });
 
 function Search() {
   const { query } = Route.useSearch();

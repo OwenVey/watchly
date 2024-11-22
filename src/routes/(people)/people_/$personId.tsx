@@ -2,26 +2,14 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
-import { tmdbApi } from '@/lib/api';
 import { cn, getTmdbImage } from '@/lib/utils';
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { personIdQueryOptions } from '@/query-options';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { differenceInYears } from 'date-fns';
 import { UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-export const personIdQueryOptions = (personId: string) =>
-  queryOptions({
-    queryKey: ['person', personId],
-    queryFn: async () =>
-      tmdbApi('/person/:personId', {
-        params: { personId },
-        query: {
-          append_to_response: ['combined_credits'],
-        },
-      }),
-  });
 
 export const Route = createFileRoute('/(people)/people_/$personId')({
   loader: async ({ context, params }) => context.queryClient.ensureQueryData(personIdQueryOptions(params.personId)),

@@ -17,8 +17,7 @@ const StringToDateSchema = z
   .string()
   .nullable()
   .optional()
-  .transform((val) => (val === '' ? undefined : val))
-  .pipe(z.coerce.date().optional());
+  .transform((val) => val && new Date(val));
 
 const VoteAverageSchema = z
   .number()
@@ -441,7 +440,7 @@ export const SeriesDetailsOutputSchema = z.object({
   networks: z.array(
     z.object({
       id: z.number(),
-      logo_path: z.string(),
+      logo_path: z.string().nullable(),
       name: z.string(),
       origin_country: z.string(),
     }),
@@ -502,7 +501,7 @@ export const SeasonOutputSchema = z.object({
   air_date: z.string(),
   episodes: z.array(
     z.object({
-      air_date: z.string(),
+      air_date: z.string().nullable(),
       episode_number: z.number(),
       episode_type: z.string(),
       id: z.number(),
@@ -513,7 +512,7 @@ export const SeasonOutputSchema = z.object({
       season_number: z.number(),
       show_id: z.number(),
       still_path: z.string().nullable(),
-      vote_average: z.number(),
+      vote_average: VoteAverageSchema,
       vote_count: z.number(),
       crew: z.array(
         z.object({
