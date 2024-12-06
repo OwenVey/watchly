@@ -20,7 +20,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      'fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
+      'fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
       className,
     )}
     {...props}
@@ -32,16 +32,16 @@ SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 const sheetVariants = cva(
   [
     cardVariants(),
-    'fixed z-50 flex flex-col shadow-lg transition ease-in-out data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=closed]:animate-out',
+    'fixed z-50 flex flex-col shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=closed]:animate-out data-[state=open]:duration-500 data-[state=open]:animate-in',
   ],
   {
     variants: {
       side: {
-        top: 'inset-x-4 top-4 mb-4 data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top',
-        bottom: 'inset-x-4 bottom-4 data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom',
-        left: 'inset-y-4 left-4 max-w-sm data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left',
+        top: 'inset-x-4 top-4 mb-4 data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
+        bottom: 'inset-x-4 bottom-4 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
+        left: 'inset-y-4 left-4 max-w-sm data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
         right:
-          'inset-y-4 right-4 ml-4 max-w-sm data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right',
+          'inset-y-4 right-4 ml-4 max-w-sm data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
       },
     },
     defaultVariants: {
