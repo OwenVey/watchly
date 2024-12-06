@@ -186,7 +186,7 @@ const MultiselectBadge = React.forwardRef<React.ElementRef<typeof Badge>, Multis
         {option.label}
         <button
           aria-label={`Unselect ${option.label}`}
-          className="-mr-1.5 grid size-4 place-items-center rounded-full text-gray-8 ring-offset-gray-1 outline-none transition-colors hover:bg-gray-11 hover:text-gray-1 focus-visible:ring-2 focus-visible:ring-gray-1"
+          className="-mr-1.5 grid size-4 place-items-center rounded-full text-gray-8 ring-offset-gray-1 transition-colors outline-none hover:bg-gray-11 hover:text-gray-1 focus-visible:ring-2 focus-visible:ring-gray-1"
           onClick={(e) => {
             multiselect.unselect(option);
             e.stopPropagation();
@@ -261,7 +261,7 @@ const MultiselectInput = React.forwardRef<
 );
 MultiselectInput.displayName = 'MultiselectInput';
 
-const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElement> }) => {
+const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElement | null> }) => {
   const activeValue = useCommandState((state) => state.value) as string;
 
   // fix broken cmdk accessibility
@@ -280,7 +280,7 @@ const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElemen
 };
 
 interface MultiselectContentApi {
-  rootRef: React.RefObject<HTMLDivElement>;
+  rootRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const MultiselectContentContext = React.createContext<MultiselectContentApi | null>(null);
