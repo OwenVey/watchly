@@ -11,8 +11,8 @@ import React from 'react';
 import { z } from 'zod';
 
 const MovieSearchSchema = z.object({
-  releasedAfter: z.string().optional().pipe(z.coerce.date().optional()),
-  releasedBefore: z.string().optional().pipe(z.coerce.date().optional()),
+  releasedAfter: fallback(z.coerce.date().optional(), undefined),
+  releasedBefore: fallback(z.coerce.date().optional(), undefined),
   ratingMin: fallback(
     z
       .number()

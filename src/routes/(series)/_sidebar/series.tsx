@@ -11,8 +11,8 @@ import React from 'react';
 import { z } from 'zod';
 
 const SeriesSearchSchema = z.object({
-  firstAirDateAfter: z.string().optional().pipe(z.coerce.date().optional()),
-  firstAirDateBefore: z.string().optional().pipe(z.coerce.date().optional()),
+  firstAirDateAfter: fallback(z.coerce.date().optional(), undefined),
+  firstAirDateBefore: fallback(z.coerce.date().optional(), undefined),
   ratingMin: fallback(
     z
       .number()
