@@ -6,16 +6,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { searchQueryOptions } from '@/query-options';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { fallback, zodValidator } from '@tanstack/zod-adapter';
+import { fallback } from '@tanstack/zod-adapter';
 import React from 'react';
 import { z } from 'zod';
 
 export const Route = createFileRoute('/search')({
-  validateSearch: zodValidator(
-    z.object({
-      query: fallback(z.string(), '').default(''),
-    }),
-  ),
+  validateSearch: z.object({
+    query: fallback(z.string(), '').default(''),
+  }),
   search: {
     middlewares: [stripSearchParams({ query: '' })],
   },

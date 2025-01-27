@@ -5,7 +5,7 @@ import { seriesQueryOptions } from '@/query-options';
 import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { fallback, zodValidator } from '@tanstack/zod-adapter';
+import { fallback } from '@tanstack/zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
@@ -55,7 +55,7 @@ const SeriesSearchSchema = z.object({
 export type SeriesSearchParams = z.infer<typeof SeriesSearchSchema>;
 
 export const Route = createFileRoute('/(series)/_sidebar/series')({
-  validateSearch: zodValidator(SeriesSearchSchema),
+  validateSearch: SeriesSearchSchema,
   search: {
     middlewares: [
       stripSearchParams(DEFAULT_SERIES_SEARCH),
