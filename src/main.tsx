@@ -22,11 +22,10 @@ const router = createRouter({
     queryClient,
   },
   defaultPreload: 'intent',
-  // Since we're using React Query, we don't want loader calls to ever be stale
-  // This will ensure that the loader is always called when the route is preloaded or visited
+  scrollRestoration: true,
+  defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
   defaultStaleTime: Number.POSITIVE_INFINITY,
-  scrollRestoration: true,
 });
 
 // Register things for typesafety

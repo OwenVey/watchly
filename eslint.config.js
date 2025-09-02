@@ -26,7 +26,7 @@ export default tseslint.config(
         ecmaFeatures: {
           jsx: true,
         },
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ['./tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

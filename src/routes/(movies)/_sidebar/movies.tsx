@@ -5,7 +5,7 @@ import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { fallback } from '@tanstack/zod-adapter';
+import { fallback, zodValidator } from '@tanstack/zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
@@ -70,7 +70,7 @@ const MovieSearchSchema = z.object({
 export type MovieSearchParams = z.infer<typeof MovieSearchSchema>;
 
 export const Route = createFileRoute('/(movies)/_sidebar/movies')({
-  validateSearch: MovieSearchSchema,
+  validateSearch: zodValidator(MovieSearchSchema),
   search: {
     middlewares: [
       stripSearchParams(DEFAULT_MOVIE_SEARCH),

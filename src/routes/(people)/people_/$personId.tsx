@@ -72,7 +72,11 @@ function Person() {
               'h-[45rem] w-full object-cover blur-sm transition-opacity duration-1000',
               fade ? 'opacity-15' : 'opacity-0',
             )}
-            src={getTmdbImage('backdrop', validCast[currentIndex]!.backdrop_path as string, 'w1280')}
+            src={
+              validCast[currentIndex].backdrop_path
+                ? getTmdbImage('backdrop', validCast[currentIndex].backdrop_path, 'w1280')
+                : undefined
+            }
             alt={`backdrop image`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-gradient-to-t from-gray-1" />
