@@ -1,5 +1,5 @@
-import { Dialog as SheetPrimitive } from 'radix-ui';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Dialog as SheetPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { cardVariants } from '@/components/ui/card';

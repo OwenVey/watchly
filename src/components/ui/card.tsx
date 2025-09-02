@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
-import { Slot as SlotPrimitive } from 'radix-ui';
 import { cva } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
 
 export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl transition-all', {
   variants: {

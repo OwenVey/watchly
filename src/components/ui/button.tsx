@@ -1,8 +1,8 @@
 import { cardVariants } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { Slot as SlotPrimitive } from 'radix-ui';
 import { type VariantProps, cva } from 'class-variance-authority';
 import { LoaderIcon } from 'lucide-react';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 const buttonVariants = cva(

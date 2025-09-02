@@ -1,5 +1,5 @@
-import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import { CheckIcon, ChevronRightIcon, DotIcon } from 'lucide-react';
+import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
