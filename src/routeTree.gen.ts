@@ -10,332 +10,445 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TestRouteImport } from './routes/test'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as CollectionsCollectionIdRouteImport } from './routes/collections/$collectionId'
+import { Route as seriesSidebarRouteImport } from './routes/(series)/_sidebar'
+import { Route as peoplePeopleRouteImport } from './routes/(people)/people'
+import { Route as moviesSidebarRouteImport } from './routes/(movies)/_sidebar'
+import { Route as seriesSeriesSeriesIdRouteImport } from './routes/(series)/series_/$seriesId'
+import { Route as seriesSidebarSeriesRouteImport } from './routes/(series)/_sidebar/series'
+import { Route as peoplePeoplePersonIdRouteImport } from './routes/(people)/people_/$personId'
+import { Route as moviesMoviesMovieIdRouteImport } from './routes/(movies)/movies_/$movieId'
+import { Route as moviesSidebarMoviesRouteImport } from './routes/(movies)/_sidebar/movies'
+import { Route as seriesSeriesSeriesIdSimilarRouteImport } from './routes/(series)/series_/$seriesId_/similar'
+import { Route as seriesSeriesSeriesIdRecommendationsRouteImport } from './routes/(series)/series_/$seriesId_/recommendations'
+import { Route as seriesSeriesSeriesIdCrewRouteImport } from './routes/(series)/series_/$seriesId_/crew'
+import { Route as seriesSeriesSeriesIdCastRouteImport } from './routes/(series)/series_/$seriesId_/cast'
+import { Route as moviesMoviesMovieIdSimilarRouteImport } from './routes/(movies)/movies_/$movieId_/similar'
+import { Route as moviesMoviesMovieIdRecommendationsRouteImport } from './routes/(movies)/movies_/$movieId_/recommendations'
+import { Route as moviesMoviesMovieIdCrewRouteImport } from './routes/(movies)/movies_/$movieId_/crew'
+import { Route as moviesMoviesMovieIdCastRouteImport } from './routes/(movies)/movies_/$movieId_/cast'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as TestImport } from './routes/test'
-import { Route as SearchImport } from './routes/search'
-import { Route as IndexImport } from './routes/index'
-import { Route as CollectionsCollectionIdImport } from './routes/collections/$collectionId'
-import { Route as seriesSidebarImport } from './routes/(series)/_sidebar'
-import { Route as peoplePeopleImport } from './routes/(people)/people'
-import { Route as moviesSidebarImport } from './routes/(movies)/_sidebar'
-import { Route as seriesSeriesSeriesIdImport } from './routes/(series)/series_/$seriesId'
-import { Route as seriesSidebarSeriesImport } from './routes/(series)/_sidebar/series'
-import { Route as peoplePeoplePersonIdImport } from './routes/(people)/people_/$personId'
-import { Route as moviesMoviesMovieIdImport } from './routes/(movies)/movies_/$movieId'
-import { Route as moviesSidebarMoviesImport } from './routes/(movies)/_sidebar/movies'
-import { Route as seriesSeriesSeriesIdSimilarImport } from './routes/(series)/series_/$seriesId_/similar'
-import { Route as seriesSeriesSeriesIdRecommendationsImport } from './routes/(series)/series_/$seriesId_/recommendations'
-import { Route as seriesSeriesSeriesIdCrewImport } from './routes/(series)/series_/$seriesId_/crew'
-import { Route as seriesSeriesSeriesIdCastImport } from './routes/(series)/series_/$seriesId_/cast'
-import { Route as moviesMoviesMovieIdSimilarImport } from './routes/(movies)/movies_/$movieId_/similar'
-import { Route as moviesMoviesMovieIdRecommendationsImport } from './routes/(movies)/movies_/$movieId_/recommendations'
-import { Route as moviesMoviesMovieIdCrewImport } from './routes/(movies)/movies_/$movieId_/crew'
-import { Route as moviesMoviesMovieIdCastImport } from './routes/(movies)/movies_/$movieId_/cast'
+const seriesRouteImport = createFileRoute('/(series)')()
+const moviesRouteImport = createFileRoute('/(movies)')()
 
-// Create Virtual Routes
-
-const seriesImport = createFileRoute('/(series)')()
-const moviesImport = createFileRoute('/(movies)')()
-
-// Create/Update Routes
-
-const seriesRoute = seriesImport.update({
+const seriesRoute = seriesRouteImport.update({
   id: '/(series)',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const moviesRoute = moviesImport.update({
+const moviesRoute = moviesRouteImport.update({
   id: '/(movies)',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const TestRoute = TestImport.update({
+const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const SearchRoute = SearchImport.update({
+const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
+const CollectionsCollectionIdRoute = CollectionsCollectionIdRouteImport.update({
   id: '/collections/$collectionId',
   path: '/collections/$collectionId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const seriesSidebarRoute = seriesSidebarImport.update({
+const seriesSidebarRoute = seriesSidebarRouteImport.update({
   id: '/_sidebar',
   getParentRoute: () => seriesRoute,
 } as any)
-
-const peoplePeopleRoute = peoplePeopleImport.update({
+const peoplePeopleRoute = peoplePeopleRouteImport.update({
   id: '/(people)/people',
   path: '/people',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const moviesSidebarRoute = moviesSidebarImport.update({
+const moviesSidebarRoute = moviesSidebarRouteImport.update({
   id: '/_sidebar',
   getParentRoute: () => moviesRoute,
 } as any)
-
-const seriesSeriesSeriesIdRoute = seriesSeriesSeriesIdImport.update({
+const seriesSeriesSeriesIdRoute = seriesSeriesSeriesIdRouteImport.update({
   id: '/series_/$seriesId',
   path: '/series/$seriesId',
   getParentRoute: () => seriesRoute,
 } as any)
-
-const seriesSidebarSeriesRoute = seriesSidebarSeriesImport.update({
+const seriesSidebarSeriesRoute = seriesSidebarSeriesRouteImport.update({
   id: '/series',
   path: '/series',
   getParentRoute: () => seriesSidebarRoute,
 } as any)
-
-const peoplePeoplePersonIdRoute = peoplePeoplePersonIdImport.update({
+const peoplePeoplePersonIdRoute = peoplePeoplePersonIdRouteImport.update({
   id: '/(people)/people_/$personId',
   path: '/people/$personId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const moviesMoviesMovieIdRoute = moviesMoviesMovieIdImport.update({
+const moviesMoviesMovieIdRoute = moviesMoviesMovieIdRouteImport.update({
   id: '/movies_/$movieId',
   path: '/movies/$movieId',
   getParentRoute: () => moviesRoute,
 } as any)
-
-const moviesSidebarMoviesRoute = moviesSidebarMoviesImport.update({
+const moviesSidebarMoviesRoute = moviesSidebarMoviesRouteImport.update({
   id: '/movies',
   path: '/movies',
   getParentRoute: () => moviesSidebarRoute,
 } as any)
-
 const seriesSeriesSeriesIdSimilarRoute =
-  seriesSeriesSeriesIdSimilarImport.update({
+  seriesSeriesSeriesIdSimilarRouteImport.update({
     id: '/series_/$seriesId_/similar',
     path: '/series/$seriesId/similar',
     getParentRoute: () => seriesRoute,
   } as any)
-
 const seriesSeriesSeriesIdRecommendationsRoute =
-  seriesSeriesSeriesIdRecommendationsImport.update({
+  seriesSeriesSeriesIdRecommendationsRouteImport.update({
     id: '/series_/$seriesId_/recommendations',
     path: '/series/$seriesId/recommendations',
     getParentRoute: () => seriesRoute,
   } as any)
-
-const seriesSeriesSeriesIdCrewRoute = seriesSeriesSeriesIdCrewImport.update({
-  id: '/series_/$seriesId_/crew',
-  path: '/series/$seriesId/crew',
-  getParentRoute: () => seriesRoute,
-} as any)
-
-const seriesSeriesSeriesIdCastRoute = seriesSeriesSeriesIdCastImport.update({
-  id: '/series_/$seriesId_/cast',
-  path: '/series/$seriesId/cast',
-  getParentRoute: () => seriesRoute,
-} as any)
-
-const moviesMoviesMovieIdSimilarRoute = moviesMoviesMovieIdSimilarImport.update(
-  {
+const seriesSeriesSeriesIdCrewRoute =
+  seriesSeriesSeriesIdCrewRouteImport.update({
+    id: '/series_/$seriesId_/crew',
+    path: '/series/$seriesId/crew',
+    getParentRoute: () => seriesRoute,
+  } as any)
+const seriesSeriesSeriesIdCastRoute =
+  seriesSeriesSeriesIdCastRouteImport.update({
+    id: '/series_/$seriesId_/cast',
+    path: '/series/$seriesId/cast',
+    getParentRoute: () => seriesRoute,
+  } as any)
+const moviesMoviesMovieIdSimilarRoute =
+  moviesMoviesMovieIdSimilarRouteImport.update({
     id: '/movies_/$movieId_/similar',
     path: '/movies/$movieId/similar',
     getParentRoute: () => moviesRoute,
-  } as any,
-)
-
+  } as any)
 const moviesMoviesMovieIdRecommendationsRoute =
-  moviesMoviesMovieIdRecommendationsImport.update({
+  moviesMoviesMovieIdRecommendationsRouteImport.update({
     id: '/movies_/$movieId_/recommendations',
     path: '/movies/$movieId/recommendations',
     getParentRoute: () => moviesRoute,
   } as any)
-
-const moviesMoviesMovieIdCrewRoute = moviesMoviesMovieIdCrewImport.update({
+const moviesMoviesMovieIdCrewRoute = moviesMoviesMovieIdCrewRouteImport.update({
   id: '/movies_/$movieId_/crew',
   path: '/movies/$movieId/crew',
   getParentRoute: () => moviesRoute,
 } as any)
-
-const moviesMoviesMovieIdCastRoute = moviesMoviesMovieIdCastImport.update({
+const moviesMoviesMovieIdCastRoute = moviesMoviesMovieIdCastRouteImport.update({
   id: '/movies_/$movieId_/cast',
   path: '/movies/$movieId/cast',
   getParentRoute: () => moviesRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
+export interface FileRoutesByFullPath {
+  '/': typeof seriesSidebarRouteWithChildren
+  '/search': typeof SearchRoute
+  '/test': typeof TestRoute
+  '/people': typeof peoplePeopleRoute
+  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
+  '/movies': typeof moviesSidebarMoviesRoute
+  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/people/$personId': typeof peoplePeoplePersonIdRoute
+  '/series': typeof seriesSidebarSeriesRoute
+  '/series/$seriesId': typeof seriesSeriesSeriesIdRoute
+  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
+  '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
+  '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
+  '/movies/$movieId/similar': typeof moviesMoviesMovieIdSimilarRoute
+  '/series/$seriesId/cast': typeof seriesSeriesSeriesIdCastRoute
+  '/series/$seriesId/crew': typeof seriesSeriesSeriesIdCrewRoute
+  '/series/$seriesId/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
+  '/series/$seriesId/similar': typeof seriesSeriesSeriesIdSimilarRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof seriesSidebarRouteWithChildren
+  '/search': typeof SearchRoute
+  '/test': typeof TestRoute
+  '/people': typeof peoplePeopleRoute
+  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
+  '/movies': typeof moviesSidebarMoviesRoute
+  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
+  '/people/$personId': typeof peoplePeoplePersonIdRoute
+  '/series': typeof seriesSidebarSeriesRoute
+  '/series/$seriesId': typeof seriesSeriesSeriesIdRoute
+  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
+  '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
+  '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
+  '/movies/$movieId/similar': typeof moviesMoviesMovieIdSimilarRoute
+  '/series/$seriesId/cast': typeof seriesSeriesSeriesIdCastRoute
+  '/series/$seriesId/crew': typeof seriesSeriesSeriesIdCrewRoute
+  '/series/$seriesId/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
+  '/series/$seriesId/similar': typeof seriesSeriesSeriesIdSimilarRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/search': typeof SearchRoute
+  '/test': typeof TestRoute
+  '/(movies)': typeof moviesRouteWithChildren
+  '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
+  '/(people)/people': typeof peoplePeopleRoute
+  '/(series)': typeof seriesRouteWithChildren
+  '/(series)/_sidebar': typeof seriesSidebarRouteWithChildren
+  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
+  '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
+  '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
+  '/(people)/people_/$personId': typeof peoplePeoplePersonIdRoute
+  '/(series)/_sidebar/series': typeof seriesSidebarSeriesRoute
+  '/(series)/series_/$seriesId': typeof seriesSeriesSeriesIdRoute
+  '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
+  '/(movies)/movies_/$movieId_/crew': typeof moviesMoviesMovieIdCrewRoute
+  '/(movies)/movies_/$movieId_/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
+  '/(movies)/movies_/$movieId_/similar': typeof moviesMoviesMovieIdSimilarRoute
+  '/(series)/series_/$seriesId_/cast': typeof seriesSeriesSeriesIdCastRoute
+  '/(series)/series_/$seriesId_/crew': typeof seriesSeriesSeriesIdCrewRoute
+  '/(series)/series_/$seriesId_/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
+  '/(series)/series_/$seriesId_/similar': typeof seriesSeriesSeriesIdSimilarRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/search'
+    | '/test'
+    | '/people'
+    | '/collections/$collectionId'
+    | '/movies'
+    | '/movies/$movieId'
+    | '/people/$personId'
+    | '/series'
+    | '/series/$seriesId'
+    | '/movies/$movieId/cast'
+    | '/movies/$movieId/crew'
+    | '/movies/$movieId/recommendations'
+    | '/movies/$movieId/similar'
+    | '/series/$seriesId/cast'
+    | '/series/$seriesId/crew'
+    | '/series/$seriesId/recommendations'
+    | '/series/$seriesId/similar'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/search'
+    | '/test'
+    | '/people'
+    | '/collections/$collectionId'
+    | '/movies'
+    | '/movies/$movieId'
+    | '/people/$personId'
+    | '/series'
+    | '/series/$seriesId'
+    | '/movies/$movieId/cast'
+    | '/movies/$movieId/crew'
+    | '/movies/$movieId/recommendations'
+    | '/movies/$movieId/similar'
+    | '/series/$seriesId/cast'
+    | '/series/$seriesId/crew'
+    | '/series/$seriesId/recommendations'
+    | '/series/$seriesId/similar'
+  id:
+    | '__root__'
+    | '/'
+    | '/search'
+    | '/test'
+    | '/(movies)'
+    | '/(movies)/_sidebar'
+    | '/(people)/people'
+    | '/(series)'
+    | '/(series)/_sidebar'
+    | '/collections/$collectionId'
+    | '/(movies)/_sidebar/movies'
+    | '/(movies)/movies_/$movieId'
+    | '/(people)/people_/$personId'
+    | '/(series)/_sidebar/series'
+    | '/(series)/series_/$seriesId'
+    | '/(movies)/movies_/$movieId_/cast'
+    | '/(movies)/movies_/$movieId_/crew'
+    | '/(movies)/movies_/$movieId_/recommendations'
+    | '/(movies)/movies_/$movieId_/similar'
+    | '/(series)/series_/$seriesId_/cast'
+    | '/(series)/series_/$seriesId_/crew'
+    | '/(series)/series_/$seriesId_/recommendations'
+    | '/(series)/series_/$seriesId_/similar'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  SearchRoute: typeof SearchRoute
+  TestRoute: typeof TestRoute
+  moviesRoute: typeof moviesRouteWithChildren
+  peoplePeopleRoute: typeof peoplePeopleRoute
+  seriesRoute: typeof seriesRouteWithChildren
+  CollectionsCollectionIdRoute: typeof CollectionsCollectionIdRoute
+  peoplePeoplePersonIdRoute: typeof peoplePeoplePersonIdRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/(series)': {
+      id: '/(series)'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchImport
-      parentRoute: typeof rootRoute
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof seriesRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(movies)': {
       id: '/(movies)'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof moviesImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof moviesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(movies)/_sidebar': {
-      id: '/(movies)/_sidebar'
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof moviesSidebarImport
-      parentRoute: typeof moviesRoute
-    }
-    '/(people)/people': {
-      id: '/(people)/people'
-      path: '/people'
-      fullPath: '/people'
-      preLoaderRoute: typeof peoplePeopleImport
-      parentRoute: typeof rootRoute
-    }
-    '/(series)': {
-      id: '/(series)'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof seriesImport
-      parentRoute: typeof rootRoute
-    }
-    '/(series)/_sidebar': {
-      id: '/(series)/_sidebar'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof seriesSidebarImport
-      parentRoute: typeof seriesRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/collections/$collectionId': {
       id: '/collections/$collectionId'
       path: '/collections/$collectionId'
       fullPath: '/collections/$collectionId'
-      preLoaderRoute: typeof CollectionsCollectionIdImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof CollectionsCollectionIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(movies)/_sidebar/movies': {
-      id: '/(movies)/_sidebar/movies'
-      path: '/movies'
-      fullPath: '/movies'
-      preLoaderRoute: typeof moviesSidebarMoviesImport
-      parentRoute: typeof moviesSidebarImport
+    '/(series)/_sidebar': {
+      id: '/(series)/_sidebar'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof seriesSidebarRouteImport
+      parentRoute: typeof seriesRoute
     }
-    '/(movies)/movies_/$movieId': {
-      id: '/(movies)/movies_/$movieId'
-      path: '/movies/$movieId'
-      fullPath: '/movies/$movieId'
-      preLoaderRoute: typeof moviesMoviesMovieIdImport
-      parentRoute: typeof moviesImport
+    '/(people)/people': {
+      id: '/(people)/people'
+      path: '/people'
+      fullPath: '/people'
+      preLoaderRoute: typeof peoplePeopleRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(people)/people_/$personId': {
-      id: '/(people)/people_/$personId'
-      path: '/people/$personId'
-      fullPath: '/people/$personId'
-      preLoaderRoute: typeof peoplePeoplePersonIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/(series)/_sidebar/series': {
-      id: '/(series)/_sidebar/series'
-      path: '/series'
-      fullPath: '/series'
-      preLoaderRoute: typeof seriesSidebarSeriesImport
-      parentRoute: typeof seriesSidebarImport
+    '/(movies)/_sidebar': {
+      id: '/(movies)/_sidebar'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof moviesSidebarRouteImport
+      parentRoute: typeof moviesRoute
     }
     '/(series)/series_/$seriesId': {
       id: '/(series)/series_/$seriesId'
       path: '/series/$seriesId'
       fullPath: '/series/$seriesId'
-      preLoaderRoute: typeof seriesSeriesSeriesIdImport
-      parentRoute: typeof seriesImport
+      preLoaderRoute: typeof seriesSeriesSeriesIdRouteImport
+      parentRoute: typeof seriesRoute
     }
-    '/(movies)/movies_/$movieId_/cast': {
-      id: '/(movies)/movies_/$movieId_/cast'
-      path: '/movies/$movieId/cast'
-      fullPath: '/movies/$movieId/cast'
-      preLoaderRoute: typeof moviesMoviesMovieIdCastImport
-      parentRoute: typeof moviesImport
+    '/(series)/_sidebar/series': {
+      id: '/(series)/_sidebar/series'
+      path: '/series'
+      fullPath: '/series'
+      preLoaderRoute: typeof seriesSidebarSeriesRouteImport
+      parentRoute: typeof seriesSidebarRoute
     }
-    '/(movies)/movies_/$movieId_/crew': {
-      id: '/(movies)/movies_/$movieId_/crew'
-      path: '/movies/$movieId/crew'
-      fullPath: '/movies/$movieId/crew'
-      preLoaderRoute: typeof moviesMoviesMovieIdCrewImport
-      parentRoute: typeof moviesImport
+    '/(people)/people_/$personId': {
+      id: '/(people)/people_/$personId'
+      path: '/people/$personId'
+      fullPath: '/people/$personId'
+      preLoaderRoute: typeof peoplePeoplePersonIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/(movies)/movies_/$movieId_/recommendations': {
-      id: '/(movies)/movies_/$movieId_/recommendations'
-      path: '/movies/$movieId/recommendations'
-      fullPath: '/movies/$movieId/recommendations'
-      preLoaderRoute: typeof moviesMoviesMovieIdRecommendationsImport
-      parentRoute: typeof moviesImport
+    '/(movies)/movies_/$movieId': {
+      id: '/(movies)/movies_/$movieId'
+      path: '/movies/$movieId'
+      fullPath: '/movies/$movieId'
+      preLoaderRoute: typeof moviesMoviesMovieIdRouteImport
+      parentRoute: typeof moviesRoute
     }
-    '/(movies)/movies_/$movieId_/similar': {
-      id: '/(movies)/movies_/$movieId_/similar'
-      path: '/movies/$movieId/similar'
-      fullPath: '/movies/$movieId/similar'
-      preLoaderRoute: typeof moviesMoviesMovieIdSimilarImport
-      parentRoute: typeof moviesImport
-    }
-    '/(series)/series_/$seriesId_/cast': {
-      id: '/(series)/series_/$seriesId_/cast'
-      path: '/series/$seriesId/cast'
-      fullPath: '/series/$seriesId/cast'
-      preLoaderRoute: typeof seriesSeriesSeriesIdCastImport
-      parentRoute: typeof seriesImport
-    }
-    '/(series)/series_/$seriesId_/crew': {
-      id: '/(series)/series_/$seriesId_/crew'
-      path: '/series/$seriesId/crew'
-      fullPath: '/series/$seriesId/crew'
-      preLoaderRoute: typeof seriesSeriesSeriesIdCrewImport
-      parentRoute: typeof seriesImport
-    }
-    '/(series)/series_/$seriesId_/recommendations': {
-      id: '/(series)/series_/$seriesId_/recommendations'
-      path: '/series/$seriesId/recommendations'
-      fullPath: '/series/$seriesId/recommendations'
-      preLoaderRoute: typeof seriesSeriesSeriesIdRecommendationsImport
-      parentRoute: typeof seriesImport
+    '/(movies)/_sidebar/movies': {
+      id: '/(movies)/_sidebar/movies'
+      path: '/movies'
+      fullPath: '/movies'
+      preLoaderRoute: typeof moviesSidebarMoviesRouteImport
+      parentRoute: typeof moviesSidebarRoute
     }
     '/(series)/series_/$seriesId_/similar': {
       id: '/(series)/series_/$seriesId_/similar'
       path: '/series/$seriesId/similar'
       fullPath: '/series/$seriesId/similar'
-      preLoaderRoute: typeof seriesSeriesSeriesIdSimilarImport
-      parentRoute: typeof seriesImport
+      preLoaderRoute: typeof seriesSeriesSeriesIdSimilarRouteImport
+      parentRoute: typeof seriesRoute
+    }
+    '/(series)/series_/$seriesId_/recommendations': {
+      id: '/(series)/series_/$seriesId_/recommendations'
+      path: '/series/$seriesId/recommendations'
+      fullPath: '/series/$seriesId/recommendations'
+      preLoaderRoute: typeof seriesSeriesSeriesIdRecommendationsRouteImport
+      parentRoute: typeof seriesRoute
+    }
+    '/(series)/series_/$seriesId_/crew': {
+      id: '/(series)/series_/$seriesId_/crew'
+      path: '/series/$seriesId/crew'
+      fullPath: '/series/$seriesId/crew'
+      preLoaderRoute: typeof seriesSeriesSeriesIdCrewRouteImport
+      parentRoute: typeof seriesRoute
+    }
+    '/(series)/series_/$seriesId_/cast': {
+      id: '/(series)/series_/$seriesId_/cast'
+      path: '/series/$seriesId/cast'
+      fullPath: '/series/$seriesId/cast'
+      preLoaderRoute: typeof seriesSeriesSeriesIdCastRouteImport
+      parentRoute: typeof seriesRoute
+    }
+    '/(movies)/movies_/$movieId_/similar': {
+      id: '/(movies)/movies_/$movieId_/similar'
+      path: '/movies/$movieId/similar'
+      fullPath: '/movies/$movieId/similar'
+      preLoaderRoute: typeof moviesMoviesMovieIdSimilarRouteImport
+      parentRoute: typeof moviesRoute
+    }
+    '/(movies)/movies_/$movieId_/recommendations': {
+      id: '/(movies)/movies_/$movieId_/recommendations'
+      path: '/movies/$movieId/recommendations'
+      fullPath: '/movies/$movieId/recommendations'
+      preLoaderRoute: typeof moviesMoviesMovieIdRecommendationsRouteImport
+      parentRoute: typeof moviesRoute
+    }
+    '/(movies)/movies_/$movieId_/crew': {
+      id: '/(movies)/movies_/$movieId_/crew'
+      path: '/movies/$movieId/crew'
+      fullPath: '/movies/$movieId/crew'
+      preLoaderRoute: typeof moviesMoviesMovieIdCrewRouteImport
+      parentRoute: typeof moviesRoute
+    }
+    '/(movies)/movies_/$movieId_/cast': {
+      id: '/(movies)/movies_/$movieId_/cast'
+      path: '/movies/$movieId/cast'
+      fullPath: '/movies/$movieId/cast'
+      preLoaderRoute: typeof moviesMoviesMovieIdCastRouteImport
+      parentRoute: typeof moviesRoute
     }
   }
 }
-
-// Create and export the route tree
 
 interface moviesSidebarRouteChildren {
   moviesSidebarMoviesRoute: typeof moviesSidebarMoviesRoute
@@ -405,153 +518,6 @@ const seriesRouteChildren: seriesRouteChildren = {
 const seriesRouteWithChildren =
   seriesRoute._addFileChildren(seriesRouteChildren)
 
-export interface FileRoutesByFullPath {
-  '/': typeof seriesSidebarRouteWithChildren
-  '/search': typeof SearchRoute
-  '/test': typeof TestRoute
-  '/people': typeof peoplePeopleRoute
-  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
-  '/movies': typeof moviesSidebarMoviesRoute
-  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
-  '/people/$personId': typeof peoplePeoplePersonIdRoute
-  '/series': typeof seriesSidebarSeriesRoute
-  '/series/$seriesId': typeof seriesSeriesSeriesIdRoute
-  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
-  '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
-  '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
-  '/movies/$movieId/similar': typeof moviesMoviesMovieIdSimilarRoute
-  '/series/$seriesId/cast': typeof seriesSeriesSeriesIdCastRoute
-  '/series/$seriesId/crew': typeof seriesSeriesSeriesIdCrewRoute
-  '/series/$seriesId/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
-  '/series/$seriesId/similar': typeof seriesSeriesSeriesIdSimilarRoute
-}
-
-export interface FileRoutesByTo {
-  '/': typeof seriesSidebarRouteWithChildren
-  '/search': typeof SearchRoute
-  '/test': typeof TestRoute
-  '/people': typeof peoplePeopleRoute
-  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
-  '/movies': typeof moviesSidebarMoviesRoute
-  '/movies/$movieId': typeof moviesMoviesMovieIdRoute
-  '/people/$personId': typeof peoplePeoplePersonIdRoute
-  '/series': typeof seriesSidebarSeriesRoute
-  '/series/$seriesId': typeof seriesSeriesSeriesIdRoute
-  '/movies/$movieId/cast': typeof moviesMoviesMovieIdCastRoute
-  '/movies/$movieId/crew': typeof moviesMoviesMovieIdCrewRoute
-  '/movies/$movieId/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
-  '/movies/$movieId/similar': typeof moviesMoviesMovieIdSimilarRoute
-  '/series/$seriesId/cast': typeof seriesSeriesSeriesIdCastRoute
-  '/series/$seriesId/crew': typeof seriesSeriesSeriesIdCrewRoute
-  '/series/$seriesId/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
-  '/series/$seriesId/similar': typeof seriesSeriesSeriesIdSimilarRoute
-}
-
-export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/search': typeof SearchRoute
-  '/test': typeof TestRoute
-  '/(movies)': typeof moviesRouteWithChildren
-  '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
-  '/(people)/people': typeof peoplePeopleRoute
-  '/(series)': typeof seriesRouteWithChildren
-  '/(series)/_sidebar': typeof seriesSidebarRouteWithChildren
-  '/collections/$collectionId': typeof CollectionsCollectionIdRoute
-  '/(movies)/_sidebar/movies': typeof moviesSidebarMoviesRoute
-  '/(movies)/movies_/$movieId': typeof moviesMoviesMovieIdRoute
-  '/(people)/people_/$personId': typeof peoplePeoplePersonIdRoute
-  '/(series)/_sidebar/series': typeof seriesSidebarSeriesRoute
-  '/(series)/series_/$seriesId': typeof seriesSeriesSeriesIdRoute
-  '/(movies)/movies_/$movieId_/cast': typeof moviesMoviesMovieIdCastRoute
-  '/(movies)/movies_/$movieId_/crew': typeof moviesMoviesMovieIdCrewRoute
-  '/(movies)/movies_/$movieId_/recommendations': typeof moviesMoviesMovieIdRecommendationsRoute
-  '/(movies)/movies_/$movieId_/similar': typeof moviesMoviesMovieIdSimilarRoute
-  '/(series)/series_/$seriesId_/cast': typeof seriesSeriesSeriesIdCastRoute
-  '/(series)/series_/$seriesId_/crew': typeof seriesSeriesSeriesIdCrewRoute
-  '/(series)/series_/$seriesId_/recommendations': typeof seriesSeriesSeriesIdRecommendationsRoute
-  '/(series)/series_/$seriesId_/similar': typeof seriesSeriesSeriesIdSimilarRoute
-}
-
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/search'
-    | '/test'
-    | '/people'
-    | '/collections/$collectionId'
-    | '/movies'
-    | '/movies/$movieId'
-    | '/people/$personId'
-    | '/series'
-    | '/series/$seriesId'
-    | '/movies/$movieId/cast'
-    | '/movies/$movieId/crew'
-    | '/movies/$movieId/recommendations'
-    | '/movies/$movieId/similar'
-    | '/series/$seriesId/cast'
-    | '/series/$seriesId/crew'
-    | '/series/$seriesId/recommendations'
-    | '/series/$seriesId/similar'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/search'
-    | '/test'
-    | '/people'
-    | '/collections/$collectionId'
-    | '/movies'
-    | '/movies/$movieId'
-    | '/people/$personId'
-    | '/series'
-    | '/series/$seriesId'
-    | '/movies/$movieId/cast'
-    | '/movies/$movieId/crew'
-    | '/movies/$movieId/recommendations'
-    | '/movies/$movieId/similar'
-    | '/series/$seriesId/cast'
-    | '/series/$seriesId/crew'
-    | '/series/$seriesId/recommendations'
-    | '/series/$seriesId/similar'
-  id:
-    | '__root__'
-    | '/'
-    | '/search'
-    | '/test'
-    | '/(movies)'
-    | '/(movies)/_sidebar'
-    | '/(people)/people'
-    | '/(series)'
-    | '/(series)/_sidebar'
-    | '/collections/$collectionId'
-    | '/(movies)/_sidebar/movies'
-    | '/(movies)/movies_/$movieId'
-    | '/(people)/people_/$personId'
-    | '/(series)/_sidebar/series'
-    | '/(series)/series_/$seriesId'
-    | '/(movies)/movies_/$movieId_/cast'
-    | '/(movies)/movies_/$movieId_/crew'
-    | '/(movies)/movies_/$movieId_/recommendations'
-    | '/(movies)/movies_/$movieId_/similar'
-    | '/(series)/series_/$seriesId_/cast'
-    | '/(series)/series_/$seriesId_/crew'
-    | '/(series)/series_/$seriesId_/recommendations'
-    | '/(series)/series_/$seriesId_/similar'
-  fileRoutesById: FileRoutesById
-}
-
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  SearchRoute: typeof SearchRoute
-  TestRoute: typeof TestRoute
-  moviesRoute: typeof moviesRouteWithChildren
-  peoplePeopleRoute: typeof peoplePeopleRoute
-  seriesRoute: typeof seriesRouteWithChildren
-  CollectionsCollectionIdRoute: typeof CollectionsCollectionIdRoute
-  peoplePeoplePersonIdRoute: typeof peoplePeoplePersonIdRoute
-}
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SearchRoute: SearchRoute,
@@ -562,129 +528,6 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionsCollectionIdRoute: CollectionsCollectionIdRoute,
   peoplePeoplePersonIdRoute: peoplePeoplePersonIdRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/search",
-        "/test",
-        "/(movies)",
-        "/(people)/people",
-        "/(series)",
-        "/collections/$collectionId",
-        "/(people)/people_/$personId"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/search": {
-      "filePath": "search.tsx"
-    },
-    "/test": {
-      "filePath": "test.tsx"
-    },
-    "/(movies)": {
-      "filePath": "(movies)",
-      "children": [
-        "/(movies)/_sidebar",
-        "/(movies)/movies_/$movieId",
-        "/(movies)/movies_/$movieId_/cast",
-        "/(movies)/movies_/$movieId_/crew",
-        "/(movies)/movies_/$movieId_/recommendations",
-        "/(movies)/movies_/$movieId_/similar"
-      ]
-    },
-    "/(movies)/_sidebar": {
-      "filePath": "(movies)/_sidebar.tsx",
-      "parent": "/(movies)",
-      "children": [
-        "/(movies)/_sidebar/movies"
-      ]
-    },
-    "/(people)/people": {
-      "filePath": "(people)/people.tsx"
-    },
-    "/(series)": {
-      "filePath": "(series)",
-      "children": [
-        "/(series)/_sidebar",
-        "/(series)/series_/$seriesId",
-        "/(series)/series_/$seriesId_/cast",
-        "/(series)/series_/$seriesId_/crew",
-        "/(series)/series_/$seriesId_/recommendations",
-        "/(series)/series_/$seriesId_/similar"
-      ]
-    },
-    "/(series)/_sidebar": {
-      "filePath": "(series)/_sidebar.tsx",
-      "parent": "/(series)",
-      "children": [
-        "/(series)/_sidebar/series"
-      ]
-    },
-    "/collections/$collectionId": {
-      "filePath": "collections/$collectionId.tsx"
-    },
-    "/(movies)/_sidebar/movies": {
-      "filePath": "(movies)/_sidebar/movies.tsx",
-      "parent": "/(movies)/_sidebar"
-    },
-    "/(movies)/movies_/$movieId": {
-      "filePath": "(movies)/movies_/$movieId.tsx",
-      "parent": "/(movies)"
-    },
-    "/(people)/people_/$personId": {
-      "filePath": "(people)/people_/$personId.tsx"
-    },
-    "/(series)/_sidebar/series": {
-      "filePath": "(series)/_sidebar/series.tsx",
-      "parent": "/(series)/_sidebar"
-    },
-    "/(series)/series_/$seriesId": {
-      "filePath": "(series)/series_/$seriesId.tsx",
-      "parent": "/(series)"
-    },
-    "/(movies)/movies_/$movieId_/cast": {
-      "filePath": "(movies)/movies_/$movieId_/cast.tsx",
-      "parent": "/(movies)"
-    },
-    "/(movies)/movies_/$movieId_/crew": {
-      "filePath": "(movies)/movies_/$movieId_/crew.tsx",
-      "parent": "/(movies)"
-    },
-    "/(movies)/movies_/$movieId_/recommendations": {
-      "filePath": "(movies)/movies_/$movieId_/recommendations.tsx",
-      "parent": "/(movies)"
-    },
-    "/(movies)/movies_/$movieId_/similar": {
-      "filePath": "(movies)/movies_/$movieId_/similar.tsx",
-      "parent": "/(movies)"
-    },
-    "/(series)/series_/$seriesId_/cast": {
-      "filePath": "(series)/series_/$seriesId_/cast.tsx",
-      "parent": "/(series)"
-    },
-    "/(series)/series_/$seriesId_/crew": {
-      "filePath": "(series)/series_/$seriesId_/crew.tsx",
-      "parent": "/(series)"
-    },
-    "/(series)/series_/$seriesId_/recommendations": {
-      "filePath": "(series)/series_/$seriesId_/recommendations.tsx",
-      "parent": "/(series)"
-    },
-    "/(series)/series_/$seriesId_/similar": {
-      "filePath": "(series)/series_/$seriesId_/similar.tsx",
-      "parent": "/(series)"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
