@@ -26,6 +26,7 @@ const router = createRouter({
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
   defaultStaleTime: Number.POSITIVE_INFINITY,
+  scrollRestoration: true,
 });
 
 // Register things for typesafety

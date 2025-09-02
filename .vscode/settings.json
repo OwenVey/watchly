@@ -17,7 +17,6 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "explorer.sortOrder": "filesFirst",
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   }

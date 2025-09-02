@@ -1,7 +1,7 @@
 import { Navbar } from '@/components/navbar';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Outlet, ScrollRestoration, createRootRouteWithContext } from '@tanstack/react-router';
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 import React, { Suspense } from 'react';
 
 export const Route = createRootRouteWithContext<{
@@ -22,7 +22,6 @@ function RootComponent() {
   return (
     <>
       <Navbar />
-      <ScrollRestoration />
       <div className="flex">
         <Outlet />
       </div>
