@@ -2,7 +2,7 @@ import { cn, useContextSafely } from '@/lib/utils';
 import { composeRefs } from '@radix-ui/react-compose-refs';
 import { type PopoverProps } from '@radix-ui/react-popover';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { useCommandState } from 'cmdk';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
@@ -37,19 +37,24 @@ interface MultiselectProps extends PopoverProps {
 }
 
 const Multiselect = React.forwardRef<HTMLDivElement, MultiselectProps>(
-  ({
-    id,
-    placeholder,
-    defaultOpen = false,
-    open,
-    onOpenChange,
-    defaultValue = [],
-    value,
-    onValueChange,
-    options,
-    onSearch,
-    ...otherProps
-  }) => {
+  (
+    {
+      id,
+      placeholder,
+      defaultOpen = false,
+      open,
+      onOpenChange,
+      defaultValue = [],
+      value,
+      onValueChange,
+      className,
+      children,
+      options,
+      onSearch,
+      ...otherProps
+    },
+    ref,
+  ) => {
     const [_selection, _setSelection] = useControllableState({
       prop: value,
       defaultProp: defaultValue,
@@ -65,9 +70,8 @@ const Multiselect = React.forwardRef<HTMLDivElement, MultiselectProps>(
     const [search, setSearch] = React.useState('');
 
     const { data: searchOptions, isFetching } = useQuery({
-      // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey: [id, search],
-      queryFn: () => (onSearch ? onSearch(search) : []),
+      queryFn: onSearch ? () => onSearch(search) : skipToken,
       enabled: onSearch ? search.length > 0 : false,
     });
 
@@ -200,57 +204,62 @@ MultiselectBadge.displayName = 'MultiselectBadge';
 const MultiselectInput = React.forwardRef<
   React.ElementRef<typeof CommandInput>,
   React.ComponentPropsWithoutRef<typeof CommandInput>
->(({ placeholder = 'Search...', value, defaultValue, onValueChange, ...otherProps }, forwardedRef) => {
-  const ref = React.useRef<HTMLInputElement>(null);
-  const multiselect = useContextSafely(MultiselectContext);
-  const content = useContextSafely(MultiselectContentContext);
-  const activeValue = useCommandState((state) => state.value);
+>(
+  (
+    { children, className, placeholder = 'Search...', value, defaultValue, onValueChange, ...otherProps },
+    forwardedRef,
+  ) => {
+    const ref = React.useRef<HTMLInputElement>(null);
+    const multiselect = useContextSafely(MultiselectContext);
+    const content = useContextSafely(MultiselectContentContext);
+    const activeValue = useCommandState((state) => state.value);
 
-  const [search, setSearch] = useControllableState({
-    prop: value,
-    defaultProp: (defaultValue as string) ?? '',
-    onChange: onValueChange,
-  });
+    const [search, setSearch] = useControllableState({
+      prop: value,
+      defaultProp: defaultValue as string,
+      onChange: onValueChange,
+    });
 
-  React.useEffect(() => {
-    if (multiselect.open) {
-      setSearch('');
-    }
-  }, [multiselect.open, setSearch]);
-
-  // // fix broken cmdk accessibility
-  React.useEffect(() => {
-    if (ref.current) {
-      const activeItemEl = content.rootRef.current?.querySelector(
-        `[cmdk-item=""][data-value="${encodeURIComponent(activeValue)}"]`,
-      );
-      if (activeItemEl) {
-        ref.current.setAttribute('aria-activedescendant', activeItemEl.id);
+    React.useEffect(() => {
+      if (multiselect.open) {
+        setSearch('');
       }
-    }
-  }, [activeValue, content.rootRef]);
+    }, [multiselect.open]);
 
-  return (
-    <div className="-mt-1 mb-1">
-      <CommandInput
-        ref={forwardedRef ? composeRefs(forwardedRef, ref) : ref}
-        placeholder={placeholder}
-        value={search}
-        onValueChange={setSearch}
-        className="h-9 border-none px-1.5 text-sm"
-        onKeyUp={(e) => {
-          if (e.key === ' ') {
-            e.preventDefault();
-          }
-        }}
-        onBlur={(e) => {
-          e.currentTarget.focus();
-        }}
-        {...otherProps}
-      />
-    </div>
-  );
-});
+    // // fix broken cmdk accessibility
+    React.useEffect(() => {
+      if (ref.current) {
+        const activeItemEl = content.rootRef.current?.querySelector(
+          `[cmdk-item=""][data-value="${encodeURIComponent(activeValue)}"]`,
+        );
+        if (activeItemEl) {
+          ref.current.setAttribute('aria-activedescendant', activeItemEl.id);
+        }
+      }
+    }, [activeValue]);
+
+    return (
+      <div className="-mt-1 mb-1">
+        <CommandInput
+          ref={forwardedRef ? composeRefs(forwardedRef, ref) : ref}
+          placeholder={placeholder}
+          value={search}
+          onValueChange={setSearch}
+          className="h-9 border-none px-1.5 text-sm"
+          onKeyUp={(e) => {
+            if (e.key === ' ') {
+              e.preventDefault();
+            }
+          }}
+          onBlur={(e) => {
+            e.currentTarget.focus();
+          }}
+          {...otherProps}
+        />
+      </div>
+    );
+  },
+);
 MultiselectInput.displayName = 'MultiselectInput';
 
 const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElement | null> }) => {
@@ -266,7 +275,7 @@ const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElemen
         listRef.current.setAttribute('aria-activedescendant', activeItemEl.id);
       }
     }
-  }, [activeValue, listRef]);
+  }, [activeValue]);
 
   return null;
 };
@@ -319,7 +328,7 @@ interface MultiselectItemProps extends React.ComponentPropsWithoutRef<typeof Com
 }
 
 const MultiselectItem = React.forwardRef<React.ElementRef<typeof CommandItem>, MultiselectItemProps>(
-  ({ className, option, onSelect, ...otherProps }, ref) => {
+  ({ children, className, option, onSelect, ...otherProps }, ref) => {
     const multiselect = useContextSafely(MultiselectContext);
     const checked = multiselect.selection.some(({ value }) => value === option.value);
     return (
