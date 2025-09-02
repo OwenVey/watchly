@@ -2,7 +2,7 @@ import { type VariantProps, cva } from 'class-variance-authority';
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-md border border-gray-6 px-2 py-0.5 text-xs font-medium transition-colors focus:ring-2 focus:ring-gray-12 focus:outline-none',
@@ -36,7 +36,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, Varian
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
   ({ className, asChild = false, variant, hover = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'div';
+    const Comp = asChild ? SlotPrimitive.Slot : 'div';
     return <Comp ref={ref} className={cn(badgeVariants({ variant, hover }), className)} {...props} />;
   },
 );

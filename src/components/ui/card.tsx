@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot as SlotPrimitive } from 'radix-ui';
 import { cva } from 'class-variance-authority';
 
 export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl transition-all', {
@@ -22,7 +22,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
 }
 export function Card({ asChild = false, hover = false, className, ...rest }: Props) {
-  const Comp = asChild ? Slot : 'div';
+  const Comp = asChild ? SlotPrimitive.Slot : 'div';
 
   return <Comp {...rest} className={cn(cardVariants({ hover }), className)} />;
 }
