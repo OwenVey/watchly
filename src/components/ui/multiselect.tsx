@@ -37,24 +37,21 @@ interface MultiselectProps extends PopoverProps {
 }
 
 const Multiselect = React.forwardRef<HTMLDivElement, MultiselectProps>(
-  (
-    {
-      id,
-      placeholder,
-      defaultOpen = false,
-      open,
-      onOpenChange,
-      defaultValue = [],
-      value,
-      onValueChange,
-      className,
-      children,
-      options,
-      onSearch,
-      ...otherProps
-    },
-    ref,
-  ) => {
+  ({
+    id,
+    placeholder,
+    defaultOpen = false,
+    open,
+    onOpenChange,
+    defaultValue = [],
+    value,
+    onValueChange,
+    className,
+    children,
+    options,
+    onSearch,
+    ...otherProps
+  }) => {
     const [_selection, _setSelection] = useControllableState({
       prop: value,
       defaultProp: defaultValue,
