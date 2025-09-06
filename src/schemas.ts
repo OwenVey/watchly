@@ -17,8 +17,10 @@ const StringToDateSchema = z
   .string()
   .nullable()
   .optional()
-  .transform((val) => (val === '' ? undefined : val))
-  .pipe(z.coerce.date().optional());
+  .transform((val) => {
+    if (val === '' || val == null) return undefined;
+    return new Date(val);
+  });
 
 const VoteAverageSchema = z
   .number()

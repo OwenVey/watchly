@@ -5,77 +5,83 @@ import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { fallback, zodValidator } from '@tanstack/zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
 
 const MovieSearchSchema = z.object({
-  releasedAfter: fallback(z.coerce.date().optional(), undefined),
-  releasedBefore: fallback(z.coerce.date().optional(), undefined),
-  ratingMin: fallback(
-    z
-      .number()
-      .min(1)
-      .max(DEFAULT_MOVIE_SEARCH.ratingMax - 1),
-    DEFAULT_MOVIE_SEARCH.ratingMin,
-  ).default(DEFAULT_MOVIE_SEARCH.ratingMin),
-  ratingMax: fallback(z.number().min(1).max(DEFAULT_MOVIE_SEARCH.ratingMax), DEFAULT_MOVIE_SEARCH.ratingMax).default(
-    DEFAULT_MOVIE_SEARCH.ratingMax,
-  ),
-  voteCountMin: fallback(
-    z
-      .number()
-      .min(1)
-      .max(DEFAULT_MOVIE_SEARCH.voteCountMax - 1),
-    DEFAULT_MOVIE_SEARCH.voteCountMin,
-  ).default(DEFAULT_MOVIE_SEARCH.voteCountMin),
-  voteCountMax: fallback(
-    z.number().min(1).max(DEFAULT_MOVIE_SEARCH.voteCountMax),
-    DEFAULT_MOVIE_SEARCH.voteCountMax,
-  ).default(DEFAULT_MOVIE_SEARCH.voteCountMax),
-  runtimeMin: fallback(
-    z
-      .number()
-      .min(1)
-      .max(DEFAULT_MOVIE_SEARCH.runtimeMax - 1),
-    DEFAULT_MOVIE_SEARCH.runtimeMin,
-  ).default(DEFAULT_MOVIE_SEARCH.runtimeMin),
-  runtimeMax: fallback(z.number().min(1).max(DEFAULT_MOVIE_SEARCH.runtimeMax), DEFAULT_MOVIE_SEARCH.runtimeMax).default(
-    DEFAULT_MOVIE_SEARCH.runtimeMax,
-  ),
-  sort: fallback(
-    z.enum(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']),
-    DEFAULT_MOVIE_SEARCH.sort,
-  ).default(DEFAULT_MOVIE_SEARCH.sort),
-  sortDir: fallback(z.enum(['asc', 'desc']), DEFAULT_MOVIE_SEARCH.sortDir).default(DEFAULT_MOVIE_SEARCH.sortDir),
-  genres: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.genres).default(DEFAULT_MOVIE_SEARCH.genres),
-  releaseTypes: fallback(z.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes).default(
-    DEFAULT_MOVIE_SEARCH.releaseTypes,
-  ),
-  keywords: fallback(
-    z.array(z.object({ value: z.string(), label: z.string() })),
-    DEFAULT_MOVIE_SEARCH.keywords,
-  ).default(DEFAULT_MOVIE_SEARCH.keywords),
-  studios: fallback(z.array(z.object({ value: z.string(), label: z.string() })), DEFAULT_MOVIE_SEARCH.studios).default(
-    DEFAULT_MOVIE_SEARCH.studios,
-  ),
-  originalLanguage: z.string().optional(),
-  watchProviders: fallback(z.array(z.number()), DEFAULT_MOVIE_SEARCH.watchProviders).default(
-    DEFAULT_MOVIE_SEARCH.watchProviders,
-  ),
-  adult: fallback(z.boolean(), DEFAULT_MOVIE_SEARCH.adult).default(DEFAULT_MOVIE_SEARCH.adult),
+  releasedAfter: z.coerce.date().optional().catch(DEFAULT_MOVIE_SEARCH.releasedAfter),
+  releasedBefore: z.coerce.date().optional().catch(DEFAULT_MOVIE_SEARCH.releasedBefore),
+  ratingMin: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.ratingMax - 1)
+    .default(DEFAULT_MOVIE_SEARCH.ratingMin)
+    .catch(DEFAULT_MOVIE_SEARCH.ratingMin),
+  ratingMax: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.ratingMax)
+    .default(DEFAULT_MOVIE_SEARCH.ratingMax)
+    .catch(DEFAULT_MOVIE_SEARCH.ratingMax),
+  voteCountMin: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.voteCountMax - 1)
+    .default(DEFAULT_MOVIE_SEARCH.voteCountMin)
+    .catch(DEFAULT_MOVIE_SEARCH.voteCountMin),
+  voteCountMax: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.voteCountMax)
+    .default(DEFAULT_MOVIE_SEARCH.voteCountMax)
+    .catch(DEFAULT_MOVIE_SEARCH.voteCountMax),
+  runtimeMin: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.runtimeMax - 1)
+    .default(DEFAULT_MOVIE_SEARCH.runtimeMin)
+    .catch(DEFAULT_MOVIE_SEARCH.runtimeMin),
+  runtimeMax: z
+    .number()
+    .min(1)
+    .max(DEFAULT_MOVIE_SEARCH.runtimeMax)
+    .default(DEFAULT_MOVIE_SEARCH.runtimeMax)
+    .catch(DEFAULT_MOVIE_SEARCH.runtimeMax),
+  sort: z
+    .enum(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count'])
+    .default(DEFAULT_MOVIE_SEARCH.sort)
+    .catch(DEFAULT_MOVIE_SEARCH.sort),
+  sortDir: z.enum(['asc', 'desc']).default(DEFAULT_MOVIE_SEARCH.sortDir).catch(DEFAULT_MOVIE_SEARCH.sortDir),
+  genres: z.array(z.number()).default(DEFAULT_MOVIE_SEARCH.genres).catch(DEFAULT_MOVIE_SEARCH.genres),
+  releaseTypes: z
+    .array(MovieReleaseTypeSchema)
+    .default(DEFAULT_MOVIE_SEARCH.releaseTypes)
+    .catch(DEFAULT_MOVIE_SEARCH.releaseTypes),
+  keywords: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .default(DEFAULT_MOVIE_SEARCH.keywords)
+    .catch(DEFAULT_MOVIE_SEARCH.keywords),
+  studios: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .default(DEFAULT_MOVIE_SEARCH.studios)
+    .catch(DEFAULT_MOVIE_SEARCH.studios),
+  originalLanguage: z.string().optional().catch(DEFAULT_MOVIE_SEARCH.originalLanguage),
+  watchProviders: z
+    .array(z.number())
+    .default(DEFAULT_MOVIE_SEARCH.watchProviders)
+    .catch(DEFAULT_MOVIE_SEARCH.watchProviders),
+  adult: z.boolean().optional().catch(DEFAULT_MOVIE_SEARCH.adult),
 });
-
 export type MovieSearchParams = z.infer<typeof MovieSearchSchema>;
 
 export const Route = createFileRoute('/(movies)/_sidebar/movies')({
-  validateSearch: zodValidator(MovieSearchSchema),
+  validateSearch: MovieSearchSchema,
   search: {
     middlewares: [
-      stripSearchParams(DEFAULT_MOVIE_SEARCH),
-      // retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
       retainSearchParams(true),
+      // retainSearchParams(Object.keys({ ...DEFAULT_MOVIE_SEARCH }) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
+      stripSearchParams({ ...DEFAULT_MOVIE_SEARCH }),
     ],
   },
   loaderDeps: ({ search }) => search,

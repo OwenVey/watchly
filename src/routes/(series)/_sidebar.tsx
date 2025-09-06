@@ -145,7 +145,7 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={firstAirDateAfter}
-                  onSelect={(firstAirDateAfter) => navigate({ search: { firstAirDateAfter } })}
+                  onSelect={(firstAirDateAfter) => navigate({ to: '/series', search: { firstAirDateAfter } })}
                 />
               </PopoverContent>
             </Popover>
@@ -167,7 +167,7 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={firstAirDateBefore}
-                  onSelect={(firstAirDateBefore) => navigate({ search: { firstAirDateBefore } })}
+                  onSelect={(firstAirDateBefore) => navigate({ to: '/series', search: { firstAirDateBefore } })}
                 />
               </PopoverContent>
             </Popover>
@@ -181,7 +181,7 @@ function Filters() {
             className="mt-1 mb-4"
             value={rating}
             onValueChange={setRating}
-            onValueCommit={([ratingMin, ratingMax]) => navigate({ search: { ratingMin, ratingMax } })}
+            onValueCommit={([ratingMin, ratingMax]) => navigate({ to: '/series', search: { ratingMin, ratingMax } })}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
             max={DEFAULT_SERIES_SEARCH.ratingMax}
@@ -198,7 +198,9 @@ function Filters() {
             className="mt-1 mb-4"
             value={voteCount}
             onValueChange={setVoteCount}
-            onValueCommit={([voteCountMin, voteCountMax]) => navigate({ search: { voteCountMin, voteCountMax } })}
+            onValueCommit={([voteCountMin, voteCountMax]) =>
+              navigate({ to: '/series', search: { voteCountMin, voteCountMax } })
+            }
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
             max={DEFAULT_SERIES_SEARCH.voteCountMax}
@@ -215,7 +217,7 @@ function Filters() {
             <Select
               defaultValue="popularity"
               value={sort}
-              onValueChange={(sort: SeriesSearchParams['sort']) => navigate({ search: { sort } })}
+              onValueChange={(sort: SeriesSearchParams['sort']) => navigate({ to: '/series', search: { sort } })}
             >
               <SelectTrigger id="sort">
                 <SelectValue />
@@ -249,7 +251,9 @@ function Filters() {
               value: value.toString(),
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
             }))}
-            onValueChange={(options) => navigate({ search: { genres: options.map(({ value }) => +value) } })}
+            onValueChange={(options) =>
+              navigate({ to: '/series', search: { genres: options.map(({ value }) => +value) } })
+            }
             options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
         </div>
@@ -257,7 +261,11 @@ function Filters() {
         {/* Status */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="status">Status</Label>
-          <Select key={status} value={status} onValueChange={(status) => navigate({ search: { status } })}>
+          <Select
+            key={status}
+            value={status}
+            onValueChange={(status) => navigate({ to: '/series', search: { status } })}
+          >
             <SelectTrigger id="status">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
@@ -281,7 +289,12 @@ function Filters() {
               value: value.toString(),
               label: TV_SHOW_TYPE_MAP[value],
             }))}
-            onValueChange={(options) => navigate({ search: { types: options.map(({ value }) => +value) } })}
+            onValueChange={(options) =>
+              navigate({
+                to: '/series',
+                search: { types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP) },
+              })
+            }
             options={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
         </div>
@@ -293,7 +306,7 @@ function Filters() {
             id="keywords"
             placeholder="Select keywords"
             value={keywords}
-            onValueChange={(keywords) => navigate({ search: { keywords } })}
+            onValueChange={(keywords) => navigate({ to: '/series', search: { keywords } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/keyword', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -308,7 +321,7 @@ function Filters() {
             id="studios"
             placeholder="Select studios"
             value={studios}
-            onValueChange={(studios) => navigate({ search: { studios } })}
+            onValueChange={(studios) => navigate({ to: '/series', search: { studios } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -323,7 +336,7 @@ function Filters() {
             id="networks"
             placeholder="Select networks"
             value={networks}
-            onValueChange={(networks) => navigate({ search: { networks } })}
+            onValueChange={(networks) => navigate({ to: '/series', search: { networks } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -337,7 +350,7 @@ function Filters() {
           <Select
             key={originalLanguage}
             value={originalLanguage}
-            onValueChange={(originalLanguage) => navigate({ search: { originalLanguage } })}
+            onValueChange={(originalLanguage) => navigate({ to: '/series', search: { originalLanguage } })}
           >
             <SelectTrigger id="original-language">
               <SelectValue placeholder="Select language" />
@@ -400,7 +413,11 @@ function Filters() {
 
         {/* Adult Content */}
         <div className="flex items-center gap-2">
-          <Switch id="adult-content" checked={adult} onCheckedChange={(adult) => navigate({ search: { adult } })} />
+          <Switch
+            id="adult-content"
+            checked={adult}
+            onCheckedChange={(adult) => navigate({ to: '/series', search: { adult } })}
+          />
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>
       </div>
@@ -409,7 +426,7 @@ function Filters() {
         {/* Clear Filters */}
         <Link
           to="/series"
-          search={DEFAULT_SERIES_SEARCH}
+          search={{ ...DEFAULT_SERIES_SEARCH }}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />

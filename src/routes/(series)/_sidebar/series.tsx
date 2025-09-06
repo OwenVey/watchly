@@ -5,51 +5,54 @@ import { seriesQueryOptions } from '@/query-options';
 import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { fallback } from '@tanstack/zod-adapter';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
 
 const SeriesSearchSchema = z.object({
-  firstAirDateAfter: fallback(z.coerce.date().optional(), undefined),
-  firstAirDateBefore: fallback(z.coerce.date().optional(), undefined),
-  ratingMin: fallback(
-    z
-      .number()
-      .min(1)
-      .max(DEFAULT_SERIES_SEARCH.ratingMax - 1),
-    DEFAULT_SERIES_SEARCH.ratingMin,
-  ).default(DEFAULT_SERIES_SEARCH.ratingMin),
-  ratingMax: fallback(z.number().min(1).max(DEFAULT_SERIES_SEARCH.ratingMax), DEFAULT_SERIES_SEARCH.ratingMax).default(
-    DEFAULT_SERIES_SEARCH.ratingMax,
-  ),
-  voteCountMin: fallback(
-    z
-      .number()
-      .min(1)
-      .max(DEFAULT_SERIES_SEARCH.voteCountMax - 1),
-    DEFAULT_SERIES_SEARCH.voteCountMin,
-  ).default(DEFAULT_SERIES_SEARCH.voteCountMin),
-  voteCountMax: fallback(
-    z.number().min(1).max(DEFAULT_SERIES_SEARCH.voteCountMax),
-    DEFAULT_SERIES_SEARCH.voteCountMax,
-  ).default(DEFAULT_SERIES_SEARCH.voteCountMax),
-  sort: fallback(
-    z.enum(['first_air_date', 'name', 'popularity', 'vote_average', 'vote_count']),
-    DEFAULT_SERIES_SEARCH.sort,
-  ).default(DEFAULT_SERIES_SEARCH.sort),
-  sortDir: fallback(z.enum(['asc', 'desc']), DEFAULT_SERIES_SEARCH.sortDir).default(DEFAULT_SERIES_SEARCH.sortDir),
-  genres: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.genres).default(DEFAULT_SERIES_SEARCH.genres),
-  status: fallback(z.string(), DEFAULT_SERIES_SEARCH.status).default(DEFAULT_SERIES_SEARCH.status),
-  types: fallback(z.array(TvShowTypeSchema), DEFAULT_SERIES_SEARCH.types).default(DEFAULT_SERIES_SEARCH.types),
-  keywords: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.keywords).default(DEFAULT_SERIES_SEARCH.keywords),
-  studios: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.studios).default(DEFAULT_SERIES_SEARCH.studios),
-  networks: fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.networks).default(DEFAULT_SERIES_SEARCH.networks),
-  originalLanguage: z.string().optional(),
-  watchProviders: fallback(z.array(z.number()), DEFAULT_SERIES_SEARCH.watchProviders).default(
-    DEFAULT_SERIES_SEARCH.watchProviders,
-  ),
-  adult: fallback(z.boolean(), DEFAULT_SERIES_SEARCH.adult).default(DEFAULT_SERIES_SEARCH.adult),
+  firstAirDateAfter: z.coerce.date().optional().catch(DEFAULT_SERIES_SEARCH.firstAirDateAfter),
+  firstAirDateBefore: z.coerce.date().optional().catch(DEFAULT_SERIES_SEARCH.firstAirDateBefore),
+  ratingMin: z
+    .number()
+    .min(1)
+    .max(DEFAULT_SERIES_SEARCH.ratingMax - 1)
+    .default(DEFAULT_SERIES_SEARCH.ratingMin)
+    .catch(DEFAULT_SERIES_SEARCH.ratingMin),
+  ratingMax: z
+    .number()
+    .min(1)
+    .max(DEFAULT_SERIES_SEARCH.ratingMax)
+    .default(DEFAULT_SERIES_SEARCH.ratingMax)
+    .catch(DEFAULT_SERIES_SEARCH.ratingMax),
+  voteCountMin: z
+    .number()
+    .min(1)
+    .max(DEFAULT_SERIES_SEARCH.voteCountMax - 1)
+    .default(DEFAULT_SERIES_SEARCH.voteCountMin)
+    .catch(DEFAULT_SERIES_SEARCH.voteCountMin),
+  voteCountMax: z
+    .number()
+    .min(1)
+    .max(DEFAULT_SERIES_SEARCH.voteCountMax)
+    .default(DEFAULT_SERIES_SEARCH.voteCountMax)
+    .catch(DEFAULT_SERIES_SEARCH.voteCountMax),
+  sort: z
+    .enum(['first_air_date', 'name', 'popularity', 'vote_average', 'vote_count'])
+    .default(DEFAULT_SERIES_SEARCH.sort)
+    .catch(DEFAULT_SERIES_SEARCH.sort),
+  sortDir: z.enum(['asc', 'desc']).default(DEFAULT_SERIES_SEARCH.sortDir).catch(DEFAULT_SERIES_SEARCH.sortDir),
+  genres: z.array(z.number()).default(DEFAULT_SERIES_SEARCH.genres).catch(DEFAULT_SERIES_SEARCH.genres),
+  status: z.string().default(DEFAULT_SERIES_SEARCH.status).catch(DEFAULT_SERIES_SEARCH.status),
+  types: z.array(TvShowTypeSchema).default(DEFAULT_SERIES_SEARCH.types).catch(DEFAULT_SERIES_SEARCH.types),
+  keywords: OptionsSchema.default(DEFAULT_SERIES_SEARCH.keywords).catch(DEFAULT_SERIES_SEARCH.keywords),
+  studios: OptionsSchema.default(DEFAULT_SERIES_SEARCH.studios).catch(DEFAULT_SERIES_SEARCH.studios),
+  networks: OptionsSchema.default(DEFAULT_SERIES_SEARCH.networks).catch(DEFAULT_SERIES_SEARCH.networks),
+  originalLanguage: z.string().optional().catch(DEFAULT_SERIES_SEARCH.originalLanguage),
+  watchProviders: z
+    .array(z.number())
+    .default(DEFAULT_SERIES_SEARCH.watchProviders)
+    .catch(DEFAULT_SERIES_SEARCH.watchProviders),
+  adult: z.boolean().default(DEFAULT_SERIES_SEARCH.adult).catch(DEFAULT_SERIES_SEARCH.adult),
 });
 
 export type SeriesSearchParams = z.infer<typeof SeriesSearchSchema>;
@@ -58,9 +61,9 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: SeriesSearchSchema,
   search: {
     middlewares: [
-      stripSearchParams(DEFAULT_SERIES_SEARCH),
-      // retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
       retainSearchParams(true),
+      // retainSearchParams(Object.keys({...DEFAULT_SERIES_SEARCH}) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
+      stripSearchParams({ ...DEFAULT_SERIES_SEARCH }),
     ],
   },
   loaderDeps: ({ search }) => search,

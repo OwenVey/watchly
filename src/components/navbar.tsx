@@ -3,7 +3,6 @@ import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
@@ -15,13 +14,11 @@ const LINKS = [
     to: '/movies',
     label: 'Movies',
     icon: FilmIcon,
-    search: DEFAULT_MOVIE_SEARCH,
   },
   {
     to: '/series',
     label: 'Series',
     icon: TvIcon,
-    search: DEFAULT_SERIES_SEARCH,
   },
   {
     to: '/people',
@@ -63,8 +60,11 @@ export function Navbar() {
                     <Link
                       key={link.to}
                       to={link.to}
-                      search={link.search}
+                      search={undefined}
                       className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium text-gray-11 transition-all hover:bg-gray-4 hover:text-gray-12"
+                      activeOptions={{
+                        includeSearch: false,
+                      }}
                       activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9' }}
                     >
                       <link.icon className="size-5" />
@@ -102,8 +102,11 @@ export function Navbar() {
                 <Accordion.Trigger key={link.to} asChild>
                   <Link
                     to={link.to}
-                    search={link.search}
+                    search={undefined}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium text-gray-11 hover:bg-gray-10/20 hover:text-gray-12"
+                    activeOptions={{
+                      includeSearch: false,
+                    }}
                     activeProps={{ className: 'bg-primary-9 text-white hover:bg-primary-9 hover:text-white' }}
                   >
                     <link.icon className="size-6" />
