@@ -144,7 +144,9 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={releasedAfter}
-                  onSelect={(releasedAfter) => navigate({ to: '/movies', search: { releasedAfter } })}
+                  onSelect={(releasedAfter) =>
+                    navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedAfter }) })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -166,7 +168,9 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={releasedBefore}
-                  onSelect={(releasedBefore) => navigate({ to: '/movies', search: { releasedBefore } })}
+                  onSelect={(releasedBefore) =>
+                    navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedBefore }) })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -180,7 +184,9 @@ function Filters() {
             className="mt-1 mb-4"
             value={rating}
             onValueChange={setRating}
-            onValueCommit={([ratingMin, ratingMax]) => navigate({ to: '/movies', search: { ratingMin, ratingMax } })}
+            onValueCommit={([ratingMin, ratingMax]) =>
+              navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) })
+            }
             defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
             min={DEFAULT_MOVIE_SEARCH.ratingMin}
             max={DEFAULT_MOVIE_SEARCH.ratingMax}
@@ -198,7 +204,7 @@ function Filters() {
             value={voteCount}
             onValueChange={setVoteCount}
             onValueCommit={([voteCountMin, voteCountMax]) =>
-              navigate({ to: '/movies', search: { voteCountMin, voteCountMax } })
+              navigate({ to: '/movies', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) })
             }
             defaultValue={[DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]}
             min={DEFAULT_MOVIE_SEARCH.voteCountMin}
@@ -217,7 +223,7 @@ function Filters() {
             value={runtime}
             onValueChange={setRuntime}
             onValueCommit={([runtimeMin, runtimeMax]) =>
-              navigate({ to: '/movies', search: { runtimeMin, runtimeMax } })
+              navigate({ to: '/movies', search: (prev) => ({ ...prev, runtimeMin, runtimeMax }) })
             }
             defaultValue={[DEFAULT_MOVIE_SEARCH.runtimeMin, DEFAULT_MOVIE_SEARCH.runtimeMax]}
             min={DEFAULT_MOVIE_SEARCH.runtimeMin}
@@ -235,7 +241,9 @@ function Filters() {
             <Select
               defaultValue="popularity"
               value={sort}
-              onValueChange={(sort: MovieSearchParams['sort']) => navigate({ to: '/movies', search: { sort } })}
+              onValueChange={(sort: MovieSearchParams['sort']) =>
+                navigate({ to: '/movies', search: (prev) => ({ ...prev, sort }) })
+              }
             >
               <SelectTrigger id="sort">
                 <SelectValue />
@@ -251,8 +259,9 @@ function Filters() {
             </Select>
 
             <Link
+              from={Route.fullPath}
               to="/movies"
-              search={{ sortDir: sortDir === 'asc' ? 'desc' : 'asc' }}
+              search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
               {sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
@@ -271,7 +280,7 @@ function Filters() {
               label: MOVIE_GENRES_MAP[value as keyof typeof MOVIE_GENRES_MAP],
             }))}
             onValueChange={(options) =>
-              navigate({ to: '/movies', search: { genres: options.map(({ value }) => +value) } })
+              navigate({ to: '/movies', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
             }
             options={Object.entries(MOVIE_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
@@ -290,7 +299,10 @@ function Filters() {
             onValueChange={(options) =>
               navigate({
                 to: '/movies',
-                search: { releaseTypes: options.map(({ value }) => +value as keyof typeof MOVIE_RELEASE_TYPE_MAP) },
+                search: (prev) => ({
+                  ...prev,
+                  releaseTypes: options.map(({ value }) => +value as keyof typeof MOVIE_RELEASE_TYPE_MAP),
+                }),
               })
             }
             options={Object.entries(MOVIE_RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
@@ -304,7 +316,7 @@ function Filters() {
             id="keywords"
             placeholder="Select keywords"
             value={keywords}
-            onValueChange={(keywords) => navigate({ to: '/movies', search: { keywords } })}
+            onValueChange={(keywords) => navigate({ to: '/movies', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/keyword', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -319,7 +331,7 @@ function Filters() {
             id="studio"
             placeholder="Select studios"
             value={studios}
-            onValueChange={(studios) => navigate({ to: '/movies', search: { studios } })}
+            onValueChange={(studios) => navigate({ to: '/movies', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -333,7 +345,9 @@ function Filters() {
           <Select
             key={originalLanguage}
             value={originalLanguage}
-            onValueChange={(originalLanguage) => navigate({ to: '/movies', search: { originalLanguage } })}
+            onValueChange={(originalLanguage) =>
+              navigate({ to: '/movies', search: (prev) => ({ ...prev, originalLanguage }) })
+            }
           >
             <SelectTrigger id="original-language">
               <SelectValue placeholder="Select language" />
@@ -366,8 +380,12 @@ function Filters() {
                     <Tooltip key={provider.provider_id}>
                       <TooltipTrigger asChild>
                         <Link
-                          to="."
-                          search={{ watchProviders: toggleItemInArray(watchProviders, provider.provider_id) }}
+                          from={Route.fullPath}
+                          to="/movies"
+                          search={(prev) => ({
+                            ...prev,
+                            watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
+                          })}
                           className={cn(
                             'aspect-square overflow-hidden rounded-lg border p-1.5',
                             'outline-none focus-visible:border-gray-12 focus-visible:ring-1 focus-visible:ring-gray-12',
@@ -399,7 +417,7 @@ function Filters() {
           <Switch
             id="adult-content"
             checked={adult}
-            onCheckedChange={(adult) => navigate({ to: '/movies', search: { adult } })}
+            onCheckedChange={(adult) => navigate({ to: '/movies', search: (prev) => ({ ...prev, adult }) })}
           />
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>

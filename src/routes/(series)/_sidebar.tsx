@@ -145,7 +145,9 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={firstAirDateAfter}
-                  onSelect={(firstAirDateAfter) => navigate({ to: '/series', search: { firstAirDateAfter } })}
+                  onSelect={(firstAirDateAfter) =>
+                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateAfter }) })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -167,7 +169,9 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={firstAirDateBefore}
-                  onSelect={(firstAirDateBefore) => navigate({ to: '/series', search: { firstAirDateBefore } })}
+                  onSelect={(firstAirDateBefore) =>
+                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateBefore }) })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -181,7 +185,9 @@ function Filters() {
             className="mt-1 mb-4"
             value={rating}
             onValueChange={setRating}
-            onValueCommit={([ratingMin, ratingMax]) => navigate({ to: '/series', search: { ratingMin, ratingMax } })}
+            onValueCommit={([ratingMin, ratingMax]) =>
+              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) })
+            }
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
             max={DEFAULT_SERIES_SEARCH.ratingMax}
@@ -199,7 +205,7 @@ function Filters() {
             value={voteCount}
             onValueChange={setVoteCount}
             onValueCommit={([voteCountMin, voteCountMax]) =>
-              navigate({ to: '/series', search: { voteCountMin, voteCountMax } })
+              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) })
             }
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
@@ -217,7 +223,9 @@ function Filters() {
             <Select
               defaultValue="popularity"
               value={sort}
-              onValueChange={(sort: SeriesSearchParams['sort']) => navigate({ to: '/series', search: { sort } })}
+              onValueChange={(sort: SeriesSearchParams['sort']) =>
+                navigate({ to: '/series', search: (prev) => ({ ...prev, sort }) })
+              }
             >
               <SelectTrigger id="sort">
                 <SelectValue />
@@ -232,8 +240,9 @@ function Filters() {
             </Select>
 
             <Link
+              from={Route.fullPath}
               to="/series"
-              search={{ sortDir: sortDir === 'asc' ? 'desc' : 'asc' }}
+              search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
               {sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
@@ -252,7 +261,7 @@ function Filters() {
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
             }))}
             onValueChange={(options) =>
-              navigate({ to: '/series', search: { genres: options.map(({ value }) => +value) } })
+              navigate({ to: '/series', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
             }
             options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
@@ -264,7 +273,7 @@ function Filters() {
           <Select
             key={status}
             value={status}
-            onValueChange={(status) => navigate({ to: '/series', search: { status } })}
+            onValueChange={(status) => navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
           >
             <SelectTrigger id="status">
               <SelectValue placeholder="Select status" />
@@ -292,7 +301,10 @@ function Filters() {
             onValueChange={(options) =>
               navigate({
                 to: '/series',
-                search: { types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP) },
+                search: (prev) => ({
+                  ...prev,
+                  types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP),
+                }),
               })
             }
             options={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
@@ -306,7 +318,7 @@ function Filters() {
             id="keywords"
             placeholder="Select keywords"
             value={keywords}
-            onValueChange={(keywords) => navigate({ to: '/series', search: { keywords } })}
+            onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/keyword', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -321,7 +333,7 @@ function Filters() {
             id="studios"
             placeholder="Select studios"
             value={studios}
-            onValueChange={(studios) => navigate({ to: '/series', search: { studios } })}
+            onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -336,7 +348,7 @@ function Filters() {
             id="networks"
             placeholder="Select networks"
             value={networks}
-            onValueChange={(networks) => navigate({ to: '/series', search: { networks } })}
+            onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
             onSearch={async (query) => {
               const { results } = await tmdbApi('/search/company', { query: { query } });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -350,7 +362,9 @@ function Filters() {
           <Select
             key={originalLanguage}
             value={originalLanguage}
-            onValueChange={(originalLanguage) => navigate({ to: '/series', search: { originalLanguage } })}
+            onValueChange={(originalLanguage) =>
+              navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
+            }
           >
             <SelectTrigger id="original-language">
               <SelectValue placeholder="Select language" />
@@ -383,8 +397,12 @@ function Filters() {
                     <Tooltip key={provider.provider_id}>
                       <TooltipTrigger asChild>
                         <Link
-                          to="."
-                          search={{ watchProviders: toggleItemInArray(watchProviders, provider.provider_id) }}
+                          from={Route.fullPath}
+                          to="/series"
+                          search={(prev) => ({
+                            ...prev,
+                            watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
+                          })}
                           className={cn(
                             'aspect-square overflow-hidden rounded-lg border p-1.5',
                             'outline-none focus-visible:border-gray-12 focus-visible:ring-1 focus-visible:ring-gray-12',

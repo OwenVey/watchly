@@ -4,7 +4,7 @@ import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
 import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
@@ -79,7 +79,7 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: MovieSearchSchema,
   search: {
     middlewares: [
-      retainSearchParams(true),
+      // retainSearchParams(true),
       // retainSearchParams(Object.keys({ ...DEFAULT_MOVIE_SEARCH }) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
       stripSearchParams({ ...DEFAULT_MOVIE_SEARCH }),
     ],
