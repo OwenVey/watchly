@@ -1,7 +1,8 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { routeTree } from './routeTree.gen';
@@ -18,14 +19,17 @@ const queryClient = new QueryClient({
 // Set up a Router instance
 const router = createRouter({
   routeTree,
-  context: {
-    queryClient,
-  },
+  context: { queryClient },
   defaultPreload: 'intent',
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
   defaultStaleTime: Number.POSITIVE_INFINITY,
+});
+
+setupRouterSsrQueryIntegration({
+  router,
+  queryClient,
 });
 
 // Register things for typesafety
@@ -40,12 +44,10 @@ const rootElement = document.getElementById('app')!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system" storageKey="watchly-ui-theme">
-        <TooltipProvider>
-          <RouterProvider router={router} />
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>,
+    <ThemeProvider defaultTheme="system" storageKey="watchly-ui-theme">
+      <TooltipProvider>
+        <RouterProvider router={router} />
+      </TooltipProvider>
+    </ThemeProvider>,
   );
 }
