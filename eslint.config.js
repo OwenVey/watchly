@@ -14,11 +14,17 @@ export default defineConfig(
   tseslint.configs.recommendedTypeChecked,
   pluginRouter.configs['flat/recommended'],
   pluginQuery.configs['flat/recommended'],
-  reactHooks.configs['recommended-latest'],
   reactRefresh.configs.vite,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat['jsx-runtime'], // Add this if you are using React 17+
   eslintConfigPrettier,
+  {
+    files: ['src/**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    extends: ['react-hooks/recommended'],
+  },
   {
     languageOptions: {
       ecmaVersion: 2020,
