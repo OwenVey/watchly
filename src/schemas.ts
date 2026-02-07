@@ -501,7 +501,7 @@ export const SeriesDetailsOutputSchema = z.object({
 
 export const SeasonOutputSchema = z.object({
   _id: z.string(),
-  air_date: z.string(),
+  air_date: z.string().nullable(),
   episodes: z.array(
     z.object({
       air_date: z.string().nullable(),

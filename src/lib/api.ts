@@ -45,28 +45,32 @@ export const tmdbApi = createFetch({
       },
       '/movie/:movieId': {
         query: z.object({
-          append_to_response: z.tuple([
-            z.literal('recommendations'),
-            z.literal('similar'),
-            z.literal('reviews'),
-            z.literal('credits'),
-            z.literal('release_dates'),
-            z.literal('keywords'),
-          ]),
+          append_to_response: z
+            .tuple([
+              z.literal('recommendations'),
+              z.literal('similar'),
+              z.literal('reviews'),
+              z.literal('credits'),
+              z.literal('release_dates'),
+              z.literal('keywords'),
+            ])
+            .transform((values) => values.join(',')),
         }),
         output: MovieDetailsOutputSchema,
       },
       '/tv/:seriesId': {
         query: z.object({
-          append_to_response: z.tuple([
-            z.literal('recommendations'),
-            z.literal('similar'),
-            z.literal('reviews'),
-            z.literal('credits'),
-            z.literal('external_ids'),
-            z.literal('content_ratings'),
-            z.literal('keywords'),
-          ]),
+          append_to_response: z
+            .tuple([
+              z.literal('recommendations'),
+              z.literal('similar'),
+              z.literal('reviews'),
+              z.literal('credits'),
+              z.literal('external_ids'),
+              z.literal('content_ratings'),
+              z.literal('keywords'),
+            ])
+            .transform((values) => values.join(',')),
         }),
         output: SeriesDetailsOutputSchema,
       },
