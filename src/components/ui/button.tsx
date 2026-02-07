@@ -42,7 +42,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? SlotPrimitive.Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }), loading && 'text-transparent [&>*]:opacity-0')}
+        className={cn(buttonVariants({ variant, size, className }), loading && 'text-transparent *:opacity-0')}
         disabled={disabled || loading}
         ref={ref}
         {...props}

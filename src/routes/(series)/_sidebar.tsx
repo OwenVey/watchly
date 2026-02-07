@@ -43,7 +43,7 @@ function SeriesSidebar() {
     <>
       <Card
         asChild
-        className="sticky top-[94px] left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
+        className="sticky top-23.5 left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
       >
         <aside>
           <Filters />
@@ -94,7 +94,7 @@ function Filters() {
     adult,
   } = search;
 
-  const navigate = useNavigate({ from: Route.fullPath });
+  const navigate = useNavigate({ from: '/series' });
 
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
@@ -240,7 +240,7 @@ function Filters() {
             </Select>
 
             <Link
-              from={Route.fullPath}
+              from="/series"
               to="/series"
               search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
@@ -397,7 +397,7 @@ function Filters() {
                     <Tooltip key={provider.provider_id}>
                       <TooltipTrigger asChild>
                         <Link
-                          from={Route.fullPath}
+                          from="/series"
                           to="/series"
                           search={(prev) => ({
                             ...prev,

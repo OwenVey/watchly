@@ -46,8 +46,6 @@ const Multiselect = React.forwardRef<HTMLDivElement, MultiselectProps>(
     defaultValue = [],
     value,
     onValueChange,
-    className,
-    children,
     options,
     onSearch,
     ...otherProps
@@ -135,7 +133,7 @@ const MultiselectTrigger = React.forwardRef<React.ElementRef<typeof PopoverTrigg
           )}
         >
           <div
-            className={cn('relative h-full min-w-0 flex-1 overflow-auto rounded-l-[inherit] p-[5px]')}
+            className={cn('relative h-full min-w-0 flex-1 overflow-auto rounded-l-[inherit] p-1.25')}
             style={{ mask, WebkitMask: mask }}
           >
             {multiselect.selection.length === 0 ? (
@@ -201,62 +199,57 @@ MultiselectBadge.displayName = 'MultiselectBadge';
 const MultiselectInput = React.forwardRef<
   React.ElementRef<typeof CommandInput>,
   React.ComponentPropsWithoutRef<typeof CommandInput>
->(
-  (
-    { children, className, placeholder = 'Search...', value, defaultValue, onValueChange, ...otherProps },
-    forwardedRef,
-  ) => {
-    const ref = React.useRef<HTMLInputElement>(null);
-    const multiselect = useContextSafely(MultiselectContext);
-    const content = useContextSafely(MultiselectContentContext);
-    const activeValue = useCommandState((state) => state.value);
+>(({ placeholder = 'Search...', value, defaultValue, onValueChange, ...otherProps }, forwardedRef) => {
+  const ref = React.useRef<HTMLInputElement>(null);
+  const multiselect = useContextSafely(MultiselectContext);
+  const content = useContextSafely(MultiselectContentContext);
+  const activeValue = useCommandState((state) => state.value);
 
-    const [search, setSearch] = useControllableState({
-      prop: value,
-      defaultProp: defaultValue as string,
-      onChange: onValueChange,
-    });
+  const [search, setSearch] = useControllableState({
+    prop: value,
+    defaultProp: defaultValue as string,
+    onChange: onValueChange,
+  });
 
-    React.useEffect(() => {
-      if (multiselect.open) {
-        setSearch('');
+  React.useEffect(() => {
+    if (multiselect.open) {
+      setSearch('');
+    }
+  }, [multiselect.open]);
+
+  // // fix broken cmdk accessibility
+  React.useEffect(() => {
+    if (ref.current) {
+      const activeItemEl = content.rootRef.current?.querySelector(
+        `[cmdk-item=""][data-value="${encodeURIComponent(activeValue)}"]`,
+      );
+      if (activeItemEl) {
+        ref.current.setAttribute('aria-activedescendant', activeItemEl.id);
       }
-    }, [multiselect.open]);
+    }
+  }, [activeValue]);
 
-    // // fix broken cmdk accessibility
-    React.useEffect(() => {
-      if (ref.current) {
-        const activeItemEl = content.rootRef.current?.querySelector(
-          `[cmdk-item=""][data-value="${encodeURIComponent(activeValue)}"]`,
-        );
-        if (activeItemEl) {
-          ref.current.setAttribute('aria-activedescendant', activeItemEl.id);
-        }
-      }
-    }, [activeValue]);
-
-    return (
-      <div className="-mt-1 mb-1">
-        <CommandInput
-          ref={forwardedRef ? composeRefs(forwardedRef, ref) : ref}
-          placeholder={placeholder}
-          value={search}
-          onValueChange={setSearch}
-          className="h-9 border-none px-1.5 text-sm"
-          onKeyUp={(e) => {
-            if (e.key === ' ') {
-              e.preventDefault();
-            }
-          }}
-          onBlur={(e) => {
-            e.currentTarget.focus();
-          }}
-          {...otherProps}
-        />
-      </div>
-    );
-  },
-);
+  return (
+    <div className="-mt-1 mb-1">
+      <CommandInput
+        ref={forwardedRef ? composeRefs(forwardedRef, ref) : ref}
+        placeholder={placeholder}
+        value={search}
+        onValueChange={setSearch}
+        className="h-9 border-none px-1.5 text-sm"
+        onKeyUp={(e) => {
+          if (e.key === ' ') {
+            e.preventDefault();
+          }
+        }}
+        onBlur={(e) => {
+          e.currentTarget.focus();
+        }}
+        {...otherProps}
+      />
+    </div>
+  );
+});
 MultiselectInput.displayName = 'MultiselectInput';
 
 const AriaDescendantFix = ({ listRef }: { listRef: React.RefObject<HTMLDivElement | null> }) => {
@@ -294,7 +287,7 @@ const MultiselectContent = React.forwardRef<
     <MultiselectContentContext.Provider value={{ rootRef }}>
       <PopoverContent
         ref={ref}
-        className={cn('w-[var(--radix-popover-trigger-width)] p-0', className)}
+        className={cn('w-(--radix-popover-trigger-width) p-0', className)}
         align={align}
         asChild
         {...otherProps}
