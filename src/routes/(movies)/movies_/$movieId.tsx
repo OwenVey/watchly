@@ -75,6 +75,7 @@ function Movie() {
         <div className="flex flex-col items-end gap-1">
           <div className="grid grid-cols-[max-content_max-content] items-center justify-items-end gap-x-2">
             {usReleaseDates
+              .sort((a, b) => a.release_date.getTime() - b.release_date.getTime())
               .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
               .map(({ type, release_date }) => {
                 const IconComponent = RELEASE_TYPE_ICON_MAP[type];
