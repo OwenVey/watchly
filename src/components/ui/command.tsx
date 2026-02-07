@@ -37,7 +37,7 @@ interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof Comman
 }
 const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, CommandInputProps>(
   ({ className, loading = false, ...props }, ref) => (
-    <div className="flex items-center border-b border-gray-6 px-3" cmdk-input-wrapper="">
+    <div className="flex items-center border-b border-gray-6 px-3">
       {loading ? (
         <LoaderIcon className="mr-2 h-4 w-4 shrink-0 animate-spin text-gray-9" />
       ) : (
