@@ -1,6 +1,8 @@
 {
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "editor.wordWrap": "on",
   "editor.codeActionsOnSave": {
