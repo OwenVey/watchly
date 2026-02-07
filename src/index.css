@@ -1,11 +1,12 @@
 @import '@radix-ui/colors/gray';
 @import '@radix-ui/colors/gray-dark';
+
 @import '@radix-ui/colors/red';
 @import '@radix-ui/colors/red-dark';
+
 @import '@radix-ui/colors/blue';
-/* @import '@radix-ui/colors/blue-dark'; */
+
 @import '@radix-ui/colors/purple';
-/* @import '@radix-ui/colors/purple-dark'; */
 
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
@@ -74,9 +75,6 @@
   --color-purple-10: var(--purple-10);
   --color-purple-11: var(--purple-11);
   --color-purple-12: var(--purple-12);
-
-  /* --blur-xs: 2px; */
-  /* --color-gray-12: red; */
 }
 
 button,
