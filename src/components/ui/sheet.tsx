@@ -1,10 +1,9 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import { XIcon } from 'lucide-react';
 import { Dialog as SheetPrimitive } from 'radix-ui';
 import * as React from 'react';
-
 import { cardVariants } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { XIcon } from 'lucide-react';
 
 const Sheet = SheetPrimitive.Root;
 

@@ -1,13 +1,13 @@
-import { MovieCard } from '@/components/movie-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
-import { movieQueryOptions } from '@/query-options';
-import { MovieReleaseTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
+import { MovieCard } from '@/components/movie-card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
+import { movieQueryOptions } from '@/query-options';
+import { MovieReleaseTypeSchema } from '@/schemas';
 
 const MovieSearchSchema = z.object({
   releasedAfter: z.coerce.date().optional().catch(DEFAULT_MOVIE_SEARCH.releasedAfter),

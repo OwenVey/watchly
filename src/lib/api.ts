@@ -1,3 +1,6 @@
+import { createFetch, createSchema } from '@better-fetch/fetch';
+import { logger } from '@better-fetch/logger';
+import { z } from 'zod';
 import {
   CollectionOutputSchema,
   DiscoverMoviesOutputSchema,
@@ -15,9 +18,6 @@ import {
   SeasonOutputSchema,
   SeriesDetailsOutputSchema,
 } from '@/schemas';
-import { createFetch, createSchema } from '@better-fetch/fetch';
-import { logger } from '@better-fetch/logger';
-import { z } from 'zod';
 
 export const tmdbApi = createFetch({
   baseURL: 'https://api.themoviedb.org/3',

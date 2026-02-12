@@ -1,6 +1,6 @@
+import { z } from 'zod';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { zodObjectKeys } from '@/lib/utils';
-import { z } from 'zod';
 
 function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
   return z.object({

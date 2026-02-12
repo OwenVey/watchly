@@ -1,3 +1,8 @@
+import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks';
+import { format } from 'date-fns';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
+import React, { useEffect } from 'react';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
@@ -21,11 +26,6 @@ import {
 } from '@/lib/constants';
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
-import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
-import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
 
 export const Route = createFileRoute('/(series)/_sidebar')({
   loader: () => {

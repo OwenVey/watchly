@@ -1,11 +1,11 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { FilmIcon } from 'lucide-react';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
 import { tmdbApi } from '@/lib/api';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
 import { getTmdbImage } from '@/lib/utils';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { FilmIcon } from 'lucide-react';
 
 export const Route = createFileRoute('/collections/$collectionId')({
   loader: async ({ params }) => tmdbApi('/collection/:collectionId', { params: { collectionId: params.collectionId } }),

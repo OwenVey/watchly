@@ -1,6 +1,6 @@
-import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Link } from '@tanstack/react-router';
 import { CircleArrowRightIcon } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 type Props = {
   title: string;

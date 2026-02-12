@@ -1,3 +1,20 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
+import { format } from 'date-fns';
+import {
+  ClapperboardIcon,
+  ClockIcon,
+  CloudIcon,
+  Disc3Icon,
+  FilmIcon,
+  TagIcon,
+  TicketIcon,
+  TicketSlashIcon,
+  TvIcon,
+  type LucideIcon,
+} from 'lucide-react';
+import React from 'react';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
@@ -17,23 +34,6 @@ import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/uti
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import type { MovieReleaseType } from '@/types';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
-import { format } from 'date-fns';
-import {
-  ClapperboardIcon,
-  ClockIcon,
-  CloudIcon,
-  Disc3Icon,
-  FilmIcon,
-  TagIcon,
-  TicketIcon,
-  TicketSlashIcon,
-  TvIcon,
-  type LucideIcon,
-} from 'lucide-react';
-import React from 'react';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {

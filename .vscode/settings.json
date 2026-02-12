@@ -1,28 +1,41 @@
 {
-  // formatting
-  "oxc.fmt.configPath": ".oxfmtrc.json",
-  "editor.defaultFormatter": "oxc.oxc-vscode",
-  "editor.formatOnSave": true,
-
   // linting
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
   },
 
+  // formatting
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "editor.wordWrap": "on",
 
   "typescript.tsdk": "node_modules/typescript/lib",
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
-  "css.customData": [".vscode/tailwind.json"],
+  "tailwindCSS.classFunctions": ["cva", "cn"],
+
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "html"
+  },
+
   "editor.quickSuggestions": {
     "strings": "on"
   },
+
+  // tanstack router
   "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true,
+    "**/bun.lock": true
+  },
+  "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   }
 }

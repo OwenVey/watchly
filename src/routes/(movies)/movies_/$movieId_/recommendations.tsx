@@ -1,9 +1,8 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { movieIdQueryOptions } from '@/query-options';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId_/recommendations')({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId)),

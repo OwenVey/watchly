@@ -1,3 +1,10 @@
+import * as Accordion from '@radix-ui/react-accordion';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks';
+import { format } from 'date-fns';
+import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
+import { useState } from 'react';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
@@ -15,13 +22,6 @@ import { LANGUAGES_MAP } from '@/lib/constants';
 import { formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import { seriesIdQueryOptions } from '@/query-options';
 import type { Season } from '@/types';
-import * as Accordion from '@radix-ui/react-accordion';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
-import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
-import { useState } from 'react';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
   loader: async ({ context, params }) => {

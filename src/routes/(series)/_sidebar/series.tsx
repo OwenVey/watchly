@@ -1,13 +1,13 @@
-import { SeriesCard } from '@/components/series-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { DEFAULT_SERIES_SEARCH } from '@/lib/constants';
-import { seriesQueryOptions } from '@/query-options';
-import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
+import { SeriesCard } from '@/components/series-card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { DEFAULT_SERIES_SEARCH } from '@/lib/constants';
+import { seriesQueryOptions } from '@/query-options';
+import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 
 const SeriesSearchSchema = z.object({
   firstAirDateAfter: z.coerce.date().optional().catch(DEFAULT_SERIES_SEARCH.firstAirDateAfter),

@@ -1,3 +1,8 @@
+import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { useToggle } from '@uidotdev/usehooks';
+import { format } from 'date-fns';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
+import React, { useEffect } from 'react';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
@@ -15,11 +20,6 @@ import { tmdbApi } from '@/lib/api.js';
 import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
-import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
-import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
   loader: () => {

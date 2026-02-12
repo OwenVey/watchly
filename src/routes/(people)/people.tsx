@@ -1,10 +1,10 @@
-import { PersonCard } from '@/components/person-card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { peopleQueryOptions } from '@/query-options';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
+import { PersonCard } from '@/components/person-card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { peopleQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(people)/people')({
   loader: ({ context }) => context.queryClient.ensureInfiniteQueryData(peopleQueryOptions),

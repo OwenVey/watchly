@@ -1,13 +1,13 @@
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import React from 'react';
+import { z } from 'zod';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
 import { SeriesCard } from '@/components/series-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { searchQueryOptions } from '@/query-options';
-import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import React from 'react';
-import { z } from 'zod';
 
 export const Route = createFileRoute('/search')({
   validateSearch: z.object({

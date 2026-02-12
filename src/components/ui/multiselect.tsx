@@ -1,4 +1,3 @@
-import { cn, useContextSafely } from '@/lib/utils';
 import { composeRefs } from '@radix-ui/react-compose-refs';
 import { type PopoverProps } from '@radix-ui/react-popover';
 import { useControllableState } from '@radix-ui/react-use-controllable-state';
@@ -6,6 +5,7 @@ import { skipToken, useQuery } from '@tanstack/react-query';
 import { useCommandState } from 'cmdk';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
+import { cn, useContextSafely } from '@/lib/utils';
 import { Badge } from './badge';
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from './command';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';

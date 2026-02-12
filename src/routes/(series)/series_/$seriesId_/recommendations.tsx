@@ -1,9 +1,8 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { seriesIdQueryOptions } from '@/query-options';
-import { useSuspenseQuery } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId_/recommendations')({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
