@@ -1,10 +1,10 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { z } from 'zod';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
 import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
@@ -93,13 +93,16 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
 
 function SkeletonCards() {
   return Array.from({ length: 60 }).map((_, index) => (
-    <Skeleton className="aspect-[2/3] w-full border border-gray-6" key={`placeholder-${index}`} />
+    <Skeleton className="aspect-2/3 w-full border border-gray-6" key={`placeholder-${index}`} />
   ));
 }
 
 function MovieCards() {
   const deps = Route.useLoaderDeps();
-  const [loadMoreRef, entry] = useIntersectionObserver();
+
+  const { ref: loadMoreRef } = useIntersectionObserver({
+    onChange: (isIntersecting) => isIntersecting && hasNextPage && fetchNextPage(),
+  });
 
   const {
     data: movies,
@@ -107,12 +110,6 @@ function MovieCards() {
     hasNextPage,
     isFetchingNextPage,
   } = useSuspenseInfiniteQuery(movieQueryOptions(deps));
-
-  React.useEffect(() => {
-    if (entry?.isIntersecting && !isFetchingNextPage && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
 
   if (movies.pages[0]?.totalResults === 0) {
     return <div className="col-span-full mt-48 grid place-items-center text-gray-11">No results</div>;
@@ -130,14 +127,15 @@ function MovieCards() {
         </React.Fragment>
       ))}
 
-      {isFetchingNextPage &&
+      {isFetchingNextPage ? (
         Array.from({ length: 60 }).map((_, index) => (
           <li key={`placeholder-${index}`}>
-            <Skeleton className="aspect-[2/3] w-full border border-gray-5" />
+            <Skeleton className="aspect-2/3 w-full border border-gray-5" />
           </li>
-        ))}
-
-      <div ref={loadMoreRef} className="h-1" />
+        ))
+      ) : (
+        <div ref={loadMoreRef} className="h-1" />
+      )}
     </>
   );
 }
