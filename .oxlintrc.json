@@ -22,13 +22,10 @@
       "components": {},
       "attributes": {}
     },
-    "next": {
-      "rootDir": []
-    },
     "react": {
       "formComponents": [],
       "linkComponents": [],
-      "version": null,
+      "version": "19.2",
       "componentWrapperFunctions": []
     },
     "jsdoc": {
