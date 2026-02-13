@@ -69,7 +69,7 @@ function Person() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className={cn(
-              'h-[45rem] w-full object-cover blur-sm transition-opacity duration-1000',
+              'h-180 w-full object-cover blur-sm transition-opacity duration-1000',
               fade ? 'opacity-15' : 'opacity-0',
             )}
             src={
@@ -79,7 +79,7 @@ function Person() {
             }
             alt={`backdrop image`}
           />
-          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-gradient-to-t from-gray-1" />
+          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
         </div>
       )}
 
@@ -91,22 +91,24 @@ function Person() {
             alt={`profile picture for ${person.name}`}
           />
         ) : (
-          <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-gray-3 shadow-lg">
-            <div className="grid size-24 place-items-center rounded-full border border-gray-5 bg-gray-4">
-              <UserRoundIcon className="size-8 text-gray-11" />
+          <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
+            <div className="grid size-24 place-items-center rounded-full border bg-muted">
+              <UserRoundIcon className="size-8 text-muted-foreground" />
             </div>
           </div>
         )}
         <div className="flex max-w-xl flex-col items-center md:items-baseline">
-          <h1 className="text-3xl font-bold text-gray-12">{person.name}</h1>
-          <div className="text-gray-11">
+          <h1 className="text-3xl font-bold text-foreground">{person.name}</h1>
+          <div className="text-muted-foreground">
             Born {person.birthday.toLocaleDateString()} ({differenceInYears(new Date(), person.birthday)} years old)
           </div>
-          <div className="text-gray-11">{person.place_of_birth}</div>
+          <div className="text-muted-foreground">{person.place_of_birth}</div>
 
           {person.biography && (
             <div>
-              <p className={cn('mt-4 text-sm text-gray-11', !showEntireBio && 'line-clamp-[8]')}>{person.biography}</p>
+              <p className={cn('mt-4 text-sm text-muted-foreground', !showEntireBio && 'line-clamp-[8]')}>
+                {person.biography}
+              </p>
               <ShowMoreButton onClick={() => toggleShowEntireBio()} className="mt-1" showAll={showEntireBio} />
             </div>
           )}
@@ -115,14 +117,14 @@ function Person() {
 
       {cast.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-gray-12">Appearances</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Appearances</h2>
           <ul className="mt-2 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
             {cast.map((result) => (
               <li key={result.id}>
                 {result.media_type === 'movie' && <MovieCard movie={result} showBadge />}
                 {result.media_type === 'tv' && <SeriesCard series={result} showBadge />}
                 {result.characters.length > 0 && (
-                  <div className="mt-1 line-clamp-1 text-center text-xs font-medium text-gray-11">
+                  <div className="mt-1 line-clamp-1 text-center text-xs font-medium text-muted-foreground">
                     as {result.characters.join(' / ')}
                   </div>
                 )}
@@ -134,14 +136,14 @@ function Person() {
 
       {crew.length > 0 && (
         <div>
-          <h2 className="mt-12 text-2xl font-semibold text-gray-12">Crew</h2>
+          <h2 className="mt-12 text-2xl font-semibold text-foreground">Crew</h2>
           <ul className="mt-2 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
             {crew.map((result) => (
               <li key={result.id}>
                 {result.media_type === 'movie' && <MovieCard movie={result} showBadge />}
                 {result.media_type === 'tv' && <SeriesCard series={result} showBadge />}
                 {result.jobs.length > 0 && (
-                  <div className="mt-1 line-clamp-1 text-center text-xs font-medium text-gray-11">
+                  <div className="mt-1 line-clamp-1 text-center text-xs font-medium text-muted-foreground">
                     {result.jobs.join(' / ')}
                   </div>
                 )}

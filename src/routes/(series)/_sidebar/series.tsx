@@ -75,7 +75,7 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
 
 function SkeletonCards() {
   return Array.from({ length: 60 }).map((_, index) => (
-    <Skeleton className="aspect-[2/3] w-full border border-gray-6" key={`placeholder-${index}`} />
+    <Skeleton className="aspect-2/3 w-full border" key={`placeholder-${index}`} />
   ));
 }
 
@@ -97,7 +97,7 @@ function SeriesCards() {
   }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
 
   if (series.pages[0]?.totalResults === 0) {
-    return <div className="col-span-full mt-48 grid place-items-center text-gray-11">No results</div>;
+    return <div className="col-span-full mt-48 grid place-items-center text-muted-foreground">No results</div>;
   }
 
   return (
@@ -115,7 +115,7 @@ function SeriesCards() {
       {isFetchingNextPage &&
         Array.from({ length: 60 }).map((_, index) => (
           <li key={`placeholder-${index}`}>
-            <Skeleton className="aspect-[2/3] w-full border border-gray-5" />
+            <Skeleton className="aspect-2/3 w-full border" />
           </li>
         ))}
 

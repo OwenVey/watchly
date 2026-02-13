@@ -15,8 +15,8 @@ function Cast() {
 
   return (
     <PaddedLayout>
-      <h1 className="text-2xl font-semibold text-gray-12">Cast</h1>
-      <h2 className="text-gray-11">{movie.title}</h2>
+      <h1 className="text-2xl font-semibold text-foreground">Cast</h1>
+      <h2 className="text-muted-foreground">{movie.title}</h2>
       <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
         {movie.credits.cast.map((person) => (
           <PersonCard key={person.id} person={person} title={person.character} />

@@ -37,7 +37,7 @@ function People() {
       {isFetchingNextPage &&
         Array.from({ length: 60 }).map((_, index) => (
           <li key={`placeholder-${index}`}>
-            <Skeleton className="aspect-[2/3] w-full border border-gray-5" />
+            <Skeleton className="aspect-2/3 w-full border" />
           </li>
         ))}
 

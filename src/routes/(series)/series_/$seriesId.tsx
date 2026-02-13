@@ -1,4 +1,4 @@
-import * as Accordion from '@radix-ui/react-accordion';
+import { Accordion } from '@base-ui/react/accordion';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
@@ -64,7 +64,7 @@ function RouteComponent() {
           from={Route.fullPath}
           to="/movies"
           search={{ originalLanguage: series.original_language }}
-          className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+          className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
           {LANGUAGES_MAP[series.original_language]}
         </Link>
@@ -85,7 +85,7 @@ function RouteComponent() {
                   from={Route.fullPath}
                   to="/series"
                   search={{ studios: [{ value: id.toString(), label: name }] }}
-                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
                 >
                   {name}
                 </Link>
@@ -105,7 +105,7 @@ function RouteComponent() {
                   from={Route.fullPath}
                   to="/series"
                   search={{ networks: [{ value: id.toString(), label: name }] }}
-                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
                 >
                   {name}
                 </Link>
@@ -144,11 +144,11 @@ function RouteComponent() {
       {series.backdrop_path && (
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
-            className="h-[45rem] w-full object-cover opacity-15 blur-sm"
+            className="h-180 w-full object-cover opacity-15 blur-sm"
             src={getTmdbImage('backdrop', series.backdrop_path, 'w1280')}
             alt={`backdrop image for ${series.name}`}
           />
-          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-gradient-to-t from-gray-1" />
+          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
         </div>
       )}
 
@@ -164,17 +164,17 @@ function RouteComponent() {
                 alt={`movie poster for ${series.name}`}
               />
             ) : (
-              <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-gray-3 shadow-lg">
-                <div className="grid size-24 place-items-center rounded-full border border-gray-6 bg-gray-5">
-                  <TvIcon className="size-8 text-gray-11" />
+              <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
+                <div className="grid size-24 place-items-center rounded-full border bg-muted">
+                  <TvIcon className="size-8 text-muted-foreground" />
                 </div>
               </div>
             )}
             <div className="flex flex-col items-center md:items-baseline">
               <h1 className="text-center md:text-left">
-                <span className="text-3xl font-bold text-gray-12">{series.name}</span>
+                <span className="text-3xl font-bold text-foreground">{series.name}</span>
                 {series.first_air_date && (
-                  <span className="ml-1 text-base font-medium text-gray-11">
+                  <span className="ml-1 text-base font-medium text-muted-foreground">
                     {' '}
                     ({series.first_air_date.getFullYear()})
                   </span>
@@ -182,27 +182,31 @@ function RouteComponent() {
               </h1>
               <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
                 {contentRating && (
-                  <div className="rounded border p-0.5 text-xs leading-none font-medium text-gray-12 uppercase">
+                  <div className="rounded border p-0.5 text-xs leading-none font-medium text-foreground uppercase">
                     {contentRating}
                   </div>
                 )}
 
-                <div className="text-sm font-medium whitespace-nowrap text-gray-12">
+                <div className="text-sm font-medium whitespace-nowrap text-foreground">
                   {series.seasons.length} Seasons
                 </div>
 
                 <div className="flex flex-wrap gap-1">
                   {series.genres.map(({ id, name }) => (
-                    <Badge key={id} asChild variant="secondary" hover>
-                      <Link from={Route.fullPath} to="/series" search={{ genres: [id] }}>
-                        {name}
-                      </Link>
-                    </Badge>
+                    <Badge
+                      key={id}
+                      variant="secondary"
+                      render={
+                        <Link from={Route.fullPath} to="/series" search={{ genres: [id] }}>
+                          {name}
+                        </Link>
+                      }
+                    />
                   ))}
                 </div>
               </div>
 
-              <p className="mt-4 text-balance text-gray-11 md:text-left">{series.overview}</p>
+              <p className="mt-4 text-balance text-muted-foreground md:text-left">{series.overview}</p>
 
               <div>
                 <ul className="mt-4 flex flex-wrap gap-1">
@@ -210,18 +214,21 @@ function RouteComponent() {
                     .slice(0, showAllKeywords ? series.keywords.results.length : 10)
                     .map(({ id, name }) => (
                       <li key={id}>
-                        <Badge asChild variant="secondary" hover>
-                          <Link
-                            from={Route.fullPath}
-                            to="/movies"
-                            search={{
-                              keywords: [{ value: id.toString(), label: name }],
-                            }}
-                          >
-                            <TagIcon className="mr-1 size-3 text-gray-11" />
-                            {name}
-                          </Link>
-                        </Badge>
+                        <Badge
+                          variant="secondary"
+                          render={
+                            <Link
+                              from={Route.fullPath}
+                              to="/movies"
+                              search={{
+                                keywords: [{ value: id.toString(), label: name }],
+                              }}
+                            >
+                              <TagIcon className="mr-1 size-3 text-muted-foreground" />
+                              {name}
+                            </Link>
+                          }
+                        />
                       </li>
                     ))}
                 </ul>
@@ -233,9 +240,9 @@ function RouteComponent() {
           </div>
           {series.seasons.length > 0 && (
             <div>
-              <h2 className="text-2xl leading-5 font-semibold text-gray-12">Seasons</h2>
+              <h2 className="text-2xl leading-5 font-semibold text-foreground">Seasons</h2>
               <Accordion.Root
-                type="multiple"
+                multiple
                 className="mt-3 flex flex-col gap-2"
                 onValueChange={async (seasonNumbers) => {
                   for (const seasonNumber of seasonNumbers) {
@@ -255,10 +262,10 @@ function RouteComponent() {
                     disabled={season.episode_count === 0}
                   >
                     <Accordion.Header>
-                      <Accordion.Trigger className="group relative flex w-full items-center justify-between border border-gray-11/15 bg-gray-3/60 p-2 backdrop-blur-xl transition-all hover:border-gray-11/35 hover:bg-gray-3/90 data-disabled:pointer-events-none data-[state=closed]:rounded-lg data-[state=open]:rounded-t-lg [&[data-state=open]>svg]:rotate-180">
+                      <Accordion.Trigger className="group relative flex w-full items-center justify-between overflow-hidden rounded-lg border bg-card p-2 backdrop-blur-xl transition-all hover:border-accent hover:bg-muted data-panel-open:rounded-b-none! data-disabled:pointer-events-none">
                         {season.vote_average && (
                           <Badge variant="secondary" className="absolute top-2 right-2">
-                            <StarIcon className="mr-1 size-3 text-gray-10" fill="currentColor" />
+                            <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
                             {season.vote_average}
                           </Badge>
                         )}
@@ -272,38 +279,40 @@ function RouteComponent() {
                               alt={`season poster of ${season.name}`}
                             />
                           ) : (
-                            <div className="grid aspect-2/3 h-auto w-12 place-items-center rounded-md bg-gray-4 shadow-lg">
-                              <ImageIcon className="size-6 text-gray-10" />
+                            <div className="grid aspect-2/3 h-auto w-12 place-items-center rounded-md bg-card shadow-lg">
+                              <ImageIcon className="size-6 text-muted-foreground" />
                             </div>
                           )}
                           <div className="text-left">
-                            <div className="text-lg font-semibold text-gray-12">{season.name}</div>
-                            <div className="text-sm font-medium text-gray-11/70">
+                            <div className="text-lg font-semibold text-foreground">{season.name}</div>
+                            <div className="text-sm font-medium text-muted-foreground">
                               {season.air_date && `${season.air_date.getFullYear()} ⋅ `}
                               {season.episode_count} Episodes
                             </div>
                             {season.overview && (
-                              <p className="mt-2 line-clamp-1 text-sm text-gray-11 italic">{season.overview}</p>
+                              <p className="mt-2 line-clamp-1 text-sm text-muted-foreground italic">
+                                {season.overview}
+                              </p>
                             )}
                           </div>
                         </div>
                         <ChevronDownIcon
-                          className="mr-2 shrink-0 text-gray-11 transition-colors group-hover:text-gray-12 in-data-disabled:hidden"
+                          className="mr-2 shrink-0 text-muted-foreground transition group-hover:text-foreground group-data-panel-open:rotate-180 in-data-disabled:hidden"
                           aria-hidden
                         />
                       </Accordion.Trigger>
                     </Accordion.Header>
-                    <Accordion.Content className="rounded-b-lg border-x border-b border-gray-11/25">
+                    <Accordion.Panel className="rounded-b-lg border-x border-b bg-card/50">
                       {(() => {
                         const currentSeasonDetails = seasonDetails.get(season.season_number.toString());
-                        if (!currentSeasonDetails) return <div className="p-4 text-gray-11">Loading...</div>;
+                        if (!currentSeasonDetails) return <div className="p-4 text-muted-foreground">Loading...</div>;
                         return (
-                          <ul className="divide-y divide-gray-11/25">
+                          <ul className="divide-y">
                             {currentSeasonDetails.episodes.map((episode) => (
                               <li key={episode.id} className="relative flex gap-4 p-4">
                                 {episode.vote_average && (
                                   <Badge variant="secondary" className="absolute top-4 right-4">
-                                    <StarIcon className="mr-1 size-3 text-gray-10" fill="currentColor" />
+                                    <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
                                     {episode.vote_average}
                                   </Badge>
                                 )}
@@ -316,29 +325,29 @@ function RouteComponent() {
                                     alt={`episode still of ${episode.name}`}
                                   />
                                 ) : (
-                                  <div className="grid h-20 w-[142px] place-items-center rounded-md bg-gray-4 shadow-lg">
-                                    <ImageIcon className="size-6 text-gray-10" />
+                                  <div className="grid h-20 w-35.5 place-items-center rounded-md bg-card shadow-lg">
+                                    <ImageIcon className="size-6 text-muted-foreground" />
                                   </div>
                                 )}
                                 <div className="flex flex-col">
                                   <div className="flex items-baseline gap-2">
-                                    <div className="font-medium text-gray-10">{episode.episode_number}.</div>
+                                    <div className="font-medium text-muted-foreground">{episode.episode_number}.</div>
                                     <div className="flex flex-col">
-                                      <div className="leading-none font-medium text-gray-12">{episode.name}</div>
-                                      <div className="mt-0.5 text-sm font-medium text-gray-10">
+                                      <div className="leading-none font-medium text-foreground">{episode.name}</div>
+                                      <div className="mt-0.5 text-sm font-medium text-muted-foreground">
                                         {episode.air_date && format(episode.air_date, 'MMM d, yyyy')}
                                         {episode.runtime && ` ⋅ ${formatMinutesToHHMM(episode.runtime)}`}
                                       </div>
                                     </div>
                                   </div>
-                                  <p className="mt-4 text-sm text-gray-11 italic">{episode.overview}</p>
+                                  <p className="mt-4 text-sm text-muted-foreground italic">{episode.overview}</p>
                                 </div>
                               </li>
                             ))}
                           </ul>
                         );
                       })()}
-                    </Accordion.Content>
+                    </Accordion.Panel>
                   </Accordion.Item>
                 ))}
               </Accordion.Root>
@@ -349,23 +358,23 @@ function RouteComponent() {
         <div className="flex min-w-72 flex-col gap-2 md:w-80">
           <Card className="h-fit">
             {ratings.length > 0 && (
-              <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
+              <div className="flex justify-center gap-6 border-b py-3">
                 {ratings.map((rating, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
                       <rating.logo className={rating.logoClass} />
-                      <span className="text-sm font-medium text-gray-11">{rating.score}</span>
+                      <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
                     </TooltipTrigger>
                     <TooltipContent>{rating.tooltip}</TooltipContent>
                   </Tooltip>
                 ))}
               </div>
             )}
-            <dl className="divide-y divide-gray-5 text-sm">
+            <dl className="divide-y text-sm">
               {seriesDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">
-                  <dt className="font-medium whitespace-nowrap text-gray-12">{label}</dt>
-                  <dd className="text-end text-gray-11">{value}</dd>
+                  <dt className="font-medium whitespace-nowrap text-foreground">{label}</dt>
+                  <dd className="text-end text-muted-foreground">{value}</dd>
                 </div>
               ))}
             </dl>

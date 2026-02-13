@@ -1,14 +1,15 @@
-import { cva } from 'class-variance-authority';
-import { Slot as SlotPrimitive } from 'radix-ui';
+import { mergeProps } from '@base-ui/react/merge-props';
+import { useRender } from '@base-ui/react/use-render';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-blur-xl transition-all', {
+export const cardVariants = cva('border bg-card backdrop-blur-xl transition-all', {
   variants: {
     rounded: {
       true: 'rounded-xl',
     },
     hover: {
-      true: 'hover:border-gray-11/35 hover:bg-gray-3/90',
+      true: 'hover:border-accent hover:bg-muted',
     },
   },
   defaultVariants: {
@@ -17,12 +18,16 @@ export const cardVariants = cva('border border-gray-11/15 bg-gray-3/60 backdrop-
   },
 });
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-  hover?: boolean;
-}
-export function Card({ asChild = false, hover = false, className, ...rest }: Props) {
-  const Comp = asChild ? SlotPrimitive.Slot : 'div';
+interface CardProps extends useRender.ComponentProps<'div'>, VariantProps<typeof cardVariants> {}
 
-  return <Comp {...rest} className={cn(cardVariants({ hover }), className)} />;
+export function Card(props: CardProps) {
+  const { render, hover, ...otherProps } = props;
+
+  const element = useRender({
+    defaultTagName: 'p',
+    render,
+    props: mergeProps<'p'>({ className: cn(cardVariants({ hover })) }, otherProps),
+  });
+
+  return element;
 }

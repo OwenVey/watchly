@@ -1,31 +1,19 @@
-import type { LucideIcon } from 'lucide-react';
+import { Input as InputPrimitive } from '@base-ui/react/input';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  icon?: LucideIcon;
-}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type, icon: Icon, ...props }, ref) => {
+function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
-    <div className={cn('relative flex w-full items-center', className)}>
-      {Icon && (
-        <div className="pointer-events-none absolute inset-y-0 left-0 mr-2 flex items-center pl-3">
-          <Icon className="size-5 text-gray-9" />
-        </div>
+    <InputPrimitive
+      type={type}
+      data-slot="input"
+      className={cn(
+        'h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+        className,
       )}
-      <input
-        type={type}
-        className={cn(
-          'flex h-9 w-full rounded-md border border-gray-7 bg-gray-1/75 px-3 py-1 transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-gray-12 placeholder:text-gray-9 hover:border-gray-8 focus-visible:border-gray-12 focus-visible:ring-1 focus-visible:ring-gray-12 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          Icon && 'pl-10',
-        )}
-        ref={ref}
-        {...props}
-      />
-    </div>
+      {...props}
+    />
   );
-});
-Input.displayName = 'Input';
+}
 
 export { Input };

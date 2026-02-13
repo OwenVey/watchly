@@ -42,21 +42,23 @@ function SeriesSidebar() {
   return (
     <>
       <Card
-        asChild
         className="sticky top-23.5 left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
-      >
-        <aside>
-          <Filters />
-        </aside>
-      </Card>
+        render={
+          <aside>
+            <Filters />
+          </aside>
+        }
+      />
       <main className="flex flex-1 flex-col">
         <Sheet>
-          <SheetTrigger asChild>
-            <Button className="mx-4 mt-4 md:hidden" variant="glass">
-              <FilterIcon />
-              Filters
-            </Button>
-          </SheetTrigger>
+          <SheetTrigger
+            render={
+              <Button className="mx-4 mt-4 md:hidden" variant="outline">
+                <FilterIcon />
+                Filters
+              </Button>
+            }
+          />
           <SheetContent>
             <Filters />
           </SheetContent>
@@ -110,9 +112,9 @@ function Filters() {
 
   return (
     <>
-      <div className="border-b border-gray-6 px-4 py-2">
-        <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
-        <div className="text-sm text-gray-11">
+      <div className="border-b px-4 py-2">
+        <h2 className="text-lg font-semibold text-foreground">Filters</h2>
+        <div className="text-sm text-muted-foreground">
           {
             Object.keys(search).filter((key) => {
               const typedKey = key as keyof typeof search;
@@ -129,18 +131,20 @@ function Filters() {
           <Label>First Air Date</Label>
           <div className="flex gap-2">
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'flex-1 justify-start px-3 text-left font-normal',
-                    !firstAirDateAfter && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="text-gray-9" />
-                  {firstAirDateAfter ? format(firstAirDateAfter, 'P') : <span className="text-gray-9">After</span>}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'flex-1 justify-start px-3 text-left font-normal',
+                      !firstAirDateAfter && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon />
+                    {firstAirDateAfter ? format(firstAirDateAfter, 'P') : 'After'}
+                  </Button>
+                }
+              />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
@@ -153,18 +157,20 @@ function Filters() {
             </Popover>
 
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'flex-1 justify-start px-3 text-left font-normal',
-                    !firstAirDateBefore && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="text-gray-9" />
-                  {firstAirDateBefore ? format(firstAirDateBefore, 'P') : <span className="text-gray-9">Before</span>}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'flex-1 justify-start px-3 text-left font-normal',
+                      !firstAirDateBefore && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon />
+                    {firstAirDateBefore ? format(firstAirDateBefore, 'P') : 'Before'}
+                  </Button>
+                }
+              />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
@@ -184,15 +190,16 @@ function Filters() {
           <Slider
             className="mt-1 mb-4"
             value={rating}
-            onValueChange={setRating}
-            onValueCommit={([ratingMin, ratingMax]) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) })
-            }
+            onValueChange={(value) => setRating(value as [number, number])}
+            onValueCommitted={(value) => {
+              const [ratingMin, ratingMax] = value as [number, number];
+              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+            }}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
             max={DEFAULT_SERIES_SEARCH.ratingMax}
             step={1}
-            minStepsBetweenThumbs={1}
+            minStepsBetweenValues={1}
             label={(value) => value}
           />
         </div>
@@ -203,15 +210,16 @@ function Filters() {
           <Slider
             className="mt-1 mb-4"
             value={voteCount}
-            onValueChange={setVoteCount}
-            onValueCommit={([voteCountMin, voteCountMax]) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) })
-            }
+            onValueChange={(value) => setVoteCount(value as [number, number])}
+            onValueCommitted={(value) => {
+              const [voteCountMin, voteCountMax] = value as [number, number];
+              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+            }}
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
             max={DEFAULT_SERIES_SEARCH.voteCountMax}
             step={1}
-            minStepsBetweenThumbs={1}
+            minStepsBetweenValues={1}
             label={(value) => `${value?.toLocaleString()}${value === DEFAULT_SERIES_SEARCH.voteCountMax ? '+' : ''}`}
           />
         </div>
@@ -223,8 +231,9 @@ function Filters() {
             <Select
               defaultValue="popularity"
               value={sort}
-              onValueChange={(sort: SeriesSearchParams['sort']) =>
-                navigate({ to: '/series', search: (prev) => ({ ...prev, sort }) })
+              onValueChange={(value) =>
+                value &&
+                navigate({ to: '/series', search: (prev) => ({ ...prev, sort: value as SeriesSearchParams['sort'] }) })
               }
             >
               <SelectTrigger id="sort">
@@ -245,7 +254,7 @@ function Filters() {
               search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
-              {sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
+              {sortDir === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </Link>
           </div>
         </div>
@@ -273,7 +282,7 @@ function Filters() {
           <Select
             key={status}
             value={status}
-            onValueChange={(status) => navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
+            onValueChange={(status) => status && navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
           >
             <SelectTrigger id="status">
               <SelectValue placeholder="Select status" />
@@ -363,7 +372,7 @@ function Filters() {
             key={originalLanguage}
             value={originalLanguage}
             onValueChange={(originalLanguage) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
+              originalLanguage && navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
             }
           >
             <SelectTrigger id="original-language">
@@ -395,31 +404,33 @@ function Filters() {
                   .slice(0, showAllServices ? providers.length : 10)
                   .map((provider) => (
                     <Tooltip key={provider.provider_id}>
-                      <TooltipTrigger asChild>
-                        <Link
-                          from="/series"
-                          to="/series"
-                          search={(prev) => ({
-                            ...prev,
-                            watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
-                          })}
-                          className={cn(
-                            'aspect-square overflow-hidden rounded-lg border p-1.5',
-                            'outline-none focus-visible:border-gray-12 focus-visible:ring-1 focus-visible:ring-gray-12',
-                            watchProviders.includes(provider.provider_id)
-                              ? 'border-primary-7 bg-primary-3 hover:border-primary-8 hover:bg-primary-5'
-                              : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
-                          )}
-                        >
-                          {provider.logo_path && (
-                            <img
-                              src={getTmdbImage('logo', provider.logo_path, 'w92')}
-                              alt={`${provider.provider_name} logo`}
-                              className="rounded-md"
-                            />
-                          )}
-                        </Link>
-                      </TooltipTrigger>
+                      <TooltipTrigger
+                        render={
+                          <Link
+                            from="/series"
+                            to="/series"
+                            search={(prev) => ({
+                              ...prev,
+                              watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
+                            })}
+                            className={cn(
+                              'aspect-square overflow-hidden rounded-lg border p-1.5',
+                              'outline-none focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground',
+                              watchProviders.includes(provider.provider_id)
+                                ? 'border-primary/50 bg-primary/10 hover:border-primary hover:bg-primary/30'
+                                : 'bg-muted hover:border-ring hover:bg-accent',
+                            )}
+                          >
+                            {provider.logo_path && (
+                              <img
+                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                alt={`${provider.provider_name} logo`}
+                                className="rounded-md"
+                              />
+                            )}
+                          </Link>
+                        }
+                      />
                       <TooltipContent>{provider.provider_name}</TooltipContent>
                     </Tooltip>
                   ))
@@ -440,7 +451,7 @@ function Filters() {
         </div>
       </div>
 
-      <div className="border-t border-gray-6 p-4">
+      <div className="border-t p-4">
         {/* Clear Filters */}
         <Link
           to="/series"

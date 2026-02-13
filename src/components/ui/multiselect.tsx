@@ -128,7 +128,7 @@ const MultiselectTrigger = React.forwardRef<React.ElementRef<typeof PopoverTrigg
           {...otherProps}
           ref={ref}
           className={cn(
-            'relative flex h-fit w-full items-center overflow-hidden rounded-md border border-gray-7 bg-gray-1 text-sm whitespace-nowrap shadow-none ring-offset-gray-1 placeholder:text-gray-9 hover:border-gray-8 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+            'border-gray-7 bg-gray-1 ring-offset-gray-1 placeholder:text-gray-9 hover:border-gray-8 relative flex h-fit w-full items-center overflow-hidden rounded-md border text-sm whitespace-nowrap shadow-none focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
             className,
           )}
         >
@@ -145,7 +145,7 @@ const MultiselectTrigger = React.forwardRef<React.ElementRef<typeof PopoverTrigg
             )}
           </div>
           <div className="rounded-r-[inherit] pr-2 pl-1">
-            <ChevronsUpDownIcon className="h-4 w-4 text-gray-9" />
+            <ChevronsUpDownIcon className="text-gray-9 h-4 w-4" />
           </div>
         </PopoverTrigger>
       </MultiselectTriggerContext.Provider>
@@ -182,7 +182,7 @@ const MultiselectBadge = React.forwardRef<React.ElementRef<typeof Badge>, Multis
         {option.label}
         <button
           aria-label={`Unselect ${option.label}`}
-          className="-mr-1.5 grid size-4 place-items-center rounded-full text-gray-8 ring-offset-gray-1 transition-colors outline-none hover:bg-gray-11 hover:text-gray-1 focus-visible:ring-2 focus-visible:ring-gray-1"
+          className="text-gray-8 ring-offset-gray-1 hover:bg-gray-11 hover:text-gray-1 focus-visible:ring-gray-1 -mr-1.5 grid size-4 place-items-center rounded-full transition-colors outline-none focus-visible:ring-2"
           onClick={(e) => {
             multiselect.unselect(option);
             e.stopPropagation();
@@ -289,25 +289,25 @@ const MultiselectContent = React.forwardRef<
         ref={ref}
         className={cn('w-(--radix-popover-trigger-width) p-0', className)}
         align={align}
-        asChild
         {...otherProps}
-      >
-        <Command
-          ref={rootRef}
-          className={cn('overflow-visible', className)}
-          role="listbox"
-          filter={(value, search, keywords) => {
-            const extendValue = value + ' ' + keywords?.join(' ');
-            if (extendValue.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
-          }}
-        >
-          <AriaDescendantFix listRef={rootRef} />
-          <CommandList ref={listRef} className="p-1">
-            {children}
-          </CommandList>
-        </Command>
-      </PopoverContent>
+        render={
+          <Command
+            ref={rootRef}
+            className={cn('overflow-visible', className)}
+            role="listbox"
+            filter={(value, search, keywords) => {
+              const extendValue = value + ' ' + keywords?.join(' ');
+              if (extendValue.toLowerCase().includes(search.toLowerCase())) return 1;
+              return 0;
+            }}
+          >
+            <AriaDescendantFix listRef={rootRef} />
+            <CommandList ref={listRef} className="p-1">
+              {children}
+            </CommandList>
+          </Command>
+        }
+      />
     </MultiselectContentContext.Provider>
   );
 });
@@ -352,7 +352,7 @@ const MultiselectEmpty = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandEmpty>
 >(({ children, className, ...otherProps }, ref) => {
   return (
-    <CommandEmpty ref={ref} className={cn('py-6 text-center text-sm text-gray-11', className)} {...otherProps}>
+    <CommandEmpty ref={ref} className={cn('py-6 text-center text-sm text-muted-foreground', className)} {...otherProps}>
       {children}
     </CommandEmpty>
   );

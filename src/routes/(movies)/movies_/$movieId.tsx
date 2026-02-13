@@ -82,9 +82,8 @@ function Movie() {
                 return (
                   <React.Fragment key={type}>
                     <Tooltip>
-                      <TooltipTrigger asChild>
-                        <IconComponent className="size-4" />
-                      </TooltipTrigger>
+                      <TooltipTrigger render={<IconComponent className="size-4" />} />
+
                       <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type]}</TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}
@@ -107,7 +106,7 @@ function Movie() {
           from={Route.fullPath}
           to="/movies"
           search={{ originalLanguage: movie.original_language }}
-          className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+          className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
           {LANGUAGES_MAP[movie.original_language]}
         </Link>
@@ -127,7 +126,7 @@ function Movie() {
                 from={Route.fullPath}
                 to="/movies"
                 search={{ studios: [{ value: id.toString(), label: name }] }}
-                className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-gray-12 hover:underline"
+                className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
               >
                 {name}
               </Link>
@@ -166,11 +165,11 @@ function Movie() {
       {movie.backdrop_path && (
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
-            className="h-[45rem] w-full object-cover opacity-15 blur-sm"
+            className="h-180 w-full object-cover opacity-15 blur-sm"
             src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
             alt={`backdrop image for ${movie.title}`}
           />
-          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-gradient-to-t from-gray-1" />
+          <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
         </div>
       )}
 
@@ -185,45 +184,52 @@ function Movie() {
               alt={`movie poster for ${movie.title}`}
             />
           ) : (
-            <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-gray-3 shadow-lg">
-              <div className="grid size-24 place-items-center rounded-full border border-gray-6 bg-gray-5">
-                <FilmIcon className="size-8 text-gray-11" />
+            <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
+              <div className="grid size-24 place-items-center rounded-full border bg-muted">
+                <FilmIcon className="size-8 text-muted-foreground" />
               </div>
             </div>
           )}
           <div className="flex flex-col items-center md:items-baseline">
             <h1 className="text-center md:text-left">
-              <span className="text-3xl font-bold text-gray-12">{movie.title}</span>
+              <span className="text-3xl font-bold text-foreground">{movie.title}</span>
               {movie.release_date && (
-                <span className="ml-1 text-base font-medium text-gray-11"> ({movie.release_date.getFullYear()})</span>
+                <span className="ml-1 text-base font-medium text-muted-foreground">
+                  {' '}
+                  ({movie.release_date.getFullYear()})
+                </span>
               )}
             </h1>
             <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
               {certification && (
-                <div className="rounded border p-0.5 text-xs leading-none font-medium text-gray-12 uppercase">
+                <div className="rounded border p-0.5 text-xs leading-none font-medium text-foreground uppercase">
                   {certification}
                 </div>
               )}
               <div className="flex items-center gap-1">
-                <ClockIcon className="size-4 text-gray-9" />
-                <span className="text-sm font-medium whitespace-nowrap text-gray-12">
+                <ClockIcon className="size-4 text-accent" />
+                <span className="text-sm font-medium whitespace-nowrap text-foreground">
                   {formatMinutesToHHMM(movie.runtime)}
                 </span>
               </div>
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
-                  <Badge key={id} asChild variant="secondary" hover>
-                    <Link from={Route.fullPath} to="/movies" search={{ genres: [id] }}>
-                      {name}
-                    </Link>
-                  </Badge>
+                  <Badge
+                    key={id}
+                    variant="secondary"
+                    render={
+                      <Link from={Route.fullPath} to="/movies" search={{ genres: [id] }}>
+                        {name}
+                      </Link>
+                    }
+                  />
                 ))}
               </div>
             </div>
             {movie.tagline && (
-              <p className="mt-4 text-center text-gray-11 italic md:text-left">&quot;{movie.tagline}&quot;</p>
+              <p className="mt-4 text-center text-muted-foreground italic md:text-left">&quot;{movie.tagline}&quot;</p>
             )}
-            <p className="mt-4 text-balance text-gray-11 md:text-left">{movie.overview}</p>
+            <p className="mt-4 text-balance text-muted-foreground md:text-left">{movie.overview}</p>
 
             <div>
               <ul className="mt-4 flex flex-wrap gap-1">
@@ -231,18 +237,21 @@ function Movie() {
                   .slice(0, showAllKeywords ? movie.keywords.keywords.length : 10)
                   .map(({ id, name }) => (
                     <li key={id}>
-                      <Badge asChild variant="secondary" hover>
-                        <Link
-                          from={Route.fullPath}
-                          to="/movies"
-                          search={{
-                            keywords: [{ value: id.toString(), label: name }],
-                          }}
-                        >
-                          <TagIcon className="mr-1 size-3 text-gray-11" />
-                          {name}
-                        </Link>
-                      </Badge>
+                      <Badge
+                        variant="secondary"
+                        render={
+                          <Link
+                            from={Route.fullPath}
+                            to="/movies"
+                            search={{
+                              keywords: [{ value: id.toString(), label: name }],
+                            }}
+                          >
+                            <TagIcon className="mr-1 size-3 text-muted-foreground" />
+                            {name}
+                          </Link>
+                        }
+                      />
                     </li>
                   ))}
               </ul>
@@ -267,11 +276,11 @@ function Movie() {
                   alt={`backdrop image for ${movie.title}`}
                 />
               )}
-              <div className="font-medium text-pretty text-gray-12">{movie.belongs_to_collection.name}</div>
+              <div className="font-medium text-pretty text-foreground">{movie.belongs_to_collection.name}</div>
               <Link
                 to={CollectionIdRoute.fullPath}
                 params={{ collectionId: movie.belongs_to_collection.id.toString() }}
-                className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+                className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }))}
               >
                 View
               </Link>
@@ -279,23 +288,23 @@ function Movie() {
           )}
           <Card className="h-fit">
             {ratings.length > 0 && (
-              <div className="flex justify-center gap-6 border-b border-gray-5 py-3">
+              <div className="flex justify-center gap-6 border-b py-3">
                 {ratings.map((rating, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
                       <rating.logo className={rating.logoClass} />
-                      <span className="text-sm font-medium text-gray-11">{rating.score}</span>
+                      <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
                     </TooltipTrigger>
                     <TooltipContent>{rating.tooltip}</TooltipContent>
                   </Tooltip>
                 ))}
               </div>
             )}
-            <dl className="divide-y divide-gray-5 text-sm">
+            <dl className="divide-y text-sm">
               {movieDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">
-                  <dt className="font-medium whitespace-nowrap text-gray-12">{label}</dt>
-                  <dd className="text-end text-gray-11">{value}</dd>
+                  <dt className="font-medium whitespace-nowrap text-foreground">{label}</dt>
+                  <dd className="text-end text-muted-foreground">{value}</dd>
                 </div>
               ))}
             </dl>
