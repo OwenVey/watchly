@@ -32,9 +32,8 @@ A React 19 + TypeScript application for discovering movies and TV series using t
 ### Styling & Theme
 
 - Tailwind CSS v4 with @tailwindcss/vite plugin (no PostCSS needed)
-- Radix UI colors palette (`@radix-ui/colors`) with CSS variable integration
 - Theme provider ([theme-provider.tsx](src/components/theme-provider.tsx)) manages system/light/dark modes
-- Shadcn/Radix UI components in `src/components/ui/`
+- Shadcn/Base UI components in `src/components/ui/`
 
 ## Build and Test
 

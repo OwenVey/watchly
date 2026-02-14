@@ -3,12 +3,12 @@ import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
+import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Multiselect } from '@/components/ui/multiselect';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -236,7 +236,7 @@ function Filters() {
                 navigate({ to: '/series', search: (prev) => ({ ...prev, sort: value as SeriesSearchParams['sort'] }) })
               }
             >
-              <SelectTrigger id="sort">
+              <SelectTrigger id="sort" className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -262,9 +262,10 @@ function Filters() {
         {/* Genres */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="genres">Genres</Label>
-          <Multiselect
+          <MultiCombobox
             id="genres"
             placeholder="Select genres"
+            items={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
             value={genres.map((value) => ({
               value: value.toString(),
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
@@ -272,7 +273,6 @@ function Filters() {
             onValueChange={(options) =>
               navigate({ to: '/series', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
             }
-            options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
         </div>
 
@@ -284,7 +284,7 @@ function Filters() {
             value={status}
             onValueChange={(status) => status && navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
           >
-            <SelectTrigger id="status">
+            <SelectTrigger id="status" className="w-full">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
@@ -300,9 +300,10 @@ function Filters() {
         {/* Type */}
         <div className="flex flex-col gap-1.5">
           <Label>Types</Label>
-          <Multiselect
+          <MultiCombobox
             id="types"
             placeholder="Select show types"
+            items={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
             value={types.map((value) => ({
               value: value.toString(),
               label: TV_SHOW_TYPE_MAP[value],
@@ -316,16 +317,16 @@ function Filters() {
                 }),
               })
             }
-            options={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
         </div>
 
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="keywords">Keywords</Label>
-          <Multiselect
+          <MultiCombobox
             id="keywords"
             placeholder="Select keywords"
+            items={[]}
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
@@ -338,9 +339,10 @@ function Filters() {
         {/* Studios */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="studios">Studios</Label>
-          <Multiselect
+          <MultiCombobox
             id="studios"
             placeholder="Select studios"
+            items={[]}
             value={studios}
             onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
@@ -353,9 +355,10 @@ function Filters() {
         {/* Networks */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="networks">Networks</Label>
-          <Multiselect
+          <MultiCombobox
             id="networks"
             placeholder="Select networks"
+            items={[]}
             value={networks}
             onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
             onSearch={async (query) => {
@@ -375,7 +378,7 @@ function Filters() {
               originalLanguage && navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
             }
           >
-            <SelectTrigger id="original-language">
+            <SelectTrigger id="original-language" className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>

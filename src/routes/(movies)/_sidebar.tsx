@@ -9,7 +9,6 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Multiselect } from '@/components/ui/multiselect';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -323,9 +322,10 @@ function Filters() {
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="keywords">Keywords</Label>
-          <Multiselect
+          <MultiCombobox
             id="keywords"
             placeholder="Select keywords"
+            items={[]}
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/movies', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
@@ -333,33 +333,15 @@ function Filters() {
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
-
-          <MultiCombobox
-            id="release-types"
-            placeholder="Select keywords"
-            items={keywords}
-            value={releaseTypes.map((value) => ({
-              value: value.toString(),
-              label: MOVIE_RELEASE_TYPE_MAP[value as keyof typeof MOVIE_RELEASE_TYPE_MAP],
-            }))}
-            onValueChange={(options) =>
-              navigate({
-                to: '/movies',
-                search: (prev) => ({
-                  ...prev,
-                  releaseTypes: options.map(({ value }) => +value as keyof typeof MOVIE_RELEASE_TYPE_MAP),
-                }),
-              })
-            }
-          />
         </div>
 
         {/* Studio */}
         <div className="flex flex-col gap-1.5">
           <Label>Studio</Label>
-          <Multiselect
+          <MultiCombobox
             id="studio"
             placeholder="Select studios"
+            items={[]}
             value={studios}
             onValueChange={(studios) => navigate({ to: '/movies', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
