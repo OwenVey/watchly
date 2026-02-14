@@ -21,6 +21,25 @@ import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP, MOVIE_RELEASE_TY
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 
+const MOVIE_SORT_MAP: Record<MovieSearchParams['sort'], string> = {
+  vote_average: 'Rating',
+  primary_release_date: 'Release Date',
+  revenue: 'Revenue',
+  popularity: 'Popularity',
+  title: 'Title',
+  vote_count: 'Vote Count',
+};
+
+const MOVIE_SORT_ITEMS = [
+  { value: null, label: 'Select sort' },
+  ...Object.entries(MOVIE_SORT_MAP).map(([value, label]) => ({ value, label })),
+];
+
+const MOVIE_LANGUAGE_ITEMS = [
+  { value: null, label: 'Select language' },
+  ...Object.entries(LANGUAGES_MAP).map(([value, label]) => ({ value, label })),
+];
+
 export const Route = createFileRoute('/(movies)/_sidebar')({
   loader: () => {
     return {
@@ -248,22 +267,28 @@ function Filters() {
           <Label htmlFor="sort">Sort By</Label>
           <div className="flex gap-2">
             <Select
-              value={sort}
+              items={MOVIE_SORT_ITEMS}
+              value={sort ?? null}
               onValueChange={(sort) =>
-                navigate({ to: '/movies', search: (prev) => ({ ...prev, sort: sort as MovieSearchParams['sort'] }) })
+                navigate({
+                  to: '/movies',
+                  search: (prev) => ({
+                    ...prev,
+                    sort: (sort ?? DEFAULT_MOVIE_SEARCH.sort) as MovieSearchParams['sort'],
+                  }),
+                })
               }
             >
               <SelectTrigger id="sort" className="flex-1">
-                <SelectValue />
+                <SelectValue placeholder="Select sort" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="vote_average">Rating</SelectItem>
-                  <SelectItem value="primary_release_date">Release Date</SelectItem>
-                  <SelectItem value="revenue">Revenue</SelectItem>
-                  <SelectItem value="popularity">Popularity</SelectItem>
-                  <SelectItem value="title">Title</SelectItem>
-                  <SelectItem value="vote_count">Vote Count</SelectItem>
+                  {MOVIE_SORT_ITEMS.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -356,16 +381,23 @@ function Filters() {
           <Label htmlFor="original-language">Original Language</Label>
           <Select
             key={originalLanguage}
-            value={originalLanguage}
+            items={MOVIE_LANGUAGE_ITEMS}
+            value={originalLanguage ?? null}
             onValueChange={(originalLanguage) =>
-              originalLanguage && navigate({ to: '/movies', search: (prev) => ({ ...prev, originalLanguage }) })
+              navigate({
+                to: '/movies',
+                search: (prev) => ({
+                  ...prev,
+                  originalLanguage: (originalLanguage ?? undefined) as MovieSearchParams['originalLanguage'],
+                }),
+              })
             }
           >
             <SelectTrigger id="original-language" className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(LANGUAGES_MAP).map(([value, label]) => (
+              {MOVIE_LANGUAGE_ITEMS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>

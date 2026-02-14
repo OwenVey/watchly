@@ -27,6 +27,29 @@ import {
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 
+const SERIES_SORT_MAP: Record<SeriesSearchParams['sort'], string> = {
+  first_air_date: 'First Air Date',
+  name: 'Name',
+  vote_average: 'Rating',
+  popularity: 'Popularity',
+  vote_count: 'Vote Count',
+};
+
+const SERIES_SORT_ITEMS = [
+  { value: null, label: 'Select sort' },
+  ...Object.entries(SERIES_SORT_MAP).map(([value, label]) => ({ value, label })),
+];
+
+const SERIES_STATUS_ITEMS = [
+  { value: null, label: 'Select status' },
+  ...Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => ({ value, label })),
+];
+
+const SERIES_LANGUAGE_ITEMS = [
+  { value: null, label: 'Select language' },
+  ...Object.entries(LANGUAGES_MAP).map(([value, label]) => ({ value, label })),
+];
+
 export const Route = createFileRoute('/(series)/_sidebar')({
   loader: () => {
     return {
@@ -229,22 +252,27 @@ function Filters() {
           <Label htmlFor="sort">Sort By</Label>
           <div className="flex gap-2">
             <Select
-              defaultValue="popularity"
-              value={sort}
+              items={SERIES_SORT_ITEMS}
+              value={sort ?? null}
               onValueChange={(value) =>
-                value &&
-                navigate({ to: '/series', search: (prev) => ({ ...prev, sort: value as SeriesSearchParams['sort'] }) })
+                navigate({
+                  to: '/series',
+                  search: (prev) => ({
+                    ...prev,
+                    sort: (value ?? DEFAULT_SERIES_SEARCH.sort) as SeriesSearchParams['sort'],
+                  }),
+                })
               }
             >
               <SelectTrigger id="sort" className="w-full">
-                <SelectValue />
+                <SelectValue placeholder="Select sort" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="first_air_date">First Air Date</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="vote_average">Rating</SelectItem>
-                <SelectItem value="popularity">Popularity</SelectItem>
-                <SelectItem value="vote_count">Vote Count</SelectItem>
+                {SERIES_SORT_ITEMS.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -281,14 +309,20 @@ function Filters() {
           <Label htmlFor="status">Status</Label>
           <Select
             key={status}
-            value={status}
-            onValueChange={(status) => status && navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
+            items={SERIES_STATUS_ITEMS}
+            value={status || null}
+            onValueChange={(status) =>
+              navigate({
+                to: '/series',
+                search: (prev) => ({ ...prev, status: (status ?? '') as SeriesSearchParams['status'] }),
+              })
+            }
           >
             <SelectTrigger id="status" className="w-full">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => (
+              {SERIES_STATUS_ITEMS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -373,16 +407,23 @@ function Filters() {
           <Label htmlFor="original-language">Original Language</Label>
           <Select
             key={originalLanguage}
-            value={originalLanguage}
+            items={SERIES_LANGUAGE_ITEMS}
+            value={originalLanguage ?? null}
             onValueChange={(originalLanguage) =>
-              originalLanguage && navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
+              navigate({
+                to: '/series',
+                search: (prev) => ({
+                  ...prev,
+                  originalLanguage: (originalLanguage ?? undefined) as SeriesSearchParams['originalLanguage'],
+                }),
+              })
             }
           >
             <SelectTrigger id="original-language" className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(LANGUAGES_MAP).map(([value, label]) => (
+              {SERIES_LANGUAGE_ITEMS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
