@@ -2,6 +2,7 @@ import type { z } from 'zod';
 import type {
   MovieReleaseTypeSchema,
   MovieSchema,
+  OptionsSchema,
   PersonSchema,
   SeasonOutputSchema,
   SeriesSchema,
@@ -16,3 +17,4 @@ export type MovieReleaseType = z.infer<typeof MovieReleaseTypeSchema>;
 export type TvShowType = z.infer<typeof TvShowTypeSchema>;
 export type TvShowStatus = z.infer<typeof TvShowStatusSchema>;
 export type Season = z.infer<typeof SeasonOutputSchema>;
+export type Option = z.infer<typeof OptionsSchema>[number];

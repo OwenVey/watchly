@@ -25,15 +25,15 @@ export function CardCarousel({ title, children, link }: Props) {
     >
       <div className="flex items-end justify-between">
         <Link className="group -m-1 flex items-center gap-1.5 rounded-md p-1" to={link}>
-          <h2 className="text-2xl leading-5 font-semibold text-gray-12">{title}</h2>
-          <CircleArrowRightIcon className="size-6 text-gray-9 transition-colors group-hover:text-gray-12" />
+          <h2 className="text-2xl leading-5 font-semibold text-foreground">{title}</h2>
+          <CircleArrowRightIcon className="size-6 text-muted-foreground transition-colors group-hover:text-foreground" />
         </Link>
         <div className="flex gap-2">
           <CarouselPrevious />
           <CarouselNext />
         </div>
       </div>
-      <CarouselContent className="mt-3 grid shrink-0 auto-cols-[160px] grid-flow-col gap-4">{children}</CarouselContent>
+      <CarouselContent className="mt-3 -ml-4 *:basis-1/6">{children}</CarouselContent>
     </Carousel>
   );
 }

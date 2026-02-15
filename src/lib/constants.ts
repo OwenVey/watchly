@@ -1,5 +1,4 @@
-import type { Option } from '@/components/ui/multiselect';
-import type { MovieReleaseType, TvShowStatus, TvShowType } from '@/types';
+import type { MovieReleaseType, Option, TvShowStatus, TvShowType } from '@/types';
 
 export const DEFAULT_MOVIE_SEARCH = {
   releasedAfter: undefined,

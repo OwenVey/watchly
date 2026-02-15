@@ -3,12 +3,12 @@ import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
+import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar.js';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Multiselect } from '@/components/ui/multiselect';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover.js';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -27,6 +27,29 @@ import {
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 
+const SERIES_SORT_MAP: Record<SeriesSearchParams['sort'], string> = {
+  first_air_date: 'First Air Date',
+  name: 'Name',
+  vote_average: 'Rating',
+  popularity: 'Popularity',
+  vote_count: 'Vote Count',
+};
+
+const SERIES_SORT_ITEMS = [
+  { value: null, label: 'Select sort' },
+  ...Object.entries(SERIES_SORT_MAP).map(([value, label]) => ({ value, label })),
+];
+
+const SERIES_STATUS_ITEMS = [
+  { value: null, label: 'Select status' },
+  ...Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => ({ value, label })),
+];
+
+const SERIES_LANGUAGE_ITEMS = [
+  { value: null, label: 'Select language' },
+  ...Object.entries(LANGUAGES_MAP).map(([value, label]) => ({ value, label })),
+];
+
 export const Route = createFileRoute('/(series)/_sidebar')({
   loader: () => {
     return {
@@ -42,21 +65,23 @@ function SeriesSidebar() {
   return (
     <>
       <Card
-        asChild
         className="sticky top-23.5 left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
-      >
-        <aside>
-          <Filters />
-        </aside>
-      </Card>
+        render={
+          <aside>
+            <Filters />
+          </aside>
+        }
+      />
       <main className="flex flex-1 flex-col">
         <Sheet>
-          <SheetTrigger asChild>
-            <Button className="mx-4 mt-4 md:hidden" variant="glass">
-              <FilterIcon />
-              Filters
-            </Button>
-          </SheetTrigger>
+          <SheetTrigger
+            render={
+              <Button className="mx-4 mt-4 md:hidden" variant="outline">
+                <FilterIcon />
+                Filters
+              </Button>
+            }
+          />
           <SheetContent>
             <Filters />
           </SheetContent>
@@ -110,9 +135,9 @@ function Filters() {
 
   return (
     <>
-      <div className="border-b border-gray-6 px-4 py-2">
-        <h2 className="text-lg font-semibold text-gray-12">Filters</h2>
-        <div className="text-sm text-gray-11">
+      <div className="border-b px-4 py-2">
+        <h2 className="text-lg font-semibold text-foreground">Filters</h2>
+        <div className="text-sm text-muted-foreground">
           {
             Object.keys(search).filter((key) => {
               const typedKey = key as keyof typeof search;
@@ -129,18 +154,20 @@ function Filters() {
           <Label>First Air Date</Label>
           <div className="flex gap-2">
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'flex-1 justify-start px-3 text-left font-normal',
-                    !firstAirDateAfter && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="text-gray-9" />
-                  {firstAirDateAfter ? format(firstAirDateAfter, 'P') : <span className="text-gray-9">After</span>}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'flex-1 justify-start px-3 text-left font-normal',
+                      !firstAirDateAfter && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon />
+                    {firstAirDateAfter ? format(firstAirDateAfter, 'P') : 'After'}
+                  </Button>
+                }
+              />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
@@ -153,18 +180,20 @@ function Filters() {
             </Popover>
 
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    'flex-1 justify-start px-3 text-left font-normal',
-                    !firstAirDateBefore && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="text-gray-9" />
-                  {firstAirDateBefore ? format(firstAirDateBefore, 'P') : <span className="text-gray-9">Before</span>}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      'flex-1 justify-start px-3 text-left font-normal',
+                      !firstAirDateBefore && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon />
+                    {firstAirDateBefore ? format(firstAirDateBefore, 'P') : 'Before'}
+                  </Button>
+                }
+              />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
@@ -184,15 +213,16 @@ function Filters() {
           <Slider
             className="mt-1 mb-4"
             value={rating}
-            onValueChange={setRating}
-            onValueCommit={([ratingMin, ratingMax]) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) })
-            }
+            onValueChange={(value) => setRating(value as [number, number])}
+            onValueCommitted={(value) => {
+              const [ratingMin, ratingMax] = value as [number, number];
+              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+            }}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
             max={DEFAULT_SERIES_SEARCH.ratingMax}
             step={1}
-            minStepsBetweenThumbs={1}
+            minStepsBetweenValues={1}
             label={(value) => value}
           />
         </div>
@@ -203,15 +233,16 @@ function Filters() {
           <Slider
             className="mt-1 mb-4"
             value={voteCount}
-            onValueChange={setVoteCount}
-            onValueCommit={([voteCountMin, voteCountMax]) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) })
-            }
+            onValueChange={(value) => setVoteCount(value as [number, number])}
+            onValueCommitted={(value) => {
+              const [voteCountMin, voteCountMax] = value as [number, number];
+              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+            }}
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
             max={DEFAULT_SERIES_SEARCH.voteCountMax}
             step={1}
-            minStepsBetweenThumbs={1}
+            minStepsBetweenValues={1}
             label={(value) => `${value?.toLocaleString()}${value === DEFAULT_SERIES_SEARCH.voteCountMax ? '+' : ''}`}
           />
         </div>
@@ -221,21 +252,27 @@ function Filters() {
           <Label htmlFor="sort">Sort By</Label>
           <div className="flex gap-2">
             <Select
-              defaultValue="popularity"
-              value={sort}
-              onValueChange={(sort: SeriesSearchParams['sort']) =>
-                navigate({ to: '/series', search: (prev) => ({ ...prev, sort }) })
+              items={SERIES_SORT_ITEMS}
+              value={sort ?? null}
+              onValueChange={(value) =>
+                navigate({
+                  to: '/series',
+                  search: (prev) => ({
+                    ...prev,
+                    sort: (value ?? DEFAULT_SERIES_SEARCH.sort) as SeriesSearchParams['sort'],
+                  }),
+                })
               }
             >
-              <SelectTrigger id="sort">
-                <SelectValue />
+              <SelectTrigger id="sort" className="w-full">
+                <SelectValue placeholder="Select sort" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="first_air_date">First Air Date</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="vote_average">Rating</SelectItem>
-                <SelectItem value="popularity">Popularity</SelectItem>
-                <SelectItem value="vote_count">Vote Count</SelectItem>
+                {SERIES_SORT_ITEMS.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
@@ -245,7 +282,7 @@ function Filters() {
               search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
-              {sortDir === 'asc' ? <ArrowUpIcon className="size-5" /> : <ArrowDownIcon className="size-5" />}
+              {sortDir === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </Link>
           </div>
         </div>
@@ -253,9 +290,10 @@ function Filters() {
         {/* Genres */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="genres">Genres</Label>
-          <Multiselect
+          <MultiCombobox
             id="genres"
             placeholder="Select genres"
+            items={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
             value={genres.map((value) => ({
               value: value.toString(),
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
@@ -263,7 +301,6 @@ function Filters() {
             onValueChange={(options) =>
               navigate({ to: '/series', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
             }
-            options={Object.entries(SERIES_GENRES_MAP).map(([value, label]) => ({ value, label }))}
           />
         </div>
 
@@ -272,14 +309,20 @@ function Filters() {
           <Label htmlFor="status">Status</Label>
           <Select
             key={status}
-            value={status}
-            onValueChange={(status) => navigate({ to: '/series', search: (prev) => ({ ...prev, status }) })}
+            items={SERIES_STATUS_ITEMS}
+            value={status || null}
+            onValueChange={(status) =>
+              navigate({
+                to: '/series',
+                search: (prev) => ({ ...prev, status: (status ?? '') as SeriesSearchParams['status'] }),
+              })
+            }
           >
-            <SelectTrigger id="status">
+            <SelectTrigger id="status" className="w-full">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => (
+              {SERIES_STATUS_ITEMS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -291,9 +334,10 @@ function Filters() {
         {/* Type */}
         <div className="flex flex-col gap-1.5">
           <Label>Types</Label>
-          <Multiselect
+          <MultiCombobox
             id="types"
             placeholder="Select show types"
+            items={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
             value={types.map((value) => ({
               value: value.toString(),
               label: TV_SHOW_TYPE_MAP[value],
@@ -307,16 +351,16 @@ function Filters() {
                 }),
               })
             }
-            options={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
           />
         </div>
 
         {/* Keywords */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="keywords">Keywords</Label>
-          <Multiselect
+          <MultiCombobox
             id="keywords"
             placeholder="Select keywords"
+            items={[]}
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
@@ -329,9 +373,10 @@ function Filters() {
         {/* Studios */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="studios">Studios</Label>
-          <Multiselect
+          <MultiCombobox
             id="studios"
             placeholder="Select studios"
+            items={[]}
             value={studios}
             onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
@@ -344,9 +389,10 @@ function Filters() {
         {/* Networks */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="networks">Networks</Label>
-          <Multiselect
+          <MultiCombobox
             id="networks"
             placeholder="Select networks"
+            items={[]}
             value={networks}
             onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
             onSearch={async (query) => {
@@ -361,16 +407,23 @@ function Filters() {
           <Label htmlFor="original-language">Original Language</Label>
           <Select
             key={originalLanguage}
-            value={originalLanguage}
+            items={SERIES_LANGUAGE_ITEMS}
+            value={originalLanguage ?? null}
             onValueChange={(originalLanguage) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, originalLanguage }) })
+              navigate({
+                to: '/series',
+                search: (prev) => ({
+                  ...prev,
+                  originalLanguage: (originalLanguage ?? undefined) as SeriesSearchParams['originalLanguage'],
+                }),
+              })
             }
           >
-            <SelectTrigger id="original-language">
+            <SelectTrigger id="original-language" className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(LANGUAGES_MAP).map(([value, label]) => (
+              {SERIES_LANGUAGE_ITEMS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -395,31 +448,33 @@ function Filters() {
                   .slice(0, showAllServices ? providers.length : 10)
                   .map((provider) => (
                     <Tooltip key={provider.provider_id}>
-                      <TooltipTrigger asChild>
-                        <Link
-                          from="/series"
-                          to="/series"
-                          search={(prev) => ({
-                            ...prev,
-                            watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
-                          })}
-                          className={cn(
-                            'aspect-square overflow-hidden rounded-lg border p-1.5',
-                            'outline-none focus-visible:border-gray-12 focus-visible:ring-1 focus-visible:ring-gray-12',
-                            watchProviders.includes(provider.provider_id)
-                              ? 'border-primary-7 bg-primary-3 hover:border-primary-8 hover:bg-primary-5'
-                              : 'border-gray-7 bg-gray-3 hover:border-gray-8 hover:bg-gray-5',
-                          )}
-                        >
-                          {provider.logo_path && (
-                            <img
-                              src={getTmdbImage('logo', provider.logo_path, 'w92')}
-                              alt={`${provider.provider_name} logo`}
-                              className="rounded-md"
-                            />
-                          )}
-                        </Link>
-                      </TooltipTrigger>
+                      <TooltipTrigger
+                        render={
+                          <Link
+                            from="/series"
+                            to="/series"
+                            search={(prev) => ({
+                              ...prev,
+                              watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
+                            })}
+                            className={cn(
+                              'aspect-square overflow-hidden rounded-lg border p-1.5',
+                              'outline-none focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground',
+                              watchProviders.includes(provider.provider_id)
+                                ? 'border-primary/50 bg-primary/10 hover:border-primary hover:bg-primary/30'
+                                : 'bg-muted hover:border-ring hover:bg-accent',
+                            )}
+                          >
+                            {provider.logo_path && (
+                              <img
+                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                alt={`${provider.provider_name} logo`}
+                                className="rounded-md"
+                              />
+                            )}
+                          </Link>
+                        }
+                      />
                       <TooltipContent>{provider.provider_name}</TooltipContent>
                     </Tooltip>
                   ))
@@ -440,7 +495,7 @@ function Filters() {
         </div>
       </div>
 
-      <div className="border-t border-gray-6 p-4">
+      <div className="border-t p-4">
         {/* Clear Filters */}
         <Link
           to="/series"

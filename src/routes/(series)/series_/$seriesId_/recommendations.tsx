@@ -15,8 +15,8 @@ function Crew() {
 
   return (
     <PaddedLayout>
-      <h1 className="text-2xl font-semibold text-gray-12">Recommendations</h1>
-      <h2 className="text-gray-11">{series.name}</h2>
+      <h1 className="text-2xl font-semibold text-foreground">Recommendations</h1>
+      <h2 className="text-muted-foreground">{series.name}</h2>
       <div className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
         {series.recommendations.results.map((s) => (
           <SeriesCard key={s.id} series={s} />

@@ -15,7 +15,7 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
     <Link
       key={movie.id}
       className={cn(
-        'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border border-gray-5 bg-[#222] transition-all hover:scale-105 hover:border-gray-7',
+        'group relative isolate grid aspect-2/3 place-items-center overflow-hidden rounded-lg border bg-card transition-all hover:scale-105 hover:border-accent',
         className,
       )}
       to={MovieIdRoute.to}
@@ -23,7 +23,7 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
       preloadDelay={500}
     >
       {showBadge && (
-        <span className="absolute top-0 right-0 z-10 m-2 rounded-full border border-blue-9 bg-blue-11 px-2 py-0.5 text-xs font-semibold tracking-wide text-blue-1">
+        <span className="border-blue-9 bg-blue-11 text-blue-1 absolute top-0 right-0 z-10 m-2 rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide">
           MOVIE
         </span>
       )}
