@@ -33,7 +33,7 @@ export function CardCarousel({ title, children, link }: Props) {
           <CarouselNext />
         </div>
       </div>
-      <CarouselContent className="mt-3 grid shrink-0 auto-cols-[160px] grid-flow-col gap-4">{children}</CarouselContent>
+      <CarouselContent className="mt-3 -ml-4 *:basis-1/6">{children}</CarouselContent>
     </Carousel>
   );
 }
