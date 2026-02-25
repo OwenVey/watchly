@@ -85,7 +85,6 @@ App runs at `http://localhost:5173` by default.
 - `bun run dev` — start Vite dev server
 - `bun run build` — type-check build + production bundle
 - `bun run preview` — preview production build locally
-- `bun run typecheck` — run TypeScript checks only
 - `bun run lint` — run oxlint
 - `bun run lint:fix` — auto-fix lint issues
 - `bun run format` — format code with oxfmt

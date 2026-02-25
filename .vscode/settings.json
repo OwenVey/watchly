@@ -1,18 +1,23 @@
 {
   // linting
+  "oxc.typeAware": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
   },
 
   // formatting
+  "eslint.enable": false,
+  "prettier.enable": false,
   "oxc.fmt.configPath": ".oxfmtrc.json",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
 
+  // typescript
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "editor.wordWrap": "on",
-
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.experimental.useTsgo": true,
+
+  "editor.wordWrap": "on",
   "tailwindCSS.classFunctions": ["cva", "cn"],
 
   "files.associations": {

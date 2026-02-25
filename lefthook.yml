@@ -5,10 +5,8 @@ pre-commit:
   parallel: true
   jobs:
     - name: lint
-      run: bun oxlint --fix {staged_files}
+      run: bun oxlint --type-aware --type-check --fix {staged_files}
       stage_fixed: true
     - name: format
       run: bun oxfmt --write {staged_files}
       stage_fixed: true
-    - name: typecheck
-      run: bun tsc --noEmit

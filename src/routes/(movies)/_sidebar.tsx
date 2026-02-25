@@ -194,7 +194,7 @@ function Filters() {
                   mode="single"
                   selected={releasedBefore}
                   onSelect={(releasedBefore) =>
-                    navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedBefore }) })
+                    void navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedBefore }) })
                   }
                 />
               </PopoverContent>
@@ -211,7 +211,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as number[])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
             min={DEFAULT_MOVIE_SEARCH.ratingMin}
@@ -231,7 +231,7 @@ function Filters() {
             onValueChange={(value) => setVoteCount(value as number[])}
             onValueCommitted={(value) => {
               const [voteCountMin, voteCountMax] = value as [number, number];
-              navigate({ to: '/movies', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+              void navigate({ to: '/movies', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]}
             min={DEFAULT_MOVIE_SEARCH.voteCountMin}
@@ -251,7 +251,7 @@ function Filters() {
             onValueChange={(value) => setRuntime(value as number[])}
             onValueCommitted={(value) => {
               const [runtimeMin, runtimeMax] = value as [number, number];
-              navigate({ to: '/movies', search: (prev) => ({ ...prev, runtimeMin, runtimeMax }) });
+              void navigate({ to: '/movies', search: (prev) => ({ ...prev, runtimeMin, runtimeMax }) });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.runtimeMin, DEFAULT_MOVIE_SEARCH.runtimeMax]}
             min={DEFAULT_MOVIE_SEARCH.runtimeMin}

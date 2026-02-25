@@ -4,7 +4,7 @@ A React 19 + TypeScript application for discovering movies and TV series using t
 
 ## Code Style
 
-- **Formatting**: Use `oxfmt` for formatting, `oxlint` for linting—run `npm run lint:fix` before committing
+- **Formatting**: Use `oxfmt` for formatting, `oxlint` for linting—run `bun run lint:fix` before committing
 - **Styling**: Tailwind CSS v4 with utility classes; use `clsx`/`cn()` for conditional styling
 - **Type Safety**: Strict TypeScript with Zod schema validation for all API responses
 - **Component Patterns**:
@@ -38,14 +38,13 @@ A React 19 + TypeScript application for discovering movies and TV series using t
 ## Build and Test
 
 ```bash
-npm install           # Install dependencies (Node 24.x required)
-npm run dev          # Start Vite dev server (http://localhost:5173)
-npm run build        # TypeScript + Vite build
-npm run typecheck    # Type checking without build
-npm run lint         # Run oxlint
-npm run lint:fix     # Fix linting issues
-npm run format       # Format with oxfmt
-npm run preview      # Preview production build locally
+bun install           # Install dependencies
+bun run dev          # Start Vite dev server (http://localhost:5173)
+bun run build        # TypeScript + Vite build
+bun run lint         # Run oxlint
+bun run lint:fix     # Fix linting issues
+bun run format       # Format with oxfmt
+bun run preview      # Preview production build locally
 ```
 
 - **Hot Module Replacement**: Vite + React Router enabled by default

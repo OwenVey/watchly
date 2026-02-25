@@ -216,7 +216,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as [number, number])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
@@ -236,7 +236,7 @@ function Filters() {
             onValueChange={(value) => setVoteCount(value as [number, number])}
             onValueCommitted={(value) => {
               const [voteCountMin, voteCountMax] = value as [number, number];
-              navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+              void navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
