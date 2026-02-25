@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
-import { z } from 'zod';
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
 import { SeriesCard } from '@/components/series-card';
@@ -10,8 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { searchQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/search')({
-  validateSearch: z.object({
-    query: z.string().catch(''),
+  validateSearch: v.object({
+    query: v.fallback(v.string(), ''),
   }),
   search: {
     middlewares: [stripSearchParams({ query: '' })],

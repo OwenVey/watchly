@@ -6,7 +6,7 @@ A React 19 + TypeScript application for discovering movies and TV series using t
 
 - **Formatting**: Use `oxfmt` for formatting, `oxlint` for linting—run `bun run lint:fix` before committing
 - **Styling**: Tailwind CSS v4 with utility classes; use `clsx`/`cn()` for conditional styling
-- **Type Safety**: Strict TypeScript with Zod schema validation for all API responses
+- **Type Safety**: Strict TypeScript with Valibot schema validation for all API responses
 - **Component Patterns**:
   - UI components in `src/components/ui/` (reusable, presentational)
   - Feature components in `src/components/` (domain-specific, movie-card.tsx example)
@@ -23,7 +23,7 @@ A React 19 + TypeScript application for discovering movies and TV series using t
 
 ### Data Fetching
 
-- **API Client**: [lib/api.ts](src/lib/api.ts) uses `@better-fetch/fetch` with Zod schema validation
+- **API Client**: [lib/api.ts](src/lib/api.ts) uses `@better-fetch/fetch` with Valibot schema validation
 - **Query Management**: [query-options.ts](src/query-options.ts) centralizes all TanStack React Query configurations
 - **Pattern**: Use `infiniteQueryOptions()` for pagination, `queryOptions()` for single fetches
 - **Caching**: Default `staleTime: Infinity` (treat data as always fresh unless explicitly invalidated)
@@ -55,7 +55,7 @@ bun run preview      # Preview production build locally
 ### API Integration
 
 - TMDB API token in [lib/api.ts](src/lib/api.ts) (Bearer auth)
-- All endpoints use Zod schemas: see [schemas.ts](src/schemas.ts)
+- All endpoints use Valibot schemas: see [schemas.ts](src/schemas.ts)
 - Query parameters conditionally spread to avoid sending defaults
 - Fetch patterns: single calls, paginated infinite queries, and batch fetches (e.g., 3 pages ahead)
 
@@ -92,5 +92,5 @@ bun run preview      # Preview production build locally
 
 - TMDB API token embedded in [lib/api.ts](src/lib/api.ts)—read-only access, safe for client
 - No user auth system currently; data is public TMDB information
-- Input validation via Zod schemas on API responses
+- Input validation via Valibot schemas on API responses
 - Links use TanStack Router for client-side navigation (no external navigation risks)

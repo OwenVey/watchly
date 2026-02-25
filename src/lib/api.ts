@@ -1,6 +1,6 @@
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
-import { z } from 'zod';
+import * as v from 'valibot';
 import {
   CollectionOutputSchema,
   DiscoverMoviesOutputSchema,
@@ -39,38 +39,40 @@ export const tmdbApi = createFetch({
         output: DiscoverSeriesOutputSchema,
       },
       '/genre/movie/list': {
-        output: z.object({
-          genres: z.array(z.object({ id: z.number(), name: z.string() })),
+        output: v.object({
+          genres: v.array(v.object({ id: v.number(), name: v.string() })),
         }),
       },
       '/movie/:movieId': {
-        query: z.object({
-          append_to_response: z
-            .tuple([
-              z.literal('recommendations'),
-              z.literal('similar'),
-              z.literal('reviews'),
-              z.literal('credits'),
-              z.literal('release_dates'),
-              z.literal('keywords'),
-            ])
-            .transform((values) => values.join(',')),
+        query: v.object({
+          append_to_response: v.pipe(
+            v.tuple([
+              v.literal('recommendations'),
+              v.literal('similar'),
+              v.literal('reviews'),
+              v.literal('credits'),
+              v.literal('release_dates'),
+              v.literal('keywords'),
+            ]),
+            v.transform((values) => values.join(',')),
+          ),
         }),
         output: MovieDetailsOutputSchema,
       },
       '/tv/:seriesId': {
-        query: z.object({
-          append_to_response: z
-            .tuple([
-              z.literal('recommendations'),
-              z.literal('similar'),
-              z.literal('reviews'),
-              z.literal('credits'),
-              z.literal('external_ids'),
-              z.literal('content_ratings'),
-              z.literal('keywords'),
-            ])
-            .transform((values) => values.join(',')),
+        query: v.object({
+          append_to_response: v.pipe(
+            v.tuple([
+              v.literal('recommendations'),
+              v.literal('similar'),
+              v.literal('reviews'),
+              v.literal('credits'),
+              v.literal('external_ids'),
+              v.literal('content_ratings'),
+              v.literal('keywords'),
+            ]),
+            v.transform((values) => values.join(',')),
+          ),
         }),
         output: SeriesDetailsOutputSchema,
       },
@@ -78,72 +80,72 @@ export const tmdbApi = createFetch({
         output: SeasonOutputSchema,
       },
       '/watch/providers/movie': {
-        query: z.object({
-          language: z.string().optional(),
-          watch_region: z.string(),
+        query: v.object({
+          language: v.optional(v.string()),
+          watch_region: v.string(),
         }),
         output: ProvidersOutputSchema,
       },
       '/watch/providers/tv': {
-        query: z.object({
-          language: z.string().optional(),
-          watch_region: z.string(),
+        query: v.object({
+          language: v.optional(v.string()),
+          watch_region: v.string(),
         }),
         output: ProvidersOutputSchema,
       },
       '/search/keyword': {
-        query: z.object({
-          query: z.string(),
-          page: z.number().default(1),
+        query: v.object({
+          query: v.string(),
+          page: v.optional(v.number(), 1),
         }),
         output: SearchKeywordOutputSchema,
       },
       '/search/company': {
-        query: z.object({
-          query: z.string(),
-          page: z.number().default(1),
+        query: v.object({
+          query: v.string(),
+          page: v.optional(v.number(), 1),
         }),
         output: SearchCompanyOutputSchema,
       },
       '/search/movie': {
-        query: z.object({
-          query: z.string(),
-          page: z.number().default(1),
+        query: v.object({
+          query: v.string(),
+          page: v.optional(v.number(), 1),
         }),
         output: SearchMovieOutputSchema,
       },
       '/search/tv': {
-        query: z.object({
-          query: z.string(),
-          page: z.number().default(1),
+        query: v.object({
+          query: v.string(),
+          page: v.optional(v.number(), 1),
         }),
         output: SearchTvOutputSchema,
       },
       '/search/person': {
-        query: z.object({
-          query: z.string(),
-          page: z.number().default(1),
+        query: v.object({
+          query: v.string(),
+          page: v.optional(v.number(), 1),
         }),
         output: SearchPersonOutputSchema,
       },
       '/person/popular': {
-        query: z.object({
-          page: z.number().default(1),
+        query: v.object({
+          page: v.optional(v.number(), 1),
         }),
         output: SearchPersonOutputSchema,
       },
       '/person/:personId': {
-        params: z.object({
-          personId: z.string(),
+        params: v.object({
+          personId: v.string(),
         }),
-        query: z.object({
-          append_to_response: z.tuple([z.literal('combined_credits')]),
+        query: v.object({
+          append_to_response: v.tuple([v.literal('combined_credits')]),
         }),
         output: PersonDetailsOutputSchema,
       },
       '/collection/:collectionId': {
-        params: z.object({
-          collectionId: z.string(),
+        params: v.object({
+          collectionId: v.string(),
         }),
         output: CollectionOutputSchema,
       },
@@ -163,11 +165,11 @@ export const omdbApi = createFetch({
   schema: createSchema(
     {
       '/': {
-        query: z.object({
-          apikey: z.string().default('3b1b9209'),
-          i: z.string(),
+        query: v.object({
+          apikey: v.optional(v.string(), '3b1b9209'),
+          i: v.string(),
         }),
-        output: z.object({
+        output: v.object({
           // Title: z.string(),
           // Year: z.string(),
           // Rated: z.string(),
@@ -182,14 +184,14 @@ export const omdbApi = createFetch({
           // Country: z.string(),
           // Awards: z.string(),
           // Poster: z.string(),
-          Ratings: z.array(
-            z.object({
-              Source: z.string(),
-              Value: z.string(),
+          Ratings: v.array(
+            v.object({
+              Source: v.string(),
+              Value: v.string(),
             }),
           ),
           // Metascore: z.string(),
-          imdbRating: z.string(),
+          imdbRating: v.string(),
           // imdbVotes: z.string(),
           // imdbID: z.string(),
           // Type: z.string(),
