@@ -2,7 +2,7 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
-import { z } from 'zod';
+import { z } from '@/lib/valibot-zod';
 import { SeriesCard } from '@/components/series-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DEFAULT_SERIES_SEARCH } from '@/lib/constants';

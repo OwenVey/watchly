@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
-import { z } from 'zod';
+import { z } from '@/lib/valibot-zod';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
 import { SeriesCard } from '@/components/series-card';

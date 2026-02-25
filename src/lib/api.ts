@@ -1,6 +1,6 @@
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
-import { z } from 'zod';
+import { z } from '@/lib/valibot-zod';
 import {
   CollectionOutputSchema,
   DiscoverMoviesOutputSchema,

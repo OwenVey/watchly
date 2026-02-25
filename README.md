@@ -45,7 +45,7 @@ It includes advanced filter-based discovery, unified search across media types, 
 - **Build tool**: Vite 7
 - **Routing**: TanStack React Router (file-based)
 - **Data fetching/caching**: TanStack React Query
-- **API client + validation**: `@better-fetch/fetch` + Zod schemas
+- **API client + validation**: `@better-fetch/fetch` + Valibot schemas
 - **Styling**: Tailwind CSS v4 + utility components in `src/components/ui`
 - **Icons**: `lucide-react`
 
@@ -93,7 +93,7 @@ App runs at `http://localhost:5173` by default.
 
 - Keep route files in `src/routes` and let TanStack Router regenerate `routeTree.gen.ts`.
 - Add or update query definitions in `src/query-options.ts` for consistency.
-- Validate new/changed API responses with Zod schemas in `src/schemas.ts`.
+- Validate new/changed API responses with Valibot schemas in `src/schemas.ts`.
 - Use shared helpers from `src/lib/utils.ts` and constants from `src/lib/constants.ts`.
 
 ## API & Security Notes

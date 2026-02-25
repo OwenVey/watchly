@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/valibot-zod';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { zodObjectKeys } from '@/lib/utils';
 

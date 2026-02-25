@@ -1,4 +1,4 @@
-import type { z } from 'zod';
+import type { z } from '@/lib/valibot-zod';
 import type {
   MovieReleaseTypeSchema,
   MovieSchema,
