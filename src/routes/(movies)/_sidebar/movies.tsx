@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
-import * as v from "valibot";
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
@@ -10,44 +10,80 @@ import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 
 const MovieSearchSchema = v.object({
-  releasedAfter: v.fallback(v.optional(v.pipe(v.unknown(), v.toDate())), DEFAULT_MOVIE_SEARCH.releasedAfter),
-  releasedBefore: v.fallback(v.optional(v.pipe(v.unknown(), v.toDate())), DEFAULT_MOVIE_SEARCH.releasedBefore),
-  ratingMin: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax - 1)), DEFAULT_MOVIE_SEARCH.ratingMin),
+  releasedAfter: v.optional(v.pipe(v.unknown(), v.toDate())),
+  releasedBefore: v.optional(v.pipe(v.unknown(), v.toDate())),
+  ratingMin: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax - 1)),
+      DEFAULT_MOVIE_SEARCH.ratingMin,
+    ),
     DEFAULT_MOVIE_SEARCH.ratingMin,
   ),
-  ratingMax: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax)), DEFAULT_MOVIE_SEARCH.ratingMax),
+  ratingMax: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax)),
+      DEFAULT_MOVIE_SEARCH.ratingMax,
+    ),
     DEFAULT_MOVIE_SEARCH.ratingMax,
   ),
-  voteCountMin: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.voteCountMax - 1)), DEFAULT_MOVIE_SEARCH.voteCountMin),
+  voteCountMin: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.voteCountMax - 1)),
+      DEFAULT_MOVIE_SEARCH.voteCountMin,
+    ),
     DEFAULT_MOVIE_SEARCH.voteCountMin,
   ),
-  voteCountMax: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.voteCountMax)), DEFAULT_MOVIE_SEARCH.voteCountMax),
+  voteCountMax: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.voteCountMax)),
+      DEFAULT_MOVIE_SEARCH.voteCountMax,
+    ),
     DEFAULT_MOVIE_SEARCH.voteCountMax,
   ),
-  runtimeMin: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.runtimeMax - 1)), DEFAULT_MOVIE_SEARCH.runtimeMin),
+  runtimeMin: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.runtimeMax - 1)),
+      DEFAULT_MOVIE_SEARCH.runtimeMin,
+    ),
     DEFAULT_MOVIE_SEARCH.runtimeMin,
   ),
-  runtimeMax: v.fallback(
-    v.optional(v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.runtimeMax)), DEFAULT_MOVIE_SEARCH.runtimeMax),
+  runtimeMax: v.optional(
+    v.fallback(
+      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.runtimeMax)),
+      DEFAULT_MOVIE_SEARCH.runtimeMax,
+    ),
     DEFAULT_MOVIE_SEARCH.runtimeMax,
   ),
-  sort: v.fallback(
-    v.optional(v.picklist(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']), DEFAULT_MOVIE_SEARCH.sort),
+  sort: v.optional(
+    v.fallback(
+      v.picklist(['vote_average', 'primary_release_date', 'revenue', 'popularity', 'title', 'vote_count']),
+      DEFAULT_MOVIE_SEARCH.sort,
+    ),
     DEFAULT_MOVIE_SEARCH.sort,
   ),
-  sortDir: v.fallback(v.optional(v.picklist(['asc', 'desc']), DEFAULT_MOVIE_SEARCH.sortDir), DEFAULT_MOVIE_SEARCH.sortDir),
-  genres: v.fallback(v.optional(v.array(v.number()), DEFAULT_MOVIE_SEARCH.genres), DEFAULT_MOVIE_SEARCH.genres),
-  releaseTypes: v.fallback(v.optional(v.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes), DEFAULT_MOVIE_SEARCH.releaseTypes),
-  keywords: v.fallback(v.optional(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.keywords), DEFAULT_MOVIE_SEARCH.keywords),
-  studios: v.fallback(v.optional(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.studios), DEFAULT_MOVIE_SEARCH.studios),
-  originalLanguage: v.fallback(v.optional(v.string()), DEFAULT_MOVIE_SEARCH.originalLanguage),
-  watchProviders: v.fallback(v.optional(v.array(v.number()), DEFAULT_MOVIE_SEARCH.watchProviders), DEFAULT_MOVIE_SEARCH.watchProviders),
-  adult: v.fallback(v.optional(v.boolean()), DEFAULT_MOVIE_SEARCH.adult),
+  sortDir: v.optional(
+    v.fallback(v.picklist(['asc', 'desc']), DEFAULT_MOVIE_SEARCH.sortDir),
+    DEFAULT_MOVIE_SEARCH.sortDir,
+  ),
+  genres: v.optional(v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.genres), DEFAULT_MOVIE_SEARCH.genres),
+  releaseTypes: v.optional(
+    v.fallback(v.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes),
+    DEFAULT_MOVIE_SEARCH.releaseTypes,
+  ),
+  keywords: v.optional(
+    v.fallback(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.keywords),
+    DEFAULT_MOVIE_SEARCH.keywords,
+  ),
+  studios: v.optional(
+    v.fallback(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.studios),
+    DEFAULT_MOVIE_SEARCH.studios,
+  ),
+  originalLanguage: v.optional(v.string()),
+  watchProviders: v.optional(
+    v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.watchProviders),
+    DEFAULT_MOVIE_SEARCH.watchProviders,
+  ),
+  adult: v.optional(v.fallback(v.boolean(), DEFAULT_MOVIE_SEARCH.adult), DEFAULT_MOVIE_SEARCH.adult),
 });
 export type MovieSearchParams = v.InferOutput<typeof MovieSearchSchema>;
 

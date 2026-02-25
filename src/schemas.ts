@@ -13,14 +13,17 @@ function paginated<T extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>
 
 export const OptionsSchema = v.array(v.object({ value: v.string(), label: v.string() }));
 
-const StringToDateSchema = v.pipe(v.optional(v.nullable(v.string())), v.transform((val) => {
+const StringToDateSchema = v.pipe(
+  v.optional(v.nullable(v.string())),
+  v.transform((val) => {
     if (val === '' || val == null) return undefined;
     return new Date(val);
-  }));
+  }),
+);
 
 const VoteAverageSchema = v.pipe(
   v.optional(v.number()),
-  v.transform((num) => (num ? `${Math.round(num * 10)}%` : undefined))
+  v.transform((num) => (num ? `${Math.round(num * 10)}%` : undefined)),
 );
 
 export const PersonSchema = v.object({
@@ -35,23 +38,27 @@ export const PersonSchema = v.object({
 });
 
 export const CreditsOutputSchema = v.object({
-  cast: v.array(v.object({
-    .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-    PersonSchema.entries,
+  cast: v.array(
+    v.object({
+      .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+      PersonSchema.entries,
 
-    cast_id: v.optional(v.number()),
-    credit_id: v.string(),
-    character: v.string(),
-    order: v.number()
-  })),
-  crew: v.array(v.object({
-    .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-    PersonSchema.entries,
+      cast_id: v.optional(v.number()),
+      credit_id: v.string(),
+      character: v.string(),
+      order: v.number(),
+    }),
+  ),
+  crew: v.array(
+    v.object({
+      .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+      PersonSchema.entries,
 
-    credit_id: v.string(),
-    department: v.string(),
-    job: v.string()
-  })),
+      credit_id: v.string(),
+      department: v.string(),
+      job: v.string(),
+    }),
+  ),
 });
 
 export const MovieSchema = v.object({
@@ -71,7 +78,8 @@ export const MovieSchema = v.object({
   vote_count: v.optional(v.number()),
 });
 
-export const DiscoverMoviesQuerySchema = v.optional(v.object({
+export const DiscoverMoviesQuerySchema = v.optional(
+  v.object({
     certification: v.optional(v.string()),
     'certification.gte': v.optional(v.string()),
     'certification.lte': v.optional(v.string()),
@@ -86,7 +94,8 @@ export const DiscoverMoviesQuerySchema = v.optional(v.object({
     region: v.optional(v.string()),
     'release_date.gte': v.optional(v.string()), // Should be in YYYY-MM-DD format
     'release_date.lte': v.optional(v.string()), // Should be in YYYY-MM-DD format
-    sort_by: v.optional(v.picklist([
+    sort_by: v.optional(
+      v.picklist([
         'popularity.asc',
         'popularity.desc',
         'release_date.asc',
@@ -103,7 +112,8 @@ export const DiscoverMoviesQuerySchema = v.optional(v.object({
         'vote_average.desc',
         'vote_count.asc',
         'vote_count.desc',
-      ])),
+      ]),
+    ),
     'vote_average.gte': v.optional(v.number()),
     'vote_average.lte': v.optional(v.number()),
     'vote_count.gte': v.optional(v.pipe(v.number(), v.integer())),
@@ -124,9 +134,11 @@ export const DiscoverMoviesQuerySchema = v.optional(v.object({
     without_genres: v.optional(v.string()),
     without_keywords: v.optional(v.string()),
     year: v.optional(v.pipe(v.number(), v.integer())),
-  }));
+  }),
+);
 
-export const DiscoverSeriesQuerySchema = v.optional(v.object({
+export const DiscoverSeriesQuerySchema = v.optional(
+  v.object({
     'air_date.gte': v.optional(v.string()),
     'air_date.lte': v.optional(v.string()),
     first_air_date_year: v.optional(v.number()),
@@ -137,7 +149,8 @@ export const DiscoverSeriesQuerySchema = v.optional(v.object({
     language: v.optional(v.string()),
     page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
     screened_theatrically: v.optional(v.boolean()),
-    sort_by: v.optional(v.picklist([
+    sort_by: v.optional(
+      v.picklist([
         'first_air_date.asc',
         'first_air_date.desc',
         'name.asc',
@@ -150,7 +163,8 @@ export const DiscoverSeriesQuerySchema = v.optional(v.object({
         'vote_average.desc',
         'vote_count.asc',
         'vote_count.desc',
-      ])),
+      ]),
+    ),
     timezone: v.optional(v.string()),
     'vote_average.gte': v.optional(v.number()),
     'vote_average.lte': v.optional(v.number()),
@@ -173,7 +187,8 @@ export const DiscoverSeriesQuerySchema = v.optional(v.object({
     without_keywords: v.optional(v.string()),
     without_watch_providers: v.optional(v.string()),
     with_type: v.optional(v.string()),
-  }));
+  }),
+);
 
 export const DiscoverMoviesOutputSchema = paginated(MovieSchema);
 
@@ -215,7 +230,7 @@ export const SearchMovieOutputSchema = paginated(
     .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
     MovieSchema.entries,
 
-    media_type: v.optional(v.literal('movie'), 'movie')
+    media_type: v.optional(v.literal('movie'), 'movie'),
   }),
 );
 
@@ -248,28 +263,34 @@ export const TvShowStatusSchema = v.union([
 ]);
 
 export const ReleaseDatesOutputSchema = v.object({
-  results: v.array(v.object({
-    iso_3166_1: v.string(),
-    release_dates: v.array(v.object({
-      certification: v.string(),
-      descriptors: v.array(v.string()),
-      iso_639_1: v.string(),
-      note: v.string(),
-      release_date: v.pipe(v.unknown(), v.toDate()),
-      type: MovieReleaseTypeSchema,
-    })),
-  })),
+  results: v.array(
+    v.object({
+      iso_3166_1: v.string(),
+      release_dates: v.array(
+        v.object({
+          certification: v.string(),
+          descriptors: v.array(v.string()),
+          iso_639_1: v.string(),
+          note: v.string(),
+          release_date: v.pipe(v.unknown(), v.toDate()),
+          type: MovieReleaseTypeSchema,
+        }),
+      ),
+    }),
+  ),
 });
 
 export const MovieDetailsOutputSchema = v.object({
   adult: v.boolean(),
   backdrop_path: v.nullable(v.string()),
-  belongs_to_collection: v.nullable(v.object({
+  belongs_to_collection: v.nullable(
+    v.object({
       id: v.number(),
       name: v.string(),
       poster_path: v.nullable(v.string()),
       backdrop_path: v.nullable(v.string()),
-    })),
+    }),
+  ),
   budget: v.number(),
   credits: CreditsOutputSchema,
   genres: v.array(v.object({ id: v.number(), name: v.string() })),
@@ -277,10 +298,12 @@ export const MovieDetailsOutputSchema = v.object({
   id: v.number(),
   imdb_id: v.nullable(v.string()),
   keywords: v.object({
-    keywords: v.array(v.object({
-      id: v.number(),
-      name: v.string(),
-    })),
+    keywords: v.array(
+      v.object({
+        id: v.number(),
+        name: v.string(),
+      }),
+    ),
   }),
   origin_country: v.array(v.string()),
   original_language: zodObjectKeys(LANGUAGES_MAP),
@@ -288,12 +311,14 @@ export const MovieDetailsOutputSchema = v.object({
   overview: v.string(),
   popularity: v.number(),
   poster_path: v.nullable(v.string()),
-  production_companies: v.array(v.object({
-    id: v.number(),
-    logo_path: v.nullable(v.string()),
-    name: v.string(),
-    origin_country: v.string(),
-  })),
+  production_companies: v.array(
+    v.object({
+      id: v.number(),
+      logo_path: v.nullable(v.string()),
+      name: v.string(),
+      origin_country: v.string(),
+    }),
+  ),
   production_countries: v.array(v.object({ iso_3166_1: v.string(), name: v.string() })),
   recommendations: paginated(MovieSchema),
   release_date: StringToDateSchema,
@@ -302,11 +327,13 @@ export const MovieDetailsOutputSchema = v.object({
   reviews: ReviewsOutputSchema,
   runtime: v.number(),
   similar: paginated(MovieSchema),
-  spoken_languages: v.array(v.object({
-    english_name: v.string(),
-    iso_639_1: v.string(),
-    name: v.string(),
-  })),
+  spoken_languages: v.array(
+    v.object({
+      english_name: v.string(),
+      iso_639_1: v.string(),
+      name: v.string(),
+    }),
+  ),
   status: v.string(),
   tagline: v.string(),
   title: v.string(),
@@ -336,19 +363,23 @@ export const SeriesDetailsOutputSchema = v.object({
   adult: v.boolean(),
   backdrop_path: v.nullable(v.string()),
   content_ratings: v.object({
-    results: v.array(v.object({
-      iso_3166_1: v.string(),
-      rating: v.string(),
-    })),
+    results: v.array(
+      v.object({
+        iso_3166_1: v.string(),
+        rating: v.string(),
+      }),
+    ),
   }),
-  created_by: v.array(v.object({
-    id: v.number(),
-    credit_id: v.string(),
-    name: v.string(),
-    original_name: v.string(),
-    gender: v.number(),
-    profile_path: v.nullable(v.string()),
-  })),
+  created_by: v.array(
+    v.object({
+      id: v.number(),
+      credit_id: v.string(),
+      name: v.string(),
+      original_name: v.string(),
+      gender: v.number(),
+      profile_path: v.nullable(v.string()),
+    }),
+  ),
   credits: CreditsOutputSchema,
   episode_run_time: v.array(v.number()),
   external_ids: v.object({
@@ -363,22 +394,27 @@ export const SeriesDetailsOutputSchema = v.object({
     twitter_id: v.nullable(v.string()),
   }),
   first_air_date: StringToDateSchema,
-  genres: v.array(v.object({
-    id: v.number(),
-    name: v.string(),
-  })),
+  genres: v.array(
+    v.object({
+      id: v.number(),
+      name: v.string(),
+    }),
+  ),
   homepage: v.string(),
   id: v.number(),
   in_production: v.boolean(),
   keywords: v.object({
-    results: v.array(v.object({
-      id: v.number(),
-      name: v.string(),
-    })),
+    results: v.array(
+      v.object({
+        id: v.number(),
+        name: v.string(),
+      }),
+    ),
   }),
   languages: v.array(v.string()),
   last_air_date: StringToDateSchema,
-  last_episode_to_air: v.nullable(v.object({
+  last_episode_to_air: v.nullable(
+    v.object({
       id: v.number(),
       name: v.string(),
       overview: v.string(),
@@ -392,9 +428,11 @@ export const SeriesDetailsOutputSchema = v.object({
       season_number: v.number(),
       show_id: v.optional(v.number()),
       still_path: v.nullable(v.string()),
-    })),
+    }),
+  ),
   name: v.string(),
-  next_episode_to_air: v.nullable(v.object({
+  next_episode_to_air: v.nullable(
+    v.object({
       id: v.number(),
       name: v.string(),
       overview: v.string(),
@@ -408,13 +446,16 @@ export const SeriesDetailsOutputSchema = v.object({
       season_number: v.number(),
       show_id: v.optional(v.number()),
       still_path: v.nullable(v.string()),
-    })),
-  networks: v.array(v.object({
-    id: v.number(),
-    logo_path: v.nullable(v.string()),
-    name: v.string(),
-    origin_country: v.string(),
-  })),
+    }),
+  ),
+  networks: v.array(
+    v.object({
+      id: v.number(),
+      logo_path: v.nullable(v.string()),
+      name: v.string(),
+      origin_country: v.string(),
+    }),
+  ),
   number_of_episodes: v.nullable(v.number()),
   number_of_seasons: v.number(),
   origin_country: v.array(v.string()),
@@ -423,34 +464,42 @@ export const SeriesDetailsOutputSchema = v.object({
   overview: v.string(),
   popularity: v.number(),
   poster_path: v.nullable(v.string()),
-  production_companies: v.array(v.object({
-    id: v.number(),
-    logo_path: v.nullable(v.string()),
-    name: v.string(),
-    origin_country: v.string(),
-  })),
-  production_countries: v.array(v.object({
-    iso_3166_1: v.string(),
-    name: v.string(),
-  })),
+  production_companies: v.array(
+    v.object({
+      id: v.number(),
+      logo_path: v.nullable(v.string()),
+      name: v.string(),
+      origin_country: v.string(),
+    }),
+  ),
+  production_countries: v.array(
+    v.object({
+      iso_3166_1: v.string(),
+      name: v.string(),
+    }),
+  ),
   recommendations: paginated(SeriesSchema),
   reviews: ReviewsOutputSchema,
-  seasons: v.array(v.object({
-    air_date: StringToDateSchema,
-    episode_count: v.number(),
-    id: v.number(),
-    name: v.string(),
-    overview: v.string(),
-    poster_path: v.nullable(v.string()),
-    season_number: v.number(),
-    vote_average: VoteAverageSchema,
-  })),
+  seasons: v.array(
+    v.object({
+      air_date: StringToDateSchema,
+      episode_count: v.number(),
+      id: v.number(),
+      name: v.string(),
+      overview: v.string(),
+      poster_path: v.nullable(v.string()),
+      season_number: v.number(),
+      vote_average: VoteAverageSchema,
+    }),
+  ),
   similar: paginated(SeriesSchema),
-  spoken_languages: v.array(v.object({
-    english_name: v.string(),
-    iso_639_1: v.string(),
-    name: v.string(),
-  })),
+  spoken_languages: v.array(
+    v.object({
+      english_name: v.string(),
+      iso_639_1: v.string(),
+      name: v.string(),
+    }),
+  ),
   status: v.string(),
   tagline: v.string(),
   type: v.string(),
@@ -461,47 +510,53 @@ export const SeriesDetailsOutputSchema = v.object({
 export const SeasonOutputSchema = v.object({
   _id: v.string(),
   air_date: v.nullable(v.string()),
-  episodes: v.array(v.object({
-    air_date: v.nullable(v.string()),
-    episode_number: v.number(),
-    episode_type: v.string(),
-    id: v.number(),
-    name: v.string(),
-    overview: v.string(),
-    production_code: v.string(),
-    runtime: v.nullable(v.number()),
-    season_number: v.number(),
-    show_id: v.number(),
-    still_path: v.nullable(v.string()),
-    vote_average: VoteAverageSchema,
-    vote_count: v.number(),
-    crew: v.array(v.object({
-      job: v.string(),
-      department: v.string(),
-      credit_id: v.string(),
-      adult: v.boolean(),
-      gender: v.number(),
+  episodes: v.array(
+    v.object({
+      air_date: v.nullable(v.string()),
+      episode_number: v.number(),
+      episode_type: v.string(),
       id: v.number(),
-      known_for_department: v.string(),
       name: v.string(),
-      original_name: v.string(),
-      popularity: v.number(),
-      profile_path: v.nullable(v.string()),
-    })),
-    guest_stars: v.array(v.object({
-      character: v.string(),
-      credit_id: v.string(),
-      order: v.number(),
-      adult: v.boolean(),
-      gender: v.number(),
-      id: v.number(),
-      known_for_department: v.string(),
-      name: v.string(),
-      original_name: v.string(),
-      popularity: v.number(),
-      profile_path: v.nullable(v.string()),
-    })),
-  })),
+      overview: v.string(),
+      production_code: v.string(),
+      runtime: v.nullable(v.number()),
+      season_number: v.number(),
+      show_id: v.number(),
+      still_path: v.nullable(v.string()),
+      vote_average: VoteAverageSchema,
+      vote_count: v.number(),
+      crew: v.array(
+        v.object({
+          job: v.string(),
+          department: v.string(),
+          credit_id: v.string(),
+          adult: v.boolean(),
+          gender: v.number(),
+          id: v.number(),
+          known_for_department: v.string(),
+          name: v.string(),
+          original_name: v.string(),
+          popularity: v.number(),
+          profile_path: v.nullable(v.string()),
+        }),
+      ),
+      guest_stars: v.array(
+        v.object({
+          character: v.string(),
+          credit_id: v.string(),
+          order: v.number(),
+          adult: v.boolean(),
+          gender: v.number(),
+          id: v.number(),
+          known_for_department: v.string(),
+          name: v.string(),
+          original_name: v.string(),
+          popularity: v.number(),
+          profile_path: v.nullable(v.string()),
+        }),
+      ),
+    }),
+  ),
   name: v.string(),
   overview: v.string(),
   id: v.number(),
@@ -511,13 +566,15 @@ export const SeasonOutputSchema = v.object({
 });
 
 export const ProvidersOutputSchema = v.object({
-  results: v.array(v.object({
-    // display_priorities: z.record(z.number()),
-    display_priority: v.number(),
-    logo_path: v.nullable(v.string()),
-    provider_name: v.string(),
-    provider_id: v.number(),
-  })),
+  results: v.array(
+    v.object({
+      // display_priorities: z.record(z.number()),
+      display_priority: v.number(),
+      logo_path: v.nullable(v.string()),
+      provider_name: v.string(),
+      provider_id: v.number(),
+    }),
+  ),
 });
 
 export const DiscoverSeriesOutputSchema = paginated(SeriesSchema);
@@ -527,7 +584,7 @@ export const SearchTvOutputSchema = paginated(
     .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
     SeriesSchema.entries,
 
-    media_type: v.optional(v.literal('tv'), 'tv')
+    media_type: v.optional(v.literal('tv'), 'tv'),
   }),
 );
 
@@ -538,20 +595,22 @@ export const SearchPersonOutputSchema = paginated(
 
     media_type: v.optional(v.literal('person'), 'person'),
 
-    known_for: v.array(v.union([
-      v.object({
-        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        MovieSchema.entries,
+    known_for: v.array(
+      v.union([
+        v.object({
+          .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          MovieSchema.entries,
 
-        media_type: v.literal('movie')
-      }),
-      v.object({
-        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        SeriesSchema.entries,
+          media_type: v.literal('movie'),
+        }),
+        v.object({
+          .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          SeriesSchema.entries,
 
-        media_type: v.literal('tv')
-      }),
-    ]))
+          media_type: v.literal('tv'),
+        }),
+      ]),
+    ),
   }),
 );
 
@@ -571,38 +630,42 @@ export const PersonDetailsOutputSchema = v.object({
   popularity: v.number(),
   profile_path: v.nullable(v.string()),
   combined_credits: v.object({
-    cast: v.array(v.union([
-      v.object({
-        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        MovieSchema.entries,
+    cast: v.array(
+      v.union([
+        v.object({
+          .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          MovieSchema.entries,
 
-        media_type: v.literal('movie'),
-        character: v.string()
-      }),
-      v.object({
-        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        SeriesSchema.entries,
+          media_type: v.literal('movie'),
+          character: v.string(),
+        }),
+        v.object({
+          .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          SeriesSchema.entries,
 
-        media_type: v.literal('tv'),
-        character: v.string()
-      }),
-    ])),
-    crew: v.array(v.union([
-      v.object({
-        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        MovieSchema.entries,
+          media_type: v.literal('tv'),
+          character: v.string(),
+        }),
+      ]),
+    ),
+    crew: v.array(
+      v.union([
+        v.object({
+          .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          MovieSchema.entries,
 
-        media_type: v.literal('movie'),
-        job: v.string()
-      }),
-      v.object({
-        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
-        SeriesSchema.entries,
+          media_type: v.literal('movie'),
+          job: v.string(),
+        }),
+        v.object({
+          .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+          SeriesSchema.entries,
 
-        media_type: v.literal('tv'),
-        job: v.string()
-      }),
-    ])),
+          media_type: v.literal('tv'),
+          job: v.string(),
+        }),
+      ]),
+    ),
   }),
 });
 

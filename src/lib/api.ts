@@ -1,6 +1,6 @@
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
-import * as v from "valibot";
+import * as v from 'valibot';
 import {
   CollectionOutputSchema,
   DiscoverMoviesOutputSchema,
@@ -45,20 +45,24 @@ export const tmdbApi = createFetch({
       },
       '/movie/:movieId': {
         query: v.object({
-          append_to_response: v.pipe(v.tuple([
+          append_to_response: v.pipe(
+            v.tuple([
               v.literal('recommendations'),
               v.literal('similar'),
               v.literal('reviews'),
               v.literal('credits'),
               v.literal('release_dates'),
               v.literal('keywords'),
-            ]), v.transform((values) => values.join(','))),
+            ]),
+            v.transform((values) => values.join(',')),
+          ),
         }),
         output: MovieDetailsOutputSchema,
       },
       '/tv/:seriesId': {
         query: v.object({
-          append_to_response: v.pipe(v.tuple([
+          append_to_response: v.pipe(
+            v.tuple([
               v.literal('recommendations'),
               v.literal('similar'),
               v.literal('reviews'),
@@ -66,7 +70,9 @@ export const tmdbApi = createFetch({
               v.literal('external_ids'),
               v.literal('content_ratings'),
               v.literal('keywords'),
-            ]), v.transform((values) => values.join(','))),
+            ]),
+            v.transform((values) => values.join(',')),
+          ),
         }),
         output: SeriesDetailsOutputSchema,
       },
@@ -178,10 +184,12 @@ export const omdbApi = createFetch({
           // Country: z.string(),
           // Awards: z.string(),
           // Poster: z.string(),
-          Ratings: v.array(v.object({
-            Source: v.string(),
-            Value: v.string(),
-          })),
+          Ratings: v.array(
+            v.object({
+              Source: v.string(),
+              Value: v.string(),
+            }),
+          ),
           // Metascore: z.string(),
           imdbRating: v.string(),
           // imdbVotes: z.string(),

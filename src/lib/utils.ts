@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import * as v from "valibot";
+import * as v from 'valibot';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
