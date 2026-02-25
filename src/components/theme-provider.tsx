@@ -20,6 +20,19 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
+const disableTransitions = () => {
+  const css = document.createElement('style');
+  css.appendChild(document.createTextNode('* { transition: none !important; }'));
+  document.head.appendChild(css);
+
+  return () => {
+    void window.getComputedStyle(document.body).opacity;
+    requestAnimationFrame(() => {
+      document.head.removeChild(css);
+    });
+  };
+};
+
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
@@ -30,6 +43,7 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const enableTransitions = disableTransitions();
 
     root.classList.remove('light', 'dark');
 
@@ -37,10 +51,12 @@ export function ThemeProvider({
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
       root.classList.add(systemTheme);
+      enableTransitions();
       return;
     }
 
     root.classList.add(theme);
+    enableTransitions();
   }, [theme]);
 
   const value = {
