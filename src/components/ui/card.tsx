@@ -24,9 +24,9 @@ export function Card(props: CardProps) {
   const { render, hover, ...otherProps } = props;
 
   const element = useRender({
-    defaultTagName: 'p',
+    defaultTagName: 'div',
     render,
-    props: mergeProps<'p'>({ className: cn(cardVariants({ hover })) }, otherProps),
+    props: mergeProps<'div'>({ className: cn(cardVariants({ hover })) }, otherProps),
   });
 
   return element;
