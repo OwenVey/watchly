@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
+import type { Movie } from '@/types';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
-import type { Movie } from '@/types';
 
 type Props = {
   movie: Movie;

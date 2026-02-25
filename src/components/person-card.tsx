@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { UserRoundIcon } from 'lucide-react';
+import type { Person } from '@/types';
 import { Card } from '@/components/ui/card';
 import { getTmdbImage } from '@/lib/utils';
 import { Route as PersonIdRoute } from '@/routes/(people)/people_/$personId';
-import type { Person } from '@/types';
 
 type Props = {
   person: Person;

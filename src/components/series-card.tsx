@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router';
+import type { Series } from '@/types';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
-import type { Series } from '@/types';
 
 type Props = {
   series: Series;

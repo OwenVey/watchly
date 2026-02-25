@@ -15,6 +15,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
+import type { MovieReleaseType } from '@/types';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
@@ -33,7 +34,6 @@ import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
-import type { MovieReleaseType } from '@/types';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {
