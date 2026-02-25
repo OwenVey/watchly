@@ -11,16 +11,10 @@ type Props = {
 export function CardCarousel({ title, children, link }: Props) {
   return (
     <Carousel
+      className="@container"
       opts={{
         align: 'start',
-        slidesToScroll: 1,
-        breakpoints: {
-          '(min-width: 380px)': { slidesToScroll: 2 },
-          '(min-width: 560px)': { slidesToScroll: 3 },
-          '(min-width: 740px)': { slidesToScroll: 4 },
-          '(min-width: 920px)': { slidesToScroll: 5 },
-          '(min-width: 1080px)': { slidesToScroll: 6 },
-        },
+        slidesToScroll: 'auto',
       }}
     >
       <div className="flex items-end justify-between">
@@ -33,7 +27,9 @@ export function CardCarousel({ title, children, link }: Props) {
           <CarouselNext />
         </div>
       </div>
-      <CarouselContent className="mt-3 -ml-4 *:basis-1/6">{children}</CarouselContent>
+      <CarouselContent className="mt-3 -ml-4 *:basis-1/1 @sm:*:basis-1/2 @xl:*:basis-1/3 @3xl:*:basis-1/4 @4xl:*:basis-1/5 @5xl:*:basis-1/6">
+        {children}
+      </CarouselContent>
     </Carousel>
   );
 }
