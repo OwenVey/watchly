@@ -1,12 +1,14 @@
 # Lefthook configuration
 # https://github.com/evilmartians/lefthook
-
+assert_lefthook_installed: true
 pre-commit:
   parallel: true
   jobs:
-    - name: oxlint
+    - name: lint
       run: bun oxlint --fix {staged_files}
       stage_fixed: true
-    - name: oxfmt
+    - name: format
       run: bun oxfmt --write {staged_files}
       stage_fixed: true
+    - name: typecheck
+      run: bun tsc --noEmit
