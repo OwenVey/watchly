@@ -1,6 +1,6 @@
 import * as v from 'valibot';
 import { LANGUAGES_MAP } from '@/lib/constants';
-import { zodObjectKeys } from '@/lib/utils';
+import { schemaObjectKeys } from '@/lib/utils';
 
 function paginated<T extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(resultSchema: T) {
   return v.object({
@@ -66,7 +66,7 @@ export const MovieSchema = v.object({
   backdrop_path: v.nullable(v.string()),
   genre_ids: v.optional(v.array(v.number()), []),
   id: v.number(),
-  original_language: zodObjectKeys(LANGUAGES_MAP),
+  original_language: schemaObjectKeys(LANGUAGES_MAP),
   original_title: v.string(),
   overview: v.string(),
   popularity: v.optional(v.optional(v.number()), 0),
@@ -306,7 +306,7 @@ export const MovieDetailsOutputSchema = v.object({
     ),
   }),
   origin_country: v.array(v.string()),
-  original_language: zodObjectKeys(LANGUAGES_MAP),
+  original_language: schemaObjectKeys(LANGUAGES_MAP),
   original_title: v.string(),
   overview: v.string(),
   popularity: v.number(),
@@ -459,7 +459,7 @@ export const SeriesDetailsOutputSchema = v.object({
   number_of_episodes: v.nullable(v.number()),
   number_of_seasons: v.number(),
   origin_country: v.array(v.string()),
-  original_language: zodObjectKeys(LANGUAGES_MAP),
+  original_language: schemaObjectKeys(LANGUAGES_MAP),
   original_name: v.string(),
   overview: v.string(),
   popularity: v.number(),
