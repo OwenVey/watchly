@@ -40,6 +40,7 @@ function RouteComponent() {
   const [seasonDetails, setSeasonDetails] = useState<Map<string, Season>>(new Map());
 
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
+  const posterTransitionName = `series-poster-${series.id}`;
 
   const contentRating = series.content_ratings.results.find((a) => a.iso_3166_1 === 'US')?.rating;
 
@@ -162,6 +163,7 @@ function RouteComponent() {
                 height={288}
                 src={getTmdbImage('poster', series.poster_path, 'w342')}
                 alt={`movie poster for ${series.name}`}
+                style={{ viewTransitionName: posterTransitionName }}
               />
             ) : (
               <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">

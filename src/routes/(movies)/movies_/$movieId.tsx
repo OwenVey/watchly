@@ -49,6 +49,7 @@ function Movie() {
   const { omdb } = Route.useLoaderData();
 
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
+  const posterTransitionName = `movie-poster-${movie.id}`;
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
   const certification = usReleaseDates
@@ -182,6 +183,7 @@ function Movie() {
               height={288}
               src={getTmdbImage('poster', movie.poster_path, 'w342')}
               alt={`movie poster for ${movie.title}`}
+              style={{ viewTransitionName: posterTransitionName }}
             />
           ) : (
             <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">

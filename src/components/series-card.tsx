@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { useState } from 'react';
 import type { Series } from '@/types';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
@@ -11,6 +12,9 @@ type Props = {
 };
 
 export function SeriesCard({ series, className, showBadge = false }: Props) {
+  const [isTransitionTarget, setIsTransitionTarget] = useState(false);
+  const posterTransitionName = `series-poster-${series.id}`;
+
   return (
     <Link
       key={series.id}
@@ -21,6 +25,8 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
       to={SeriesIdRoute.to}
       params={{ seriesId: series.id.toString() }}
       preloadDelay={500}
+      viewTransition
+      onClick={() => setIsTransitionTarget(true)}
     >
       {showBadge && (
         <span className="border-purple-9 bg-purple-11 text-purple-1 absolute top-0 right-0 z-10 m-2 rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide">
@@ -33,6 +39,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
           src={getTmdbImage('poster', series.poster_path, 'w342')}
           alt={`Movie poster for ${series.name}`}
           className="h-full w-full object-cover"
+          style={{ viewTransitionName: isTransitionTarget ? posterTransitionName : 'none' }}
         />
       )}
       <div

@@ -19,6 +19,7 @@ export const Route = createFileRoute('/(people)/people_/$personId')({
 function Person() {
   const { personId } = Route.useParams();
   const { data: person } = useSuspenseQuery(personIdQueryOptions(personId));
+  const profileTransitionName = `person-profile-${person.id}`;
 
   const [showEntireBio, toggleShowEntireBio] = useToggle(false);
 
@@ -89,6 +90,7 @@ function Person() {
             className="aspect-2/3 w-48 rounded-xl shadow-lg"
             src={getTmdbImage('profile', person.profile_path, 'h632')}
             alt={`profile picture for ${person.name}`}
+            style={{ viewTransitionName: profileTransitionName }}
           />
         ) : (
           <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">

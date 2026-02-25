@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { UserRoundIcon } from 'lucide-react';
+import { useState } from 'react';
 import type { Person } from '@/types';
 import { Card } from '@/components/ui/card';
 import { getTmdbImage } from '@/lib/utils';
@@ -11,6 +12,9 @@ type Props = {
 };
 
 export function PersonCard({ person, title }: Props) {
+  const [isTransitionTarget, setIsTransitionTarget] = useState(false);
+  const profileTransitionName = `person-profile-${person.id}`;
+
   return (
     <Card
       hover
@@ -19,6 +23,8 @@ export function PersonCard({ person, title }: Props) {
           to={PersonIdRoute.to}
           params={{ personId: person.id.toString() }}
           preloadDelay={500}
+          viewTransition
+          onClick={() => setIsTransitionTarget(true)}
           className="flex aspect-2/3 flex-col items-center justify-center p-2 transition-all hover:scale-105"
         >
           {person.profile_path ? (
@@ -26,6 +32,7 @@ export function PersonCard({ person, title }: Props) {
               className="size-24 rounded-full border object-cover"
               src={getTmdbImage('profile', person.profile_path, 'w185')}
               alt={`profile picture of ${person.name}`}
+              style={{ viewTransitionName: isTransitionTarget ? profileTransitionName : 'none' }}
             />
           ) : (
             <div className="grid size-24 place-items-center rounded-full border bg-muted">
