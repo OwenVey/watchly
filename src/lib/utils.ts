@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { z } from '@/lib/valibot-zod';
+import * as v from "valibot";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -98,5 +98,5 @@ export function formatCurrency(
 
 export function zodObjectKeys<T extends Record<string, unknown>>(obj: T) {
   const keys = Object.keys(obj) as Extract<keyof T, string>[];
-  return z.enum(keys as [Extract<keyof T, string>, ...Extract<keyof T, string>[]]);
+  return v.picklist(keys as [Extract<keyof T, string>, ...Extract<keyof T, string>[]]);
 }

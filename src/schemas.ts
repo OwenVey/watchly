@@ -1,96 +1,92 @@
-import { z } from '@/lib/valibot-zod';
+import * as v from 'valibot';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { zodObjectKeys } from '@/lib/utils';
 
-function paginated<T extends z.ZodTypeAny>(resultSchema: T) {
-  return z.object({
-    page: z.number(),
-    total_pages: z.number(),
-    total_results: z.number(),
-    results: z.array(resultSchema),
+function paginated<T extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>>(resultSchema: T) {
+  return v.object({
+    page: v.number(),
+    total_pages: v.number(),
+    total_results: v.number(),
+    results: v.array(resultSchema),
   });
 }
 
-export const OptionsSchema = z.array(z.object({ value: z.string(), label: z.string() }));
+export const OptionsSchema = v.array(v.object({ value: v.string(), label: v.string() }));
 
-const StringToDateSchema = z
-  .string()
-  .nullable()
-  .optional()
-  .transform((val) => {
+const StringToDateSchema = v.pipe(v.optional(v.nullable(v.string())), v.transform((val) => {
     if (val === '' || val == null) return undefined;
     return new Date(val);
-  });
+  }));
 
-const VoteAverageSchema = z
-  .number()
-  .optional()
-  .transform((num) => (num ? `${Math.round(num * 10)}%` : undefined));
+const VoteAverageSchema = v.pipe(
+  v.optional(v.number()),
+  v.transform((num) => (num ? `${Math.round(num * 10)}%` : undefined))
+);
 
-export const PersonSchema = z.object({
-  adult: z.boolean(),
-  gender: z.number(),
-  id: z.number(),
-  known_for_department: z.string().nullable().optional(),
-  name: z.string(),
-  original_name: z.string(),
-  popularity: z.number(),
-  profile_path: z.string().nullable(),
+export const PersonSchema = v.object({
+  adult: v.boolean(),
+  gender: v.number(),
+  id: v.number(),
+  known_for_department: v.optional(v.nullable(v.string())),
+  name: v.string(),
+  original_name: v.string(),
+  popularity: v.number(),
+  profile_path: v.nullable(v.string()),
 });
 
-export const CreditsOutputSchema = z.object({
-  cast: z.array(
-    PersonSchema.extend({
-      cast_id: z.number().optional(),
-      credit_id: z.string(),
-      character: z.string(),
-      order: z.number(),
-    }),
-  ),
-  crew: z.array(
-    PersonSchema.extend({
-      credit_id: z.string(),
-      department: z.string(),
-      job: z.string(),
-    }),
-  ),
+export const CreditsOutputSchema = v.object({
+  cast: v.array(v.object({
+    .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+    PersonSchema.entries,
+
+    cast_id: v.optional(v.number()),
+    credit_id: v.string(),
+    character: v.string(),
+    order: v.number()
+  })),
+  crew: v.array(v.object({
+    .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+    PersonSchema.entries,
+
+    credit_id: v.string(),
+    department: v.string(),
+    job: v.string()
+  })),
 });
 
-export const MovieSchema = z.object({
-  adult: z.boolean(),
-  backdrop_path: z.string().nullable(),
-  genre_ids: z.array(z.number()).default([]),
-  id: z.number(),
+export const MovieSchema = v.object({
+  adult: v.boolean(),
+  backdrop_path: v.nullable(v.string()),
+  genre_ids: v.optional(v.array(v.number()), []),
+  id: v.number(),
   original_language: zodObjectKeys(LANGUAGES_MAP),
-  original_title: z.string(),
-  overview: z.string(),
-  popularity: z.number().optional().default(0),
-  poster_path: z.string().nullable(),
+  original_title: v.string(),
+  overview: v.string(),
+  popularity: v.optional(v.optional(v.number()), 0),
+  poster_path: v.nullable(v.string()),
   release_date: StringToDateSchema,
-  title: z.string(),
-  video: z.boolean().optional().default(false),
+  title: v.string(),
+  video: v.optional(v.optional(v.boolean()), false),
   vote_average: VoteAverageSchema,
-  vote_count: z.number().optional(),
+  vote_count: v.optional(v.number()),
 });
 
-export const DiscoverMoviesQuerySchema = z
-  .object({
-    certification: z.string().optional(),
-    'certification.gte': z.string().optional(),
-    'certification.lte': z.string().optional(),
-    certification_country: z.string().optional(),
-    include_adult: z.boolean().optional(),
-    include_video: z.boolean().optional(),
-    language: z.string().optional(),
-    page: z.number().int().min(1).optional(),
-    'primary_release_date.gte': z.string().optional(), // Should be in YYYY-MM-DD format
-    'primary_release_date.lte': z.string().optional(), // Should be in YYYY-MM-DD format
-    primary_release_year: z.number().int().optional(),
-    region: z.string().optional(),
-    'release_date.gte': z.string().optional(), // Should be in YYYY-MM-DD format
-    'release_date.lte': z.string().optional(), // Should be in YYYY-MM-DD format
-    sort_by: z
-      .enum([
+export const DiscoverMoviesQuerySchema = v.optional(v.object({
+    certification: v.optional(v.string()),
+    'certification.gte': v.optional(v.string()),
+    'certification.lte': v.optional(v.string()),
+    certification_country: v.optional(v.string()),
+    include_adult: v.optional(v.boolean()),
+    include_video: v.optional(v.boolean()),
+    language: v.optional(v.string()),
+    page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
+    'primary_release_date.gte': v.optional(v.string()), // Should be in YYYY-MM-DD format
+    'primary_release_date.lte': v.optional(v.string()), // Should be in YYYY-MM-DD format
+    primary_release_year: v.optional(v.pipe(v.number(), v.integer())),
+    region: v.optional(v.string()),
+    'release_date.gte': v.optional(v.string()), // Should be in YYYY-MM-DD format
+    'release_date.lte': v.optional(v.string()), // Should be in YYYY-MM-DD format
+    sort_by: v.optional(v.picklist([
         'popularity.asc',
         'popularity.desc',
         'release_date.asc',
@@ -107,45 +103,41 @@ export const DiscoverMoviesQuerySchema = z
         'vote_average.desc',
         'vote_count.asc',
         'vote_count.desc',
-      ])
-      .optional(),
-    'vote_average.gte': z.number().optional(),
-    'vote_average.lte': z.number().optional(),
-    'vote_count.gte': z.number().int().optional(),
-    'vote_count.lte': z.number().int().optional(),
-    watch_region: z.string().optional(),
-    with_cast: z.string().optional(),
-    with_companies: z.string().optional(),
-    with_crew: z.string().optional(),
-    with_genres: z.string().optional(),
-    with_keywords: z.string().optional(),
-    with_original_language: z.string().optional(),
-    with_people: z.string().optional(),
-    with_release_type: z.union([z.string(), z.number()]).optional(),
-    'with_runtime.gte': z.number().int().optional(),
-    'with_runtime.lte': z.number().int().optional(),
-    with_watch_monetization_types: z.enum(['flatrate', 'free', 'ads', 'rent', 'buy']).optional(),
-    with_watch_providers: z.string().optional(),
-    without_genres: z.string().optional(),
-    without_keywords: z.string().optional(),
-    year: z.number().int().optional(),
-  })
-  .optional();
+      ])),
+    'vote_average.gte': v.optional(v.number()),
+    'vote_average.lte': v.optional(v.number()),
+    'vote_count.gte': v.optional(v.pipe(v.number(), v.integer())),
+    'vote_count.lte': v.optional(v.pipe(v.number(), v.integer())),
+    watch_region: v.optional(v.string()),
+    with_cast: v.optional(v.string()),
+    with_companies: v.optional(v.string()),
+    with_crew: v.optional(v.string()),
+    with_genres: v.optional(v.string()),
+    with_keywords: v.optional(v.string()),
+    with_original_language: v.optional(v.string()),
+    with_people: v.optional(v.string()),
+    with_release_type: v.optional(v.union([v.string(), v.number()])),
+    'with_runtime.gte': v.optional(v.pipe(v.number(), v.integer())),
+    'with_runtime.lte': v.optional(v.pipe(v.number(), v.integer())),
+    with_watch_monetization_types: v.optional(v.picklist(['flatrate', 'free', 'ads', 'rent', 'buy'])),
+    with_watch_providers: v.optional(v.string()),
+    without_genres: v.optional(v.string()),
+    without_keywords: v.optional(v.string()),
+    year: v.optional(v.pipe(v.number(), v.integer())),
+  }));
 
-export const DiscoverSeriesQuerySchema = z
-  .object({
-    'air_date.gte': z.string().optional(),
-    'air_date.lte': z.string().optional(),
-    first_air_date_year: z.number().optional(),
-    'first_air_date.gte': z.string().optional(),
-    'first_air_date.lte': z.string().optional(),
-    include_adult: z.boolean().optional(),
-    include_null_first_air_dates: z.boolean().optional(),
-    language: z.string().optional(),
-    page: z.number().int().min(1).optional(),
-    screened_theatrically: z.boolean().optional(),
-    sort_by: z
-      .enum([
+export const DiscoverSeriesQuerySchema = v.optional(v.object({
+    'air_date.gte': v.optional(v.string()),
+    'air_date.lte': v.optional(v.string()),
+    first_air_date_year: v.optional(v.number()),
+    'first_air_date.gte': v.optional(v.string()),
+    'first_air_date.lte': v.optional(v.string()),
+    include_adult: v.optional(v.boolean()),
+    include_null_first_air_dates: v.optional(v.boolean()),
+    language: v.optional(v.string()),
+    page: v.optional(v.pipe(v.number(), v.integer(), v.minValue(1))),
+    screened_theatrically: v.optional(v.boolean()),
+    sort_by: v.optional(v.picklist([
         'first_air_date.asc',
         'first_air_date.desc',
         'name.asc',
@@ -158,473 +150,467 @@ export const DiscoverSeriesQuerySchema = z
         'vote_average.desc',
         'vote_count.asc',
         'vote_count.desc',
-      ])
-      .optional(),
-    timezone: z.string().optional(),
-    'vote_average.gte': z.number().optional(),
-    'vote_average.lte': z.number().optional(),
-    'vote_count.gte': z.number().int().optional(),
-    'vote_count.lte': z.number().int().optional(),
-    watch_region: z.string().optional(),
-    with_companies: z.string().optional(),
-    with_genres: z.string().optional(),
-    with_keywords: z.string().optional(),
-    with_networks: z.string().optional(),
-    with_origin_country: z.string().optional(),
-    with_original_language: z.string().optional(),
-    'with_runtime.gte': z.number().int().optional(),
-    'with_runtime.lte': z.number().int().optional(),
-    with_status: z.string().optional(),
-    with_watch_monetization_types: z.string().optional(),
-    with_watch_providers: z.string().optional(),
-    without_companies: z.string().optional(),
-    without_genres: z.string().optional(),
-    without_keywords: z.string().optional(),
-    without_watch_providers: z.string().optional(),
-    with_type: z.string().optional(),
-  })
-  .optional();
+      ])),
+    timezone: v.optional(v.string()),
+    'vote_average.gte': v.optional(v.number()),
+    'vote_average.lte': v.optional(v.number()),
+    'vote_count.gte': v.optional(v.pipe(v.number(), v.integer())),
+    'vote_count.lte': v.optional(v.pipe(v.number(), v.integer())),
+    watch_region: v.optional(v.string()),
+    with_companies: v.optional(v.string()),
+    with_genres: v.optional(v.string()),
+    with_keywords: v.optional(v.string()),
+    with_networks: v.optional(v.string()),
+    with_origin_country: v.optional(v.string()),
+    with_original_language: v.optional(v.string()),
+    'with_runtime.gte': v.optional(v.pipe(v.number(), v.integer())),
+    'with_runtime.lte': v.optional(v.pipe(v.number(), v.integer())),
+    with_status: v.optional(v.string()),
+    with_watch_monetization_types: v.optional(v.string()),
+    with_watch_providers: v.optional(v.string()),
+    without_companies: v.optional(v.string()),
+    without_genres: v.optional(v.string()),
+    without_keywords: v.optional(v.string()),
+    without_watch_providers: v.optional(v.string()),
+    with_type: v.optional(v.string()),
+  }));
 
 export const DiscoverMoviesOutputSchema = paginated(MovieSchema);
 
 export const ReviewsOutputSchema = paginated(
-  z.object({
-    author: z.string(),
-    author_details: z.object({
-      name: z.string(),
-      username: z.string(),
-      avatar_path: z.string().nullable(),
-      rating: z.number().nullable(),
+  v.object({
+    author: v.string(),
+    author_details: v.object({
+      name: v.string(),
+      username: v.string(),
+      avatar_path: v.nullable(v.string()),
+      rating: v.nullable(v.number()),
     }),
-    content: z.string(),
-    created_at: z.string(), // ISO date string
-    id: z.string(),
-    updated_at: z.string(), // ISO date string
-    url: z.string().url(),
+    content: v.string(),
+    created_at: v.string(), // ISO date string
+    id: v.string(),
+    updated_at: v.string(), // ISO date string
+    url: v.pipe(v.string(), v.url()),
   }),
 );
 
 export const SearchKeywordOutputSchema = paginated(
-  z.object({
-    id: z.number(),
-    name: z.string(),
+  v.object({
+    id: v.number(),
+    name: v.string(),
   }),
 );
 
 export const SearchCompanyOutputSchema = paginated(
-  z.object({
-    id: z.number(),
-    logo_path: z.string().nullable(),
-    name: z.string(),
-    origin_country: z.string(),
+  v.object({
+    id: v.number(),
+    logo_path: v.nullable(v.string()),
+    name: v.string(),
+    origin_country: v.string(),
   }),
 );
 
 export const SearchMovieOutputSchema = paginated(
-  MovieSchema.extend({
-    media_type: z.literal('movie').default('movie'),
+  v.object({
+    .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+    MovieSchema.entries,
+
+    media_type: v.optional(v.literal('movie'), 'movie')
   }),
 );
 
-export const MovieReleaseTypeSchema = z.union([
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
+export const MovieReleaseTypeSchema = v.union([
+  v.literal(1),
+  v.literal(2),
+  v.literal(3),
+  v.literal(4),
+  v.literal(5),
+  v.literal(6),
 ]);
 
-export const TvShowTypeSchema = z.union([
-  z.literal(0),
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
-  z.literal(6),
+export const TvShowTypeSchema = v.union([
+  v.literal(0),
+  v.literal(1),
+  v.literal(2),
+  v.literal(3),
+  v.literal(4),
+  v.literal(5),
+  v.literal(6),
 ]);
 
-export const TvShowStatusSchema = z.union([
-  z.literal(0),
-  z.literal(1),
-  z.literal(2),
-  z.literal(3),
-  z.literal(4),
-  z.literal(5),
+export const TvShowStatusSchema = v.union([
+  v.literal(0),
+  v.literal(1),
+  v.literal(2),
+  v.literal(3),
+  v.literal(4),
+  v.literal(5),
 ]);
 
-export const ReleaseDatesOutputSchema = z.object({
-  results: z.array(
-    z.object({
-      iso_3166_1: z.string(),
-      release_dates: z.array(
-        z.object({
-          certification: z.string(),
-          descriptors: z.array(z.string()),
-          iso_639_1: z.string(),
-          note: z.string(),
-          release_date: z.coerce.date(),
-          type: MovieReleaseTypeSchema,
-        }),
-      ),
-    }),
-  ),
+export const ReleaseDatesOutputSchema = v.object({
+  results: v.array(v.object({
+    iso_3166_1: v.string(),
+    release_dates: v.array(v.object({
+      certification: v.string(),
+      descriptors: v.array(v.string()),
+      iso_639_1: v.string(),
+      note: v.string(),
+      release_date: v.pipe(v.unknown(), v.toDate()),
+      type: MovieReleaseTypeSchema,
+    })),
+  })),
 });
 
-export const MovieDetailsOutputSchema = z.object({
-  adult: z.boolean(),
-  backdrop_path: z.string().nullable(),
-  belongs_to_collection: z
-    .object({
-      id: z.number(),
-      name: z.string(),
-      poster_path: z.string().nullable(),
-      backdrop_path: z.string().nullable(),
-    })
-    .nullable(),
-  budget: z.number(),
+export const MovieDetailsOutputSchema = v.object({
+  adult: v.boolean(),
+  backdrop_path: v.nullable(v.string()),
+  belongs_to_collection: v.nullable(v.object({
+      id: v.number(),
+      name: v.string(),
+      poster_path: v.nullable(v.string()),
+      backdrop_path: v.nullable(v.string()),
+    })),
+  budget: v.number(),
   credits: CreditsOutputSchema,
-  genres: z.array(z.object({ id: z.number(), name: z.string() })),
-  homepage: z.string(),
-  id: z.number(),
-  imdb_id: z.string().nullable(),
-  keywords: z.object({
-    keywords: z.array(
-      z.object({
-        id: z.number(),
-        name: z.string(),
-      }),
-    ),
+  genres: v.array(v.object({ id: v.number(), name: v.string() })),
+  homepage: v.string(),
+  id: v.number(),
+  imdb_id: v.nullable(v.string()),
+  keywords: v.object({
+    keywords: v.array(v.object({
+      id: v.number(),
+      name: v.string(),
+    })),
   }),
-  origin_country: z.array(z.string()),
+  origin_country: v.array(v.string()),
   original_language: zodObjectKeys(LANGUAGES_MAP),
-  original_title: z.string(),
-  overview: z.string(),
-  popularity: z.number(),
-  poster_path: z.string().nullable(),
-  production_companies: z.array(
-    z.object({
-      id: z.number(),
-      logo_path: z.string().nullable(),
-      name: z.string(),
-      origin_country: z.string(),
-    }),
-  ),
-  production_countries: z.array(z.object({ iso_3166_1: z.string(), name: z.string() })),
+  original_title: v.string(),
+  overview: v.string(),
+  popularity: v.number(),
+  poster_path: v.nullable(v.string()),
+  production_companies: v.array(v.object({
+    id: v.number(),
+    logo_path: v.nullable(v.string()),
+    name: v.string(),
+    origin_country: v.string(),
+  })),
+  production_countries: v.array(v.object({ iso_3166_1: v.string(), name: v.string() })),
   recommendations: paginated(MovieSchema),
   release_date: StringToDateSchema,
   release_dates: ReleaseDatesOutputSchema,
-  revenue: z.number(),
+  revenue: v.number(),
   reviews: ReviewsOutputSchema,
-  runtime: z.number(),
+  runtime: v.number(),
   similar: paginated(MovieSchema),
-  spoken_languages: z.array(
-    z.object({
-      english_name: z.string(),
-      iso_639_1: z.string(),
-      name: z.string(),
-    }),
-  ),
-  status: z.string(),
-  tagline: z.string(),
-  title: z.string(),
-  video: z.boolean(),
+  spoken_languages: v.array(v.object({
+    english_name: v.string(),
+    iso_639_1: v.string(),
+    name: v.string(),
+  })),
+  status: v.string(),
+  tagline: v.string(),
+  title: v.string(),
+  video: v.boolean(),
   vote_average: VoteAverageSchema,
-  vote_count: z.number(),
+  vote_count: v.number(),
 });
 
-export const SeriesSchema = z.object({
-  adult: z.boolean(),
-  backdrop_path: z.string().nullable(),
-  genre_ids: z.array(z.number()),
-  id: z.number(),
-  origin_country: z.array(z.string()),
-  original_language: z.string(),
-  original_name: z.string(),
-  overview: z.string(),
-  popularity: z.number(),
-  poster_path: z.string().nullable(),
+export const SeriesSchema = v.object({
+  adult: v.boolean(),
+  backdrop_path: v.nullable(v.string()),
+  genre_ids: v.array(v.number()),
+  id: v.number(),
+  origin_country: v.array(v.string()),
+  original_language: v.string(),
+  original_name: v.string(),
+  overview: v.string(),
+  popularity: v.number(),
+  poster_path: v.nullable(v.string()),
   first_air_date: StringToDateSchema,
-  name: z.string(),
+  name: v.string(),
   vote_average: VoteAverageSchema,
-  vote_count: z.number(),
+  vote_count: v.number(),
 });
 
-export const SeriesDetailsOutputSchema = z.object({
-  adult: z.boolean(),
-  backdrop_path: z.string().nullable(),
-  content_ratings: z.object({
-    results: z.array(
-      z.object({
-        iso_3166_1: z.string(),
-        rating: z.string(),
-      }),
-    ),
+export const SeriesDetailsOutputSchema = v.object({
+  adult: v.boolean(),
+  backdrop_path: v.nullable(v.string()),
+  content_ratings: v.object({
+    results: v.array(v.object({
+      iso_3166_1: v.string(),
+      rating: v.string(),
+    })),
   }),
-  created_by: z.array(
-    z.object({
-      id: z.number(),
-      credit_id: z.string(),
-      name: z.string(),
-      original_name: z.string(),
-      gender: z.number(),
-      profile_path: z.string().nullable(),
-    }),
-  ),
+  created_by: v.array(v.object({
+    id: v.number(),
+    credit_id: v.string(),
+    name: v.string(),
+    original_name: v.string(),
+    gender: v.number(),
+    profile_path: v.nullable(v.string()),
+  })),
   credits: CreditsOutputSchema,
-  episode_run_time: z.array(z.number()),
-  external_ids: z.object({
-    imdb_id: z.string().nullable(),
-    freebase_mid: z.string().nullable(),
-    freebase_id: z.string().nullable(),
-    tvdb_id: z.number().nullable(),
-    tvrage_id: z.number().nullable(),
-    wikidata_id: z.string().nullable(),
-    facebook_id: z.string().nullable(),
-    instagram_id: z.string().nullable(),
-    twitter_id: z.string().nullable(),
+  episode_run_time: v.array(v.number()),
+  external_ids: v.object({
+    imdb_id: v.nullable(v.string()),
+    freebase_mid: v.nullable(v.string()),
+    freebase_id: v.nullable(v.string()),
+    tvdb_id: v.nullable(v.number()),
+    tvrage_id: v.nullable(v.number()),
+    wikidata_id: v.nullable(v.string()),
+    facebook_id: v.nullable(v.string()),
+    instagram_id: v.nullable(v.string()),
+    twitter_id: v.nullable(v.string()),
   }),
   first_air_date: StringToDateSchema,
-  genres: z.array(
-    z.object({
-      id: z.number(),
-      name: z.string(),
-    }),
-  ),
-  homepage: z.string(),
-  id: z.number(),
-  in_production: z.boolean(),
-  keywords: z.object({
-    results: z.array(
-      z.object({
-        id: z.number(),
-        name: z.string(),
-      }),
-    ),
+  genres: v.array(v.object({
+    id: v.number(),
+    name: v.string(),
+  })),
+  homepage: v.string(),
+  id: v.number(),
+  in_production: v.boolean(),
+  keywords: v.object({
+    results: v.array(v.object({
+      id: v.number(),
+      name: v.string(),
+    })),
   }),
-  languages: z.array(z.string()),
+  languages: v.array(v.string()),
   last_air_date: StringToDateSchema,
-  last_episode_to_air: z
-    .object({
-      id: z.number(),
-      name: z.string(),
-      overview: z.string(),
+  last_episode_to_air: v.nullable(v.object({
+      id: v.number(),
+      name: v.string(),
+      overview: v.string(),
       vote_average: VoteAverageSchema,
-      vote_count: z.number(),
+      vote_count: v.number(),
       air_date: StringToDateSchema,
-      episode_number: z.number(),
-      episode_type: z.string(),
-      production_code: z.string(),
-      runtime: z.number().nullable(),
-      season_number: z.number(),
-      show_id: z.number().optional(),
-      still_path: z.string().nullable(),
-    })
-    .nullable(),
-  name: z.string(),
-  next_episode_to_air: z
-    .object({
-      id: z.number(),
-      name: z.string(),
-      overview: z.string(),
+      episode_number: v.number(),
+      episode_type: v.string(),
+      production_code: v.string(),
+      runtime: v.nullable(v.number()),
+      season_number: v.number(),
+      show_id: v.optional(v.number()),
+      still_path: v.nullable(v.string()),
+    })),
+  name: v.string(),
+  next_episode_to_air: v.nullable(v.object({
+      id: v.number(),
+      name: v.string(),
+      overview: v.string(),
       vote_average: VoteAverageSchema,
-      vote_count: z.number(),
+      vote_count: v.number(),
       air_date: StringToDateSchema,
-      episode_number: z.number(),
-      episode_type: z.string(),
-      production_code: z.string(),
-      runtime: z.number().nullable(),
-      season_number: z.number(),
-      show_id: z.number().optional(),
-      still_path: z.string().nullable(),
-    })
-    .nullable(),
-  networks: z.array(
-    z.object({
-      id: z.number(),
-      logo_path: z.string().nullable(),
-      name: z.string(),
-      origin_country: z.string(),
-    }),
-  ),
-  number_of_episodes: z.number().nullable(),
-  number_of_seasons: z.number(),
-  origin_country: z.array(z.string()),
+      episode_number: v.number(),
+      episode_type: v.string(),
+      production_code: v.string(),
+      runtime: v.nullable(v.number()),
+      season_number: v.number(),
+      show_id: v.optional(v.number()),
+      still_path: v.nullable(v.string()),
+    })),
+  networks: v.array(v.object({
+    id: v.number(),
+    logo_path: v.nullable(v.string()),
+    name: v.string(),
+    origin_country: v.string(),
+  })),
+  number_of_episodes: v.nullable(v.number()),
+  number_of_seasons: v.number(),
+  origin_country: v.array(v.string()),
   original_language: zodObjectKeys(LANGUAGES_MAP),
-  original_name: z.string(),
-  overview: z.string(),
-  popularity: z.number(),
-  poster_path: z.string().nullable(),
-  production_companies: z.array(
-    z.object({
-      id: z.number(),
-      logo_path: z.string().nullable(),
-      name: z.string(),
-      origin_country: z.string(),
-    }),
-  ),
-  production_countries: z.array(
-    z.object({
-      iso_3166_1: z.string(),
-      name: z.string(),
-    }),
-  ),
+  original_name: v.string(),
+  overview: v.string(),
+  popularity: v.number(),
+  poster_path: v.nullable(v.string()),
+  production_companies: v.array(v.object({
+    id: v.number(),
+    logo_path: v.nullable(v.string()),
+    name: v.string(),
+    origin_country: v.string(),
+  })),
+  production_countries: v.array(v.object({
+    iso_3166_1: v.string(),
+    name: v.string(),
+  })),
   recommendations: paginated(SeriesSchema),
   reviews: ReviewsOutputSchema,
-  seasons: z.array(
-    z.object({
-      air_date: StringToDateSchema,
-      episode_count: z.number(),
-      id: z.number(),
-      name: z.string(),
-      overview: z.string(),
-      poster_path: z.string().nullable(),
-      season_number: z.number(),
-      vote_average: VoteAverageSchema,
-    }),
-  ),
+  seasons: v.array(v.object({
+    air_date: StringToDateSchema,
+    episode_count: v.number(),
+    id: v.number(),
+    name: v.string(),
+    overview: v.string(),
+    poster_path: v.nullable(v.string()),
+    season_number: v.number(),
+    vote_average: VoteAverageSchema,
+  })),
   similar: paginated(SeriesSchema),
-  spoken_languages: z.array(
-    z.object({
-      english_name: z.string(),
-      iso_639_1: z.string(),
-      name: z.string(),
-    }),
-  ),
-  status: z.string(),
-  tagline: z.string(),
-  type: z.string(),
+  spoken_languages: v.array(v.object({
+    english_name: v.string(),
+    iso_639_1: v.string(),
+    name: v.string(),
+  })),
+  status: v.string(),
+  tagline: v.string(),
+  type: v.string(),
   vote_average: VoteAverageSchema,
-  vote_count: z.number(),
+  vote_count: v.number(),
 });
 
-export const SeasonOutputSchema = z.object({
-  _id: z.string(),
-  air_date: z.string().nullable(),
-  episodes: z.array(
-    z.object({
-      air_date: z.string().nullable(),
-      episode_number: z.number(),
-      episode_type: z.string(),
-      id: z.number(),
-      name: z.string(),
-      overview: z.string(),
-      production_code: z.string(),
-      runtime: z.number().nullable(),
-      season_number: z.number(),
-      show_id: z.number(),
-      still_path: z.string().nullable(),
-      vote_average: VoteAverageSchema,
-      vote_count: z.number(),
-      crew: z.array(
-        z.object({
-          job: z.string(),
-          department: z.string(),
-          credit_id: z.string(),
-          adult: z.boolean(),
-          gender: z.number(),
-          id: z.number(),
-          known_for_department: z.string(),
-          name: z.string(),
-          original_name: z.string(),
-          popularity: z.number(),
-          profile_path: z.string().nullable(),
-        }),
-      ),
-      guest_stars: z.array(
-        z.object({
-          character: z.string(),
-          credit_id: z.string(),
-          order: z.number(),
-          adult: z.boolean(),
-          gender: z.number(),
-          id: z.number(),
-          known_for_department: z.string(),
-          name: z.string(),
-          original_name: z.string(),
-          popularity: z.number(),
-          profile_path: z.string().nullable(),
-        }),
-      ),
-    }),
-  ),
-  name: z.string(),
-  overview: z.string(),
-  id: z.number(),
-  poster_path: z.string().nullable(),
-  season_number: z.number(),
-  vote_average: z.number(),
+export const SeasonOutputSchema = v.object({
+  _id: v.string(),
+  air_date: v.nullable(v.string()),
+  episodes: v.array(v.object({
+    air_date: v.nullable(v.string()),
+    episode_number: v.number(),
+    episode_type: v.string(),
+    id: v.number(),
+    name: v.string(),
+    overview: v.string(),
+    production_code: v.string(),
+    runtime: v.nullable(v.number()),
+    season_number: v.number(),
+    show_id: v.number(),
+    still_path: v.nullable(v.string()),
+    vote_average: VoteAverageSchema,
+    vote_count: v.number(),
+    crew: v.array(v.object({
+      job: v.string(),
+      department: v.string(),
+      credit_id: v.string(),
+      adult: v.boolean(),
+      gender: v.number(),
+      id: v.number(),
+      known_for_department: v.string(),
+      name: v.string(),
+      original_name: v.string(),
+      popularity: v.number(),
+      profile_path: v.nullable(v.string()),
+    })),
+    guest_stars: v.array(v.object({
+      character: v.string(),
+      credit_id: v.string(),
+      order: v.number(),
+      adult: v.boolean(),
+      gender: v.number(),
+      id: v.number(),
+      known_for_department: v.string(),
+      name: v.string(),
+      original_name: v.string(),
+      popularity: v.number(),
+      profile_path: v.nullable(v.string()),
+    })),
+  })),
+  name: v.string(),
+  overview: v.string(),
+  id: v.number(),
+  poster_path: v.nullable(v.string()),
+  season_number: v.number(),
+  vote_average: v.number(),
 });
 
-export const ProvidersOutputSchema = z.object({
-  results: z.array(
-    z.object({
-      // display_priorities: z.record(z.number()),
-      display_priority: z.number(),
-      logo_path: z.string().nullable(),
-      provider_name: z.string(),
-      provider_id: z.number(),
-    }),
-  ),
+export const ProvidersOutputSchema = v.object({
+  results: v.array(v.object({
+    // display_priorities: z.record(z.number()),
+    display_priority: v.number(),
+    logo_path: v.nullable(v.string()),
+    provider_name: v.string(),
+    provider_id: v.number(),
+  })),
 });
 
 export const DiscoverSeriesOutputSchema = paginated(SeriesSchema);
 
 export const SearchTvOutputSchema = paginated(
-  SeriesSchema.extend({
-    media_type: z.literal('tv').default('tv'),
+  v.object({
+    .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+    SeriesSchema.entries,
+
+    media_type: v.optional(v.literal('tv'), 'tv')
   }),
 );
 
 export const SearchPersonOutputSchema = paginated(
-  PersonSchema.extend({
-    media_type: z.literal('person').default('person'),
-    known_for: z.array(
-      z.union([
-        MovieSchema.extend({ media_type: z.literal('movie') }),
-        SeriesSchema.extend({ media_type: z.literal('tv') }),
-      ]),
-    ),
+  v.object({
+    .../*@valibot-migrate we can't detect if PersonSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+    PersonSchema.entries,
+
+    media_type: v.optional(v.literal('person'), 'person'),
+
+    known_for: v.array(v.union([
+      v.object({
+        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        MovieSchema.entries,
+
+        media_type: v.literal('movie')
+      }),
+      v.object({
+        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        SeriesSchema.entries,
+
+        media_type: v.literal('tv')
+      }),
+    ]))
   }),
 );
 
-export const PersonDetailsOutputSchema = z.object({
-  adult: z.boolean(),
-  also_known_as: z.array(z.string()),
-  biography: z.string(),
-  birthday: z.coerce.date(),
-  deathday: z.string().nullable(),
-  gender: z.number(),
-  homepage: z.string().nullable(),
-  id: z.number(),
-  imdb_id: z.string().nullable(),
-  known_for_department: z.string(),
-  name: z.string(),
-  place_of_birth: z.string().nullable(),
-  popularity: z.number(),
-  profile_path: z.string().nullable(),
-  combined_credits: z.object({
-    cast: z.array(
-      z.union([
-        MovieSchema.extend({ media_type: z.literal('movie'), character: z.string() }),
-        SeriesSchema.extend({ media_type: z.literal('tv'), character: z.string() }),
-      ]),
-    ),
-    crew: z.array(
-      z.union([
-        MovieSchema.extend({ media_type: z.literal('movie'), job: z.string() }),
-        SeriesSchema.extend({ media_type: z.literal('tv'), job: z.string() }),
-      ]),
-    ),
+export const PersonDetailsOutputSchema = v.object({
+  adult: v.boolean(),
+  also_known_as: v.array(v.string()),
+  biography: v.string(),
+  birthday: v.pipe(v.unknown(), v.toDate()),
+  deathday: v.nullable(v.string()),
+  gender: v.number(),
+  homepage: v.nullable(v.string()),
+  id: v.number(),
+  imdb_id: v.nullable(v.string()),
+  known_for_department: v.string(),
+  name: v.string(),
+  place_of_birth: v.nullable(v.string()),
+  popularity: v.number(),
+  profile_path: v.nullable(v.string()),
+  combined_credits: v.object({
+    cast: v.array(v.union([
+      v.object({
+        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        MovieSchema.entries,
+
+        media_type: v.literal('movie'),
+        character: v.string()
+      }),
+      v.object({
+        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        SeriesSchema.entries,
+
+        media_type: v.literal('tv'),
+        character: v.string()
+      }),
+    ])),
+    crew: v.array(v.union([
+      v.object({
+        .../*@valibot-migrate we can't detect if MovieSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        MovieSchema.entries,
+
+        media_type: v.literal('movie'),
+        job: v.string()
+      }),
+      v.object({
+        .../*@valibot-migrate we can't detect if SeriesSchema has a `pipe` operator, if it does you might need to migrate this by hand otherwise it will loose it's pipeline*/
+        SeriesSchema.entries,
+
+        media_type: v.literal('tv'),
+        job: v.string()
+      }),
+    ])),
   }),
 });
 
-export const CollectionOutputSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  overview: z.string(),
-  poster_path: z.string(),
-  backdrop_path: z.string(),
-  parts: z.array(MovieSchema),
+export const CollectionOutputSchema = v.object({
+  id: v.number(),
+  name: v.string(),
+  overview: v.string(),
+  poster_path: v.string(),
+  backdrop_path: v.string(),
+  parts: v.array(MovieSchema),
 });

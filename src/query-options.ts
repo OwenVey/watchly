@@ -208,7 +208,9 @@ export const searchQueryOptions = (query: string) =>
       ]);
 
       return {
-        results: [...movies.results, ...shows.results, ...people.results].sort((a, b) => b.popularity - a.popularity),
+        results: [...movies.results, ...shows.results, ...people.results].sort(
+          (a, b) => (b.popularity ?? 0) - (a.popularity ?? 0),
+        ),
         page,
         total_pages: Math.max(movies.total_pages, shows.total_pages, people.total_pages),
         total_results: Math.max(movies.total_results, shows.total_results, people.total_results),
