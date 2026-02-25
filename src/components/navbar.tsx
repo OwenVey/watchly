@@ -1,8 +1,6 @@
 import { Accordion } from '@base-ui/react/accordion';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { useDebounce } from '@uidotdev/usehooks';
 import { FilmIcon, MenuIcon, SearchIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -30,17 +28,6 @@ const LINKS = [
 export function Navbar() {
   const navigate = useNavigate();
   const { query } = useSearch({ strict: false });
-
-  const [search, setSearch] = useState(query ?? '');
-  const debouncedSearch = useDebounce(search, 500);
-
-  useEffect(() => {
-    if (debouncedSearch) {
-      void navigate({ to: '/search', search: { query: debouncedSearch } });
-    } else {
-      void navigate({ to: '.' });
-    }
-  }, [debouncedSearch, navigate]);
 
   return (
     <Accordion.Root className="group sticky top-0 z-10 p-4 pb-0">
@@ -79,8 +66,8 @@ export function Navbar() {
             <div className="flex flex-1 justify-center gap-2 md:justify-end">
               <InputGroup className="mr-6 ml-8 max-w-96 md:mr-0 md:ml-2 md:max-w-52">
                 <InputGroupInput
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={query}
+                  onChange={(e) => navigate({ to: '/search', search: { query: e.target.value }, replace: true })}
                   id="inline-start-input"
                   placeholder="Search..."
                 />
