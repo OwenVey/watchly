@@ -1,9 +1,9 @@
 import { ChevronsDownIcon } from 'lucide-react';
-import React from 'react';
+import { type ComponentProps } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface ShowMoreButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ShowMoreButtonProps extends ComponentProps<'button'> {
   showAll: boolean;
 }
 
