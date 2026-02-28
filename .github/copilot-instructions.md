@@ -85,7 +85,6 @@ bun run preview      # Preview production build locally
   - `@tanstack/react-query` for client-side caching
   - `lucide-react` for icons
   - `embla-carousel-react` for carousels
-  - `cmdk` for command/search UI
 - **React Compiler**: Enabled in Vite config for automatic memoization
 
 ## Security
