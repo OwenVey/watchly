@@ -5,7 +5,6 @@ import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
 import { useState } from 'react';
-import type { Season } from '@/types';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
@@ -22,6 +21,7 @@ import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
 import { seriesIdQueryOptions } from '@/query-options';
+import type { Season } from '@/types';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
   loader: async ({ context, params }) => {

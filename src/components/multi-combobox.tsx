@@ -3,7 +3,6 @@ import { type ComboboxRootProps } from '@base-ui/react';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useDebounce } from '@uidotdev/usehooks';
 import * as React from 'react';
-import type { Option } from '@/types';
 import {
   Combobox,
   ComboboxChip,
@@ -16,6 +15,7 @@ import {
   ComboboxValue,
   useComboboxAnchor,
 } from '@/components/ui/combobox';
+import type { Option } from '@/types';
 
 export default function MultiCombobox({
   id,
