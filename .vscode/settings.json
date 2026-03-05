@@ -13,9 +13,9 @@
   "editor.formatOnSave": true,
 
   // typescript
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.experimental.useTsgo": true,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.experimental.useTsgo": true,
 
   "editor.wordWrap": "on",
   "tailwindCSS.classFunctions": ["cva", "cn"],
