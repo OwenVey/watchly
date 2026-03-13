@@ -1,7 +1,8 @@
+import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
-import { devtools } from '@tanstack/devtools-vite';
+import { devtools as tanstackDevtools } from '@tanstack/devtools-vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import { analyzer } from 'vite-bundle-analyzer';
 
@@ -15,7 +16,7 @@ export default defineConfig(() => {
       tsconfigPaths: true,
     },
     plugins: [
-      devtools({
+      tanstackDevtools({
         consolePiping: {
           enabled: false,
         },
@@ -23,10 +24,9 @@ export default defineConfig(() => {
       tanstackRouter({
         target: 'react',
       }),
-      react({
-        babel: {
-          plugins: ['babel-plugin-react-compiler'],
-        },
+      react(),
+      babel({
+        presets: [reactCompilerPreset()],
       }),
       tailwindcss(),
       ...(shouldAnalyze ? [analyzer()] : []),
