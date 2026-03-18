@@ -46,6 +46,7 @@ export default function MultiCombobox({
   const shouldSearch = Boolean(onSearch) && normalizedSearch.length >= searchMinLength;
 
   const { data: asyncItems, isFetching } = useQuery({
+    // oxlint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ['multi-combobox', id, normalizedSearch],
     queryFn: shouldSearch && onSearch ? () => onSearch(normalizedSearch) : skipToken,
     enabled: shouldSearch,

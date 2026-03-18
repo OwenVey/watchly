@@ -8,7 +8,7 @@
   // formatting
   "eslint.enable": false,
   "prettier.enable": false,
-  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.fmt.configPath": "oxfmt.config.ts",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
 
