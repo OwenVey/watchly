@@ -8,5 +8,5 @@ pre-commit:
       run: bun lint:fix {staged_files}
       stage_fixed: true
     - name: format
-      run: bun format {staged_files}
+      run: bun format {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true
