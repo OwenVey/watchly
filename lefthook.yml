@@ -5,7 +5,7 @@ pre-commit:
   parallel: true
   jobs:
     - name: lint
-      run: bun lint:fix {staged_files}
+      run: bun lint:fix {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true
     - name: format
       run: bun format {staged_files} --no-error-on-unmatched-pattern
