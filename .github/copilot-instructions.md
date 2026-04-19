@@ -1,95 +1,106 @@
 # Watchly - AI Agent Guidelines
 
-A React 19 + TypeScript application for discovering movies and TV series using the TMDB API.
+A React 19 + TypeScript app for exploring movies, TV series, people, and collections with TMDB data plus supplemental OMDb ratings.
 
 ## Code Style
 
-- **Formatting**: Use `oxfmt` for formatting, `oxlint` for linting—run `bun run lint:fix` before committing
-- **Styling**: Tailwind CSS v4 with utility classes; use `clsx`/`cn()` for conditional styling
-- **Type Safety**: Strict TypeScript with Valibot schema validation for all API responses
-- **Component Patterns**:
-  - UI components in `src/components/ui/` (reusable, presentational)
-  - Feature components in `src/components/` (domain-specific, movie-card.tsx example)
-  - Example: [movie-card.tsx](src/components/movie-card.tsx) uses Link with preloadDelay, styled with TailwindCSS and cn() utility
+- **Formatting**: Use `oxfmt`.
+- **Linting**: Use `oxlint`; prefer `bun run lint:fix` when safe.
+- **Type Safety**: Keep TypeScript strict and validate external payloads with Valibot.
+- **Styling**: Tailwind CSS v4 is the styling system; use `clsx` and `cn()` for conditional classes.
+- **Component split**:
+  - Reusable primitives belong in `src/components/ui/`.
+  - Domain components belong in `src/components/`.
+- **Component style**: Destructure props, avoid `React.FC`, and preserve the existing utility-class style.
 
 ## Architecture
 
 ### Routing
 
-- File-based routing via TanStack React Router with autorgenerated routeTree.gen.ts
-- Routes in `src/routes/` organized by feature: `(movies)/`, `(series)/`, `(people)/`
-- Route params passed through TanStack Router Link component (e.g., `movieId` in URL)
-- Example: [routes structure](src/routes/) shows layout routes with \_sidebar.tsx, data routes with $movieId.tsx pattern
+- File-based TanStack React Router with generated `src/routeTree.gen.ts`.
+- The root route redirects `/` to `/movies`.
+- Route groups are organized under `src/routes/(movies)`, `src/routes/(series)`, `src/routes/(people)`, plus `src/routes/collections` and shared routes like `src/routes/search.tsx`.
+- Sidebar-driven discovery routes use layout files such as `_sidebar.tsx`.
+- Links generally preload on intent; cards use `preloadDelay={500}`.
 
 ### Data Fetching
 
-- **API Client**: [lib/api.ts](src/lib/api.ts) uses `@better-fetch/fetch` with Valibot schema validation
-- **Query Management**: [query-options.ts](src/query-options.ts) centralizes all TanStack React Query configurations
-- **Pattern**: Use `infiniteQueryOptions()` for pagination, `queryOptions()` for single fetches
-- **Caching**: Default `staleTime: Infinity` (treat data as always fresh unless explicitly invalidated)
-- **Prefetching**: Links use `preloadDelay={500}` to load data on intent
+- `src/lib/api.ts` defines both `tmdbApi` and `omdbApi` with `@better-fetch/fetch` schemas.
+- `src/query-options.ts` centralizes TanStack React Query definitions.
+- Use `infiniteQueryOptions()` for discovery, people lists, and search.
+- Use `queryOptions()` for detail pages.
+- Existing discovery queries often fetch three pages at a time and deduplicate by item ID before rendering.
+- Default caching treats data as always fresh with `staleTime: Number.POSITIVE_INFINITY`.
 
-### Styling & Theme
+### App Shell and Theme
 
-- Tailwind CSS v4 with @tailwindcss/vite plugin (no PostCSS needed)
-- Theme provider ([theme-provider.tsx](src/components/theme-provider.tsx)) manages system/light/dark modes
-- Shadcn/Base UI components in `src/components/ui/`
+- `src/main.tsx` wires the router, query client, SSR query integration, tooltip provider, and theme provider.
+- Theme state lives in `src/components/theme-provider.tsx`.
+- Persisted theme storage key is `watchly-ui-theme`.
+- The navbar owns primary navigation, global search, and the theme toggle.
+- The root route mounts TanStack Query and Router devtools panels.
 
-## Build and Test
+## Build and Tooling
 
 ```bash
-bun install           # Install dependencies
-bun run dev          # Start Vite dev server (http://localhost:5173)
-bun run build        # TypeScript + Vite build
-bun run lint         # Run oxlint
-bun run lint:fix     # Fix linting issues
-bun run format       # Format with oxfmt
-bun run preview      # Preview production build locally
+bun install
+bun run dev
+bun run build
+bun run build:analyze
+bun run lint
+bun run lint:fix
+bun run format
+bun run knip
+bun run preview
 ```
 
-- **Hot Module Replacement**: Vite + React Router enabled by default
-- **Devtools**: React Query and Router devtools included in development
+- `bun run build` runs `tsgo --build` before `vite build`.
+- The project expects Bun `1.3.12` and Node `>=24`.
+- Vite uses the TanStack Router plugin, TanStack Devtools plugin, Tailwind plugin, and Babel with the React Compiler preset.
+- Bundle analysis is enabled with `ANALYZE=true` outside Vercel.
 
-## Project Conventions
+## Repo Conventions
 
 ### API Integration
 
-- TMDB API token in [lib/api.ts](src/lib/api.ts) (Bearer auth)
-- All endpoints use Valibot schemas: see [schemas.ts](src/schemas.ts)
-- Query parameters conditionally spread to avoid sending defaults
-- Fetch patterns: single calls, paginated infinite queries, and batch fetches (e.g., 3 pages ahead)
-
-### Component Structure
-
-- Destructure props with type, avoid `React.FC`
-- Use `getTmdbImage()` utility for poster/backdrop images
-- Link components include `preloadDelay={500}` for route preloading
-- Conditional rendering with `cn()` utility for className merging
-
-### Data Types
-
-- Defined in [src/types.ts](src/types.ts)
-- Movie/Series have consistent structure (id, title, poster_path, etc.)
-- Schemas validate and transform API responses (see `DiscoverMoviesOutputSchema`)
+- TMDB is the primary source for discovery, details, providers, people, and collections.
+- OMDb is used to enrich detail pages with IMDb and Rotten Tomatoes ratings when an IMDb ID exists.
+- Keep API schemas in `src/schemas.ts` aligned with real responses.
+- Preserve the existing conditional query spreading pattern to avoid sending default filters.
 
 ### Query Keys
 
-- Pattern: `['resource-type', params]` for keying (e.g., `['movies', params]`)
-- Used by React Query for caching and invalidation
+- Follow the existing key shape: `['resource', params]` for collection-like data and `['resource', id]` for detail queries.
+- Keep related fetch logic in `src/query-options.ts` instead of scattering raw fetches through components.
+
+### Components
+
+- Use `getTmdbImage()` from `src/lib/utils.ts` for TMDB image URLs.
+- Preserve the current card and link behavior, including route preloading.
+- Prefer existing UI primitives over ad hoc controls when equivalent components already exist.
+
+### Types and Validation
+
+- Shared types live in `src/types.ts`.
+- Schemas in `src/schemas.ts` are the source of truth for external API payloads.
+- When OMDb can return an error payload, handle that explicitly instead of assuming ratings exist.
 
 ## Integration Points
 
-- **TMDB API**: `https://api.themoviedb.org/3` with read-only endpoints
-- **External Libraries**:
-  - `@tanstack/react-router` for routing and data fetching
-  - `@tanstack/react-query` for client-side caching
-  - `lucide-react` for icons
-  - `embla-carousel-react` for carousels
-- **React Compiler**: Enabled in Vite config for automatic memoization
+- **TMDB API**: `https://api.themoviedb.org/3`
+- **OMDb API**: `https://www.omdbapi.com`
+- **Core libraries**:
+  - `@tanstack/react-router`
+  - `@tanstack/react-query`
+  - `@better-fetch/fetch`
+  - `valibot`
+  - `lucide-react`
+  - `@base-ui/react`
+  - `embla-carousel-react`
 
 ## Security
 
-- TMDB API token embedded in [lib/api.ts](src/lib/api.ts)—read-only access, safe for client
-- No user auth system currently; data is public TMDB information
-- Input validation via Valibot schemas on API responses
-- Links use TanStack Router for client-side navigation (no external navigation risks)
+- TMDB and OMDb credentials are embedded in `src/lib/api.ts` for this client-only app.
+- Data is read-only public media metadata.
+- There is no authentication, authorization, or user-generated content flow.
+- Continue validating external responses with Valibot before relying on fields in UI code.

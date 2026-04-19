@@ -27,7 +27,8 @@ export const Route = createFileRoute('/(series)/series_/$seriesId')({
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
     const imdbId = series.external_ids.imdb_id;
-    const omdb = imdbId ? await omdbApi('/', { query: { i: imdbId } }) : null;
+    const omdbResponse = imdbId ? await omdbApi('/', { query: { i: imdbId } }) : null;
+    const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
   component: RouteComponent,

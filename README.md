@@ -1,70 +1,58 @@
 # Watchly
 
-Watchly is a React 19 + TypeScript web app for discovering movies, TV series, and people using TMDB data, with extra ratings from OMDb.
+Watchly is a React 19 + TypeScript app for exploring movies, TV series, people, and collections using TMDB data, with supplemental ratings pulled from OMDb.
 
-It includes advanced filter-based discovery, unified search across media types, detailed content pages, and infinite scrolling lists.
+The app centers on filter-heavy discovery flows, infinite lists, detailed title and person pages, and fast client-side navigation powered by TanStack Router and React Query.
 
 ## Features
 
-- **Movie discovery** with filter sidebar:
-  - release date range
-  - rating range
-  - vote count range
-  - runtime range
-  - sort field + direction
-  - genres, release types, keywords, studios
-  - original language, watch providers, adult toggle
-- **Series discovery** with filter sidebar:
-  - first air date range
-  - rating and vote count ranges
-  - sort field + direction
-  - genres, status, TV show types, keywords, studios, networks
-  - original language, watch providers, adult toggle
-- **Global search** across movies, TV shows, and people with merged, popularity-sorted results
-- **People browser** with infinite scrolling popular people list
-- **Movie details** with:
-  - cast/crew tabs
-  - recommendations/similar tabs
-  - release dates, runtime, genres, keywords, studios
-  - ratings from TMDB + IMDb + Rotten Tomatoes (via OMDb)
-  - collection linking when available
-- **Series details** with:
-  - cast/crew tabs
-  - recommendations/similar tabs
-  - seasons accordion with lazy-loaded episode details
-  - ratings from TMDB + IMDb + Rotten Tomatoes (via OMDb)
-- **Person details** including biography, appearances, and crew credits
-- **Collection pages** showing collection metadata and sorted movie parts
-- **Theming**: light/dark/system mode via persisted theme preference
-- **Responsive UI** with desktop sidebars and mobile filter sheets/navigation
+- Movie discovery with a dedicated sidebar for release date, rating, vote count, runtime, sort order, genres, release types, keywords, studios, original language, watch providers, and adult-content filtering.
+- Series discovery with a dedicated sidebar for first air date, rating, vote count, sort order, genres, status, TV show types, keywords, studios, networks, original language, watch providers, and adult-content filtering.
+- Global search across movies, TV series, and people, with merged results sorted by popularity.
+- Popular people browser with infinite scrolling.
+- Movie detail pages with cast, crew, recommendations, similar titles, release dates, keywords, studios, runtime, and collection links when present.
+- Series detail pages with cast, crew, recommendations, similar titles, content ratings, external IDs, and season/episode exploration.
+- Person pages with biography, deduplicated cast appearances, and crew credits.
+- Collection pages with collection metadata and sorted movie entries.
+- Light, dark, and system theme support persisted in local storage.
+- Responsive navigation with desktop tabs and a mobile accordion menu.
 
 ## Tech Stack
 
-- **Framework**: React 19
-- **Language**: TypeScript (strict)
-- **Build tool**: Vite 7
-- **Routing**: TanStack React Router (file-based)
-- **Data fetching/caching**: TanStack React Query
-- **API client + validation**: `@better-fetch/fetch` + Valibot schemas
-- **Styling**: Tailwind CSS v4 + utility components in `src/components/ui`
-- **Icons**: `lucide-react`
+- React 19
+- TypeScript in strict mode
+- Vite 8 for dev and bundling
+- `tsgo` for type-checking during builds
+- TanStack React Router with generated route tree
+- TanStack React Query for data loading and caching
+- `@better-fetch/fetch` with Valibot schemas for API validation
+- Tailwind CSS v4 with Base UI-based primitives in `src/components/ui`
+- `lucide-react` icons
 
-## Project Architecture
+## Architecture
 
-- **Routes** are defined under `src/routes` and generated into `src/routeTree.gen.ts`.
-- **Query options** are centralized in `src/query-options.ts`.
-- **API clients** live in `src/lib/api.ts`:
-  - `tmdbApi` for TMDB endpoints
-  - `omdbApi` for supplemental ratings
-- **Schemas** for response validation are in `src/schemas.ts`.
-- **Default search/filter state** is in `src/lib/constants.ts`.
-- **Reusable UI primitives** are in `src/components/ui`.
+- Routes live in `src/routes` and generate `src/routeTree.gen.ts`.
+- The root route redirects `/` to `/movies`.
+- Search and discovery data access is centralized in `src/query-options.ts`.
+- TMDB and OMDb clients live in `src/lib/api.ts`.
+- API response validation lives in `src/schemas.ts`.
+- Default discovery state and lookup maps live in `src/lib/constants.ts`.
+- Shared presentational primitives live in `src/components/ui`.
+
+## Data Fetching
+
+- Discovery and people pages use `infiniteQueryOptions()`.
+- Detail pages use `queryOptions()`.
+- Several infinite queries fetch three pages at a time and deduplicate results by ID before rendering.
+- Router and query defaults treat fetched data as fresh with `staleTime: Number.POSITIVE_INFINITY`.
+- Card links use intent-based preloading with `preloadDelay={500}`.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Bun (latest stable)
+- Bun `1.3.12` or newer
+- Node.js `24` or newer
 
 ### Install
 
@@ -72,35 +60,40 @@ It includes advanced filter-based discovery, unified search across media types, 
 bun install
 ```
 
-### Run development server
+### Start the development server
 
 ```bash
 bun run dev
 ```
 
-App runs at `http://localhost:5173` by default.
+The app runs at `http://localhost:5173` by default.
 
-## Available Scripts
+## Scripts
 
-- `bun run dev` — start Vite dev server
-- `bun run build` — type-check build + production bundle
-- `bun run preview` — preview production build locally
-- `bun run lint` — run oxlint
-- `bun run lint:fix` — auto-fix lint issues
-- `bun run format` — format code with oxfmt
+- `bun run dev` starts the Vite development server.
+- `bun run build` runs `tsgo --build` and then creates the production Vite bundle.
+- `bun run build:analyze` builds with bundle analysis enabled outside Vercel.
+- `bun run preview` serves the production build locally.
+- `bun run lint` runs `oxlint`.
+- `bun run lint:fix` runs `oxlint --fix`.
+- `bun run format` runs `oxfmt`.
+- `bun run knip` checks for unused files and exports.
 
 ## Development Notes
 
-- Keep route files in `src/routes` and let TanStack Router regenerate `routeTree.gen.ts`.
-- Add or update query definitions in `src/query-options.ts` for consistency.
-- Validate new/changed API responses with Valibot schemas in `src/schemas.ts`.
-- Use shared helpers from `src/lib/utils.ts` and constants from `src/lib/constants.ts`.
+- Keep route files under `src/routes`; the TanStack router plugin regenerates the route tree.
+- Update `src/query-options.ts` when adding new fetching flows.
+- Validate any new or changed external API payloads in `src/schemas.ts`.
+- Use helpers from `src/lib/utils.ts` and shared constants from `src/lib/constants.ts`.
+- Theme preference is stored under the `watchly-ui-theme` local storage key.
+- The root layout mounts TanStack Query and Router devtools panels.
 
-## API & Security Notes
+## API and Security Notes
 
-- This app uses **read-only public movie/TV/person data** from TMDB.
-- TMDB Bearer token and OMDb API key are currently configured in `src/lib/api.ts`.
-- No user authentication or user-generated content is implemented.
+- TMDB is the primary data source for movies, TV, people, providers, and collections.
+- OMDb is used for supplemental IMDb and Rotten Tomatoes ratings when an IMDb ID is available.
+- Both API credentials are currently embedded in `src/lib/api.ts` for this client-only app.
+- The app has no authentication, no user accounts, and no user-generated content.
 
 ## License
 
