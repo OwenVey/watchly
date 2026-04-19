@@ -38,7 +38,8 @@ import type { MovieReleaseType } from '@/types';
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
-    const omdb = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
+    const omdbResponse = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
+    const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
   component: Movie,

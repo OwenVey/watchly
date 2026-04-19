@@ -12,10 +12,6 @@ export default defineConfig(() => {
   const shouldAnalyze = process.env.ANALYZE === 'true' && !isVercel;
 
   return {
-    preview: {
-      port: 3000,
-      host: true,
-    },
     resolve: {
       tsconfigPaths: true,
     },
