@@ -76,7 +76,7 @@ export default function MultiCombobox({
   };
 
   return (
-    <Combobox multiple autoHighlight items={mergedItems} onValueChange={handleValueChange} {...props}>
+    <Combobox multiple autoHighlight items={mergedItems} value={values} onValueChange={handleValueChange} {...props}>
       <ComboboxChips ref={anchor} className="w-full max-w-xs">
         <ComboboxValue placeholder="">
           {(val: typeof values) => (
