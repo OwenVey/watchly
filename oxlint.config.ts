@@ -3,7 +3,6 @@ import { defineConfig } from 'oxlint';
 export default defineConfig({
   plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react', 'import'],
   jsPlugins: ['@tanstack/eslint-plugin-router', '@tanstack/eslint-plugin-query'],
-  categories: {},
   options: {
     typeAware: true,
     typeCheck: true,
@@ -19,33 +18,12 @@ export default defineConfig({
     '@tanstack/query/mutation-property-order': 'error',
   },
   settings: {
-    'jsx-a11y': {
-      components: {},
-      attributes: {},
-    },
     react: {
-      formComponents: [],
-      linkComponents: [],
       version: '19.2',
-      componentWrapperFunctions: [],
-    },
-    jsdoc: {
-      ignorePrivate: false,
-      ignoreInternal: false,
-      ignoreReplacesDocs: true,
-      overrideReplacesDocs: true,
-      augmentsExtendsReplacesDocs: false,
-      implementsReplacesDocs: false,
-      exemptDestructuredRootsFromChecks: false,
-      tagNamePreference: {},
-    },
-    vitest: {
-      typecheck: false,
     },
   },
   env: {
     builtin: true,
+    browser: true,
   },
-  globals: {},
-  ignorePatterns: [],
 });
