@@ -39,6 +39,14 @@ const inputGroupAddonVariants = cva(
   },
 );
 
+function focusInputGroupControl(event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) {
+  if ((event.target as HTMLElement).closest('button')) {
+    return;
+  }
+
+  event.currentTarget.parentElement?.querySelector('input')?.focus();
+}
+
 function InputGroupAddon({
   className,
   align = 'inline-start',
@@ -50,12 +58,8 @@ function InputGroupAddon({
       data-slot="input-group-addon"
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
-      onClick={(e) => {
-        if ((e.target as HTMLElement).closest('button')) {
-          return;
-        }
-        e.currentTarget.parentElement?.querySelector('input')?.focus();
-      }}
+      onClick={focusInputGroupControl}
+      onKeyDown={focusInputGroupControl}
       {...props}
     />
   );

@@ -78,7 +78,7 @@ function Person() {
                 ? getTmdbImage('backdrop', validCast[currentIndex].backdrop_path, 'w1280')
                 : undefined
             }
-            alt={`backdrop image`}
+            alt={`cast backdrop`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
         </div>
@@ -89,7 +89,7 @@ function Person() {
           <img
             className="aspect-2/3 w-48 rounded-xl shadow-lg"
             src={getTmdbImage('profile', person.profile_path, 'h632')}
-            alt={`profile picture for ${person.name}`}
+            alt={`profile for ${person.name}`}
             style={{ viewTransitionName: profileTransitionName }}
           />
         ) : (
@@ -108,7 +108,7 @@ function Person() {
 
           {person.biography && (
             <div>
-              <p className={cn('mt-4 text-sm text-muted-foreground', !showEntireBio && 'line-clamp-[8]')}>
+              <p className={cn('mt-4 text-sm text-muted-foreground', !showEntireBio && 'line-clamp-8')}>
                 {person.biography}
               </p>
               <ShowMoreButton onClick={() => toggleShowEntireBio()} className="mt-1" showAll={showEntireBio} />

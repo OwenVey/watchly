@@ -31,7 +31,7 @@ export function PersonCard({ person, title }: Props) {
             <img
               className="size-24 rounded-full border object-cover"
               src={getTmdbImage('profile', person.profile_path, 'w185')}
-              alt={`profile picture of ${person.name}`}
+              alt={`profile for ${person.name}`}
               style={{ viewTransitionName: isTransitionTarget ? profileTransitionName : 'none' }}
             />
           ) : (

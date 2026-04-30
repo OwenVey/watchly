@@ -22,7 +22,7 @@ function Collection() {
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
             src={getTmdbImage('backdrop', collection.backdrop_path, 'w1280')}
-            alt={`backdrop image for ${collection.name}`}
+            alt={`backdrop for ${collection.name}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
         </div>

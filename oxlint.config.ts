@@ -1,7 +1,7 @@
 import { defineConfig } from 'oxlint';
 
 export default defineConfig({
-  plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react', 'import'],
+  plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react', 'react-perf', 'import', 'jsdoc', 'jsx-a11y', 'promise'],
   jsPlugins: ['@tanstack/eslint-plugin-router', '@tanstack/eslint-plugin-query'],
   options: {
     typeAware: true,
