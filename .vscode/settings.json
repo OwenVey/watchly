@@ -16,6 +16,7 @@
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "js/ts.experimental.useTsgo": true,
+  "typescript.native-preview.tsdk": "/Users/owenvey/Developer/watchly/node_modules/@typescript/native-preview",
 
   "editor.wordWrap": "on",
   "tailwindCSS.classFunctions": ["cva", "cn"],

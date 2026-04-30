@@ -25,6 +25,7 @@ type ImageTypeToSizeMap = {
 
 /**
  * Constructs a TMDB image URL.
+ *
  * @param _type - The type of the image (e.g., 'backdrop', 'logo').
  * @param path - The path of the image.
  * @param size - The size of the image, specific to the type.
@@ -64,10 +65,7 @@ export function toggleItemInArray<T extends string | number>(array: T[], item: T
  * Formats a number as a currency string based on the specified locale and currency.
  *
  * @param {number} amount - The amount of money to format.
- * @param {string} [locale='en-US'] - The locale string (e.g., 'en-US', 'de-DE').
- * @param {string} [currency='USD'] - The currency code (e.g., 'USD', 'EUR').
- * @param {Intl.NumberFormatOptions} [options={}] - Additional formatting options.
- * @returns {string} - The formatted currency string.
+ * @param {string} [locale='en-US'] - The locale string (e.g., 'en-US', 'de-DE'). Default is `'en-US'`
  */
 export function formatCurrency(
   amount: number,
