@@ -17,6 +17,7 @@ function focusInputGroupControl(event: React.MouseEvent<HTMLElement>) {
 
 function InputGroup({ className, ...props }: React.ComponentProps<'fieldset'>) {
   return (
+    // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <fieldset
       data-slot="input-group"
       onMouseDown={focusInputGroupControl}
