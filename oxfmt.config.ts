@@ -2,16 +2,16 @@ import { defineConfig } from 'oxfmt';
 
 export default defineConfig({
   ignorePatterns: ['routeTree.gen.ts'],
-  singleQuote: true,
+  jsdoc: true,
   printWidth: 120,
-  sortTailwindcss: {
-    stylesheet: 'src/index.css',
+  singleQuote: true,
+  sortImports: {
+    newlinesBetween: false,
   },
   sortPackageJson: {
     sortScripts: true,
   },
-  sortImports: {
-    newlinesBetween: false,
+  sortTailwindcss: {
+    stylesheet: 'src/styles.css',
   },
-  jsdoc: true,
 });

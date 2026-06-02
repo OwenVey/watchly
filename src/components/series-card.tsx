@@ -5,11 +5,11 @@ import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 import type { Series } from '@/types';
 
-type Props = {
+interface Props {
   series: Series;
   className?: string;
   showBadge?: boolean;
-};
+}
 
 export function SeriesCard({ series, className, showBadge = false }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
@@ -26,7 +26,9 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
       params={{ seriesId: series.id.toString() }}
       preloadDelay={500}
       viewTransition
-      onClick={() => setIsTransitionTarget(true)}
+      onClick={() => {
+        setIsTransitionTarget(true);
+      }}
     >
       {showBadge && (
         <span className="border-purple-9 bg-purple-11 text-purple-1 absolute top-0 right-0 z-10 m-2 rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide">
@@ -39,7 +41,9 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
           src={getTmdbImage('poster', series.poster_path, 'w342')}
           alt={`Movie poster for ${series.name}`}
           className="h-full w-full object-cover"
-          style={{ viewTransitionName: isTransitionTarget ? posterTransitionName : 'none' }}
+          style={{
+            viewTransitionName: isTransitionTarget ? posterTransitionName : 'none',
+          }}
         />
       )}
       <div

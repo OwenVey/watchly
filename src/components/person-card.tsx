@@ -6,10 +6,10 @@ import { getTmdbImage } from '@/lib/utils';
 import { Route as PersonIdRoute } from '@/routes/(people)/people_/$personId';
 import type { Person } from '@/types';
 
-type Props = {
+interface Props {
   person: Person;
   title?: string | null;
-};
+}
 
 export function PersonCard({ person, title }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
@@ -24,7 +24,9 @@ export function PersonCard({ person, title }: Props) {
           params={{ personId: person.id.toString() }}
           preloadDelay={500}
           viewTransition
-          onClick={() => setIsTransitionTarget(true)}
+          onClick={() => {
+            setIsTransitionTarget(true);
+          }}
           className="flex aspect-2/3 flex-col items-center justify-center p-2 transition-all hover:scale-105"
         >
           {person.profile_path ? (
@@ -32,7 +34,9 @@ export function PersonCard({ person, title }: Props) {
               className="size-24 rounded-full border object-cover"
               src={getTmdbImage('profile', person.profile_path, 'w185')}
               alt={`profile for ${person.name}`}
-              style={{ viewTransitionName: isTransitionTarget ? profileTransitionName : 'none' }}
+              style={{
+                viewTransitionName: isTransitionTarget ? profileTransitionName : 'none',
+              }}
             />
           ) : (
             <div className="grid size-24 place-items-center rounded-full border bg-muted">

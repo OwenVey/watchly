@@ -1,5 +1,5 @@
 'use client';
-import { type ComboboxRootProps } from '@base-ui/react';
+import type { ComboboxRootProps } from '@base-ui/react';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { useDebounce } from '@uidotdev/usehooks';
 import * as React from 'react';
@@ -47,9 +47,9 @@ export default function MultiCombobox({
 
   // oxlint-disable-next-line @tanstack/query/exhaustive-deps
   const { data: asyncItems, isFetching } = useQuery({
-    queryKey: ['multi-combobox', id, normalizedSearch],
-    queryFn: shouldSearch && onSearch ? () => onSearch(normalizedSearch) : skipToken,
     enabled: shouldSearch,
+    queryFn: shouldSearch && onSearch ? async () => await onSearch(normalizedSearch) : skipToken,
+    queryKey: ['multi-combobox', id, normalizedSearch],
   });
 
   const mergedItems = React.useMemo(() => {
@@ -87,7 +87,9 @@ export default function MultiCombobox({
               <ComboboxChipsInput
                 placeholder={values?.length ? undefined : placeholder}
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                }}
               />
             </React.Fragment>
           )}

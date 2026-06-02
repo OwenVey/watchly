@@ -2,11 +2,11 @@ import { Link } from '@tanstack/react-router';
 import { CircleArrowRightIcon } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
-type Props = {
+interface Props {
   title: string;
   children: React.ReactNode;
   link: string;
-};
+}
 
 export function CardCarousel({ title, children, link }: Props) {
   return (

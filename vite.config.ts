@@ -1,35 +1,23 @@
-import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
-import { devtools as tanstackDevtools } from '@tanstack/devtools-vite';
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
-import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import { devtools } from '@tanstack/devtools-vite';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import viteReact from '@vitejs/plugin-react';
+import { nitro } from 'nitro/vite';
 import { defineConfig } from 'vite';
-import { analyzer } from 'vite-bundle-analyzer';
 
-// https://vitejs.dev/config/
-export default defineConfig(() => {
-  const isVercel = process.env.VERCEL === '1';
-  const shouldAnalyze = process.env.ANALYZE === 'true' && !isVercel;
-
-  return {
-    resolve: {
-      tsconfigPaths: true,
-    },
-    plugins: [
-      tanstackDevtools({
-        consolePiping: {
-          enabled: false,
-        },
-      }),
-      tanstackRouter({
-        target: 'react',
-      }),
-      react(),
-      babel({
-        presets: [reactCompilerPreset()],
-      }),
-      tailwindcss(),
-      ...(shouldAnalyze ? [analyzer()] : []),
-    ],
-  };
+const config = defineConfig({
+  plugins: [
+    devtools(),
+    nitro({ rollupConfig: { external: [/^@sentry\//u] } }),
+    tailwindcss(),
+    tanstackStart({
+      spa: {
+        enabled: true,
+      },
+    }),
+    viteReact(),
+  ],
+  resolve: { tsconfigPaths: true },
 });
+
+export default config;
