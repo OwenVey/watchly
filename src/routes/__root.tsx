@@ -16,6 +16,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
         rel: 'stylesheet',
       },
+      {
+        rel: 'icon',
+        href: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
     ],
     meta: [
       {
@@ -26,7 +31,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: 'viewport',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Watchly',
       },
     ],
   }),
