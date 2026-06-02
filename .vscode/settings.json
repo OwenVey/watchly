@@ -12,7 +12,7 @@
   "editor.formatOnSave": true,
 
   // typescript
-  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview",
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.experimental.useTsgo": true,
 
