@@ -1,12 +1,12 @@
+import type { MovieResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { cn, getTmdbImage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
-import type { Movie } from '@/types';
 
 interface Props {
-  movie: Movie;
+  movie: MovieResultItem;
   className?: string;
   showBadge?: boolean;
 }
@@ -58,7 +58,9 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
             <span className="text-xs font-medium text-white">{movie.vote_average}</span>
           </div>
         ) : null}
-        {movie.release_date && <div className="text-sm font-medium text-white">{movie.release_date.getFullYear()}</div>}
+        {movie.release_date && (
+          <div className="text-sm font-medium text-white">{new Date(movie.release_date).getFullYear()}</div>
+        )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{movie.title}</div>
         <div className="line-clamp-3 text-sm text-balance text-white/70">{movie.overview}</div>
       </div>

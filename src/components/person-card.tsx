@@ -1,13 +1,13 @@
+import type { PersonResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { UserRoundIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { getTmdbImage } from '@/lib/utils';
 import { Route as PersonIdRoute } from '@/routes/(people)/people_/$personId';
-import type { Person } from '@/types';
 
 interface Props {
-  person: Person;
+  person: PersonResultItem;
   title?: string | null;
 }
 

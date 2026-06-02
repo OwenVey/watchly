@@ -1,5 +1,6 @@
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
+import { TMDB } from '@lorenzopant/tmdb';
 import * as v from 'valibot';
 import {
   CollectionOutputSchema,
@@ -18,6 +19,10 @@ import {
   SeasonOutputSchema,
   SeriesDetailsOutputSchema,
 } from '@/schemas';
+
+export const tmdbApi2 = new TMDB(
+  'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ODVkYWNiNjA5ZTA1N2YyNmIxNTlhYTg3MjdjYTg2YiIsIm5iZiI6MTY3MjE2MzI5NS4wODQsInN1YiI6IjYzYWIyZmRmMDlkZGE0MDA3Y2I5ZDFlZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma51s5v9b_SQpKeHzHjZJvCQ-LvjGU6xCV0y6vY8Jf0',
+);
 
 export const tmdbApi = createFetch({
   baseURL: 'https://api.themoviedb.org/3',

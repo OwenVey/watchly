@@ -1,3 +1,4 @@
+import type { TVSeriesResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
@@ -6,7 +7,7 @@ import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 import type { Series } from '@/types';
 
 interface Props {
-  series: Series;
+  series: TVSeriesResultItem;
   className?: string;
   showBadge?: boolean;
 }
@@ -59,7 +60,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
           </div>
         ) : null}
         {series.first_air_date && (
-          <div className="text-sm font-medium text-white">{series.first_air_date.getFullYear()}</div>
+          <div className="text-sm font-medium text-white">{new Date(series.first_air_date).getFullYear()}</div>
         )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{series.name}</div>
         <div className="line-clamp-3 text-sm text-balance text-white/70">{series.overview}</div>

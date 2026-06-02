@@ -677,3 +677,5 @@ export const CollectionOutputSchema = v.object({
   backdrop_path: v.string(),
   parts: v.array(MovieSchema),
 });
+
+export const MediaTypeSchema = v.union([v.literal('all'), v.literal('movies'), v.literal('tv'), v.literal('people')]);

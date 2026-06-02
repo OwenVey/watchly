@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrendingRouteImport } from './routes/trending'
 import { Route as TestRouteImport } from './routes/test'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,6 +31,11 @@ import { Route as moviesMoviesMovieIdRecommendationsRouteImport } from './routes
 import { Route as moviesMoviesMovieIdCrewRouteImport } from './routes/(movies)/movies_/$movieId_/crew'
 import { Route as moviesMoviesMovieIdCastRouteImport } from './routes/(movies)/movies_/$movieId_/cast'
 
+const TrendingRoute = TrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TestRoute = TestRouteImport.update({
   id: '/test',
   path: '/test',
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
   '/test': typeof TestRoute
+  '/trending': typeof TrendingRoute
   '/people': typeof peoplePeopleRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
   '/test': typeof TestRoute
+  '/trending': typeof TrendingRoute
   '/people': typeof peoplePeopleRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
   '/movies': typeof moviesSidebarMoviesRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
   '/test': typeof TestRoute
+  '/trending': typeof TrendingRoute
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
   '/(people)/people': typeof peoplePeopleRoute
   '/(series)/_sidebar': typeof seriesSidebarRouteWithChildren
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/'
     | '/search'
     | '/test'
+    | '/trending'
     | '/people'
     | '/collections/$collectionId'
     | '/movies'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/'
     | '/search'
     | '/test'
+    | '/trending'
     | '/people'
     | '/collections/$collectionId'
     | '/movies'
@@ -244,6 +255,7 @@ export interface FileRouteTypes {
     | '/'
     | '/search'
     | '/test'
+    | '/trending'
     | '/(movies)/_sidebar'
     | '/(people)/people'
     | '/(series)/_sidebar'
@@ -267,6 +279,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SearchRoute: typeof SearchRoute
   TestRoute: typeof TestRoute
+  TrendingRoute: typeof TrendingRoute
   moviesSidebarRoute: typeof moviesSidebarRouteWithChildren
   peoplePeopleRoute: typeof peoplePeopleRoute
   seriesSidebarRoute: typeof seriesSidebarRouteWithChildren
@@ -286,6 +299,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trending': {
+      id: '/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof TrendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/test': {
       id: '/test'
       path: '/test'
@@ -457,6 +477,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SearchRoute: SearchRoute,
   TestRoute: TestRoute,
+  TrendingRoute: TrendingRoute,
   moviesSidebarRoute: moviesSidebarRouteWithChildren,
   peoplePeopleRoute: peoplePeopleRoute,
   seriesSidebarRoute: seriesSidebarRouteWithChildren,
