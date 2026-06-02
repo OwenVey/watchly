@@ -1,5 +1,5 @@
 import { ChevronsDownIcon } from 'lucide-react';
-import { type ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -12,8 +12,8 @@ export function ShowMoreButton({ showAll, className, ...buttonProps }: ShowMoreB
     <button
       className={cn(
         buttonVariants({
-          variant: 'outline',
           className: 'group gap-1 px-3 py-1 h-auto text-xs',
+          variant: 'outline',
         }),
         className,
       )}

@@ -1,83 +1,93 @@
+import { ScriptOnce } from '@tanstack/react-router';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'dark' | 'light' | 'system';
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
-};
+}
 
-type ThemeProviderState = {
+interface ThemeProviderState {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-};
+}
 
-const initialState: ThemeProviderState = {
+function getThemeScript(storageKey: string, defaultTheme: Theme) {
+  const key = JSON.stringify(storageKey);
+  const fallback = JSON.stringify(defaultTheme);
+
+  return `(function(){try{var t=localStorage.getItem(${key});if(t!=='light'&&t!=='dark'&&t!=='system'){t=${fallback}}var d=matchMedia('(prefers-color-scheme: dark)').matches;var r=t==='system'?(d?'dark':'light'):t;var e=document.documentElement;e.classList.add(r);e.style.colorScheme=r}catch(e){}})();`;
+}
+
+const ThemeProviderContext = createContext<ThemeProviderState>({
+  // oxlint-disable-next-line no-empty-function
+  setTheme: () => {},
   theme: 'system',
-  setTheme: () => null,
-};
+});
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.remove('light', 'dark');
 
-const disableTransitions = () => {
-  const css = document.createElement('style');
-  css.appendChild(document.createTextNode('* { transition: none !important; }'));
-  document.head.appendChild(css);
+  const resolved =
+    // oxlint-disable-next-line no-nested-ternary
+    theme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme;
 
-  return () => {
-    void window.getComputedStyle(document.body).opacity;
-    requestAnimationFrame(() => {
-      document.head.removeChild(css);
-    });
-  };
-};
+  root.classList.add(resolved);
+  root.style.colorScheme = resolved;
+}
 
-export function ThemeProvider({
-  children,
-  defaultTheme = 'system',
-  storageKey = 'vite-ui-theme',
-  ...props
-}: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || defaultTheme);
+export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 'theme' }: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    const enableTransitions = disableTransitions();
+    const stored = localStorage.getItem(storageKey);
+    setThemeState(stored === 'light' || stored === 'dark' || stored === 'system' ? stored : defaultTheme);
+    setMounted(true);
+  }, [defaultTheme, storageKey]);
 
-    root.classList.remove('light', 'dark');
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+    applyTheme(theme);
+  }, [theme, mounted]);
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-
-      root.classList.add(systemTheme);
-      enableTransitions();
+  useEffect(() => {
+    if (!mounted || theme !== 'system') {
       return;
     }
 
-    root.classList.add(theme);
-    enableTransitions();
-  }, [theme]);
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => {
+      applyTheme('system');
+    };
+    media.addEventListener('change', onChange);
+    return () => {
+      media.removeEventListener('change', onChange);
+    };
+  }, [theme, mounted]);
 
-  const value = {
-    theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
-    },
+  const setTheme = (next: Theme) => {
+    localStorage.setItem(storageKey, next);
+    setThemeState(next);
   };
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext value={{ setTheme, theme }}>
+      <ScriptOnce>{getThemeScript(storageKey, defaultTheme)}</ScriptOnce>
       {children}
-    </ThemeProviderContext.Provider>
+    </ThemeProviderContext>
   );
 }
 
-export const useTheme = () => {
+export function useTheme() {
   const context = useContext(ThemeProviderContext);
-
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider');
-
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
   return context;
-};
+}

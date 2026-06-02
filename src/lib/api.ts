@@ -22,21 +22,27 @@ import {
 export const tmdbApi = createFetch({
   baseURL: 'https://api.themoviedb.org/3',
   auth: {
-    type: 'Bearer',
     token:
       'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ODVkYWNiNjA5ZTA1N2YyNmIxNTlhYTg3MjdjYTg2YiIsIm5iZiI6MTcyODc2Nzg2Ny4wNDA4NDksInN1YiI6IjYzYWIyZmRmMDlkZGE0MDA3Y2I5ZDFlZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.r3yoeC3McZsQGQPrVqYQyp7Wd1ZUnWstomt07OBhEBM',
+    type: 'Bearer',
   },
   // retry: 3,
   throw: true,
   schema: createSchema(
     {
+      '/collection/:collectionId': {
+        output: CollectionOutputSchema,
+        params: v.object({
+          collectionId: v.string(),
+        }),
+      },
       '/discover/movie': {
-        query: DiscoverMoviesQuerySchema,
         output: DiscoverMoviesOutputSchema,
+        query: DiscoverMoviesQuerySchema,
       },
       '/discover/tv': {
-        query: DiscoverSeriesQuerySchema,
         output: DiscoverSeriesOutputSchema,
+        query: DiscoverSeriesQuerySchema,
       },
       '/genre/movie/list': {
         output: v.object({
@@ -44,6 +50,7 @@ export const tmdbApi = createFetch({
         }),
       },
       '/movie/:movieId': {
+        output: MovieDetailsOutputSchema,
         query: v.object({
           append_to_response: v.pipe(
             v.tuple([
@@ -57,9 +64,59 @@ export const tmdbApi = createFetch({
             v.transform((values) => values.join(',')),
           ),
         }),
-        output: MovieDetailsOutputSchema,
+      },
+      '/person/:personId': {
+        output: PersonDetailsOutputSchema,
+        params: v.object({
+          personId: v.string(),
+        }),
+        query: v.object({
+          append_to_response: v.tuple([v.literal('combined_credits')]),
+        }),
+      },
+      '/person/popular': {
+        output: SearchPersonOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+        }),
+      },
+      '/search/company': {
+        output: SearchCompanyOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+          query: v.string(),
+        }),
+      },
+      '/search/keyword': {
+        output: SearchKeywordOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+          query: v.string(),
+        }),
+      },
+      '/search/movie': {
+        output: SearchMovieOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+          query: v.string(),
+        }),
+      },
+      '/search/person': {
+        output: SearchPersonOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+          query: v.string(),
+        }),
+      },
+      '/search/tv': {
+        output: SearchTvOutputSchema,
+        query: v.object({
+          page: v.optional(v.number(), 1),
+          query: v.string(),
+        }),
       },
       '/tv/:seriesId': {
+        output: SeriesDetailsOutputSchema,
         query: v.object({
           append_to_response: v.pipe(
             v.tuple([
@@ -74,80 +131,23 @@ export const tmdbApi = createFetch({
             v.transform((values) => values.join(',')),
           ),
         }),
-        output: SeriesDetailsOutputSchema,
       },
       '/tv/:seriesId/season/:seasonNumber': {
         output: SeasonOutputSchema,
       },
       '/watch/providers/movie': {
+        output: ProvidersOutputSchema,
         query: v.object({
           language: v.optional(v.string()),
           watch_region: v.string(),
         }),
-        output: ProvidersOutputSchema,
       },
       '/watch/providers/tv': {
+        output: ProvidersOutputSchema,
         query: v.object({
           language: v.optional(v.string()),
           watch_region: v.string(),
         }),
-        output: ProvidersOutputSchema,
-      },
-      '/search/keyword': {
-        query: v.object({
-          query: v.string(),
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchKeywordOutputSchema,
-      },
-      '/search/company': {
-        query: v.object({
-          query: v.string(),
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchCompanyOutputSchema,
-      },
-      '/search/movie': {
-        query: v.object({
-          query: v.string(),
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchMovieOutputSchema,
-      },
-      '/search/tv': {
-        query: v.object({
-          query: v.string(),
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchTvOutputSchema,
-      },
-      '/search/person': {
-        query: v.object({
-          query: v.string(),
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchPersonOutputSchema,
-      },
-      '/person/popular': {
-        query: v.object({
-          page: v.optional(v.number(), 1),
-        }),
-        output: SearchPersonOutputSchema,
-      },
-      '/person/:personId': {
-        params: v.object({
-          personId: v.string(),
-        }),
-        query: v.object({
-          append_to_response: v.tuple([v.literal('combined_credits')]),
-        }),
-        output: PersonDetailsOutputSchema,
-      },
-      '/collection/:collectionId': {
-        params: v.object({
-          collectionId: v.string(),
-        }),
-        output: CollectionOutputSchema,
       },
     },
     { strict: true },
@@ -165,26 +165,26 @@ export const omdbApi = createFetch({
   schema: createSchema(
     {
       '/': {
-        query: v.object({
-          apikey: v.optional(v.string(), '3b1b9209'),
-          i: v.string(),
-        }),
         output: v.union([
           v.object({
-            Response: v.literal('True'),
             Ratings: v.array(
               v.object({
                 Source: v.string(),
                 Value: v.string(),
               }),
             ),
+            Response: v.literal('True'),
             imdbRating: v.string(),
           }),
           v.object({
-            Response: v.literal('False'),
             Error: v.string(),
+            Response: v.literal('False'),
           }),
         ]),
+        query: v.object({
+          apikey: v.optional(v.string(), '3b1b9209'),
+          i: v.string(),
+        }),
       },
     },
     { strict: true },

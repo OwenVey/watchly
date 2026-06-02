@@ -9,19 +9,19 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 
 const LINKS = [
   {
-    to: '/movies',
-    label: 'Movies',
     icon: FilmIcon,
+    label: 'Movies',
+    to: '/movies',
   },
   {
-    to: '/series',
-    label: 'Series',
     icon: TvIcon,
+    label: 'Series',
+    to: '/series',
   },
   {
-    to: '/people',
-    label: 'People',
     icon: UsersIcon,
+    label: 'People',
+    to: '/people',
   },
 ];
 
@@ -50,7 +50,9 @@ export function Navbar() {
                     key={link.to}
                     to={link.to}
                     className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all"
-                    inactiveProps={{ className: 'text-muted-foreground hover:bg-muted hover:text-foreground' }}
+                    inactiveProps={{
+                      className: 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                    }}
                     activeProps={{ className: 'bg-primary text-white' }}
                     activeOptions={{
                       includeSearch: false,
@@ -67,7 +69,13 @@ export function Navbar() {
               <InputGroup className="mr-6 ml-8 max-w-96 md:mr-0 md:ml-2 md:max-w-52">
                 <InputGroupInput
                   value={query}
-                  onChange={(e) => navigate({ to: '/search', search: { query: e.target.value }, replace: true })}
+                  onChange={async (e) => {
+                    await navigate({
+                      replace: true,
+                      search: { query: e.target.value },
+                      to: '/search',
+                    });
+                  }}
                   id="inline-start-input"
                   placeholder="Search..."
                 />
@@ -101,7 +109,9 @@ export function Navbar() {
                   <Link
                     to={link.to}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-base font-medium"
-                    inactiveProps={{ className: 'text-muted-foreground hover:bg-muted hover:text-foreground' }}
+                    inactiveProps={{
+                      className: 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                    }}
                     activeProps={{ className: 'bg-primary text-white' }}
                     activeOptions={{
                       includeSearch: false,

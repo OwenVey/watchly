@@ -1,4 +1,5 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx } from 'clsx';
+import type { ClassValue } from 'clsx';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import * as v from 'valibot';
@@ -15,13 +16,13 @@ export function useContextSafely<T>(context: React.Context<T>): NonNullable<T> {
   return value;
 }
 
-type ImageTypeToSizeMap = {
+interface ImageTypeToSizeMap {
   backdrop: 'w300' | 'w780' | 'w1280' | 'w1440_and_h320_multi_faces' | 'original';
   logo: 'w45' | 'w92' | 'w154' | 'w185' | 'w300' | 'w500' | 'original';
   poster: 'w92' | 'w154' | 'w185' | 'w342' | 'w500' | 'w780' | 'original';
   profile: 'w45' | 'w185' | 'h632' | 'original';
   still: 'w92' | 'w185' | 'w300' | 'original';
-};
+}
 
 /**
  * Constructs a TMDB image URL.
@@ -76,10 +77,10 @@ export function formatCurrency(
   try {
     // Merge default and custom options
     const formatOptions: Intl.NumberFormatOptions = {
-      style: 'currency',
       currency,
-      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
+      minimumFractionDigits: 0,
+      style: 'currency',
       ...options,
     };
 

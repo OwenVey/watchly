@@ -1,17 +1,17 @@
 {
-  // linting
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "always"
+    "source.fixAll.oxc": "explicit"
   },
 
   // formatting
   "eslint.enable": false,
   "prettier.enable": false,
-  "oxc.fmt.configPath": "oxfmt.config.ts",
   "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
 
   // typescript
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
   "typescript.native-preview.tsdk": "node_modules/@typescript/native-preview",
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.experimental.useTsgo": true,
@@ -29,12 +29,12 @@
     "strings": "on"
   },
 
-  // tanstack router
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },
   "search.exclude": {
     "**/routeTree.gen.ts": true,
+    "**/package-lock.json": true,
     "**/bun.lock": true
   },
   "files.readonlyInclude": {

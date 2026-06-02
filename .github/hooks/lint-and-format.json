@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "command": "bun run lint:fix",
+        "type": "command"
+      },
+      {
+        "command": "bun run format",
+        "type": "command"
+      }
+    ]
+  }
+}
