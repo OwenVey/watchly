@@ -15,6 +15,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
+import * as v from 'valibot';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
@@ -36,6 +37,10 @@ import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import type { MovieReleaseType } from '@/types';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
+  params: {
+    parse: (params) => v.parse(v.object({ movieId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ movieId: params.movieId.toString() }),
+  },
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     const omdbResponse = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
@@ -77,7 +82,7 @@ function Movie() {
         <div className="flex flex-col items-end gap-1">
           <div className="grid grid-cols-[max-content_max-content] items-center justify-items-end gap-x-2">
             {usReleaseDates
-              .sort((a, b) => a.release_date.getTime() - b.release_date.getTime())
+              .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
               .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
               .map(({ type, release_date }) => {
                 const IconComponent = RELEASE_TYPE_ICON_MAP[type];
@@ -199,7 +204,7 @@ function Movie() {
               {movie.release_date && (
                 <span className="ml-1 text-base font-medium text-muted-foreground">
                   {' '}
-                  ({movie.release_date.getFullYear()})
+                  ({new Date(movie.release_date).getFullYear()})
                 </span>
               )}
             </h1>
@@ -209,12 +214,14 @@ function Movie() {
                   {certification}
                 </div>
               )}
-              <div className="flex items-center gap-1">
-                <ClockIcon className="size-4 text-accent" />
-                <span className="text-sm font-medium whitespace-nowrap text-foreground">
-                  {formatMinutesToHHMM(movie.runtime)}
-                </span>
-              </div>
+              {movie.runtime && (
+                <div className="flex items-center gap-1">
+                  <ClockIcon className="size-4 text-accent" />
+                  <span className="text-sm font-medium whitespace-nowrap text-foreground">
+                    {formatMinutesToHHMM(movie.runtime)}
+                  </span>
+                </div>
+              )}
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
                   <Badge

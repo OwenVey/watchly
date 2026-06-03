@@ -5,7 +5,8 @@ import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
+import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
+import { schemaObjectKeys } from '@/lib/utils';
 import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 
@@ -78,7 +79,7 @@ const MovieSearchSchema = v.object({
     v.fallback(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.studios),
     DEFAULT_MOVIE_SEARCH.studios,
   ),
-  originalLanguage: v.optional(v.string()),
+  originalLanguage: v.optional(schemaObjectKeys(LANGUAGES_MAP)),
   watchProviders: v.optional(
     v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.watchProviders),
     DEFAULT_MOVIE_SEARCH.watchProviders,

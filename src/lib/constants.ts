@@ -1,3 +1,4 @@
+import type { LanguageISO6391 } from '@lorenzopant/tmdb';
 import type { MovieReleaseType, Option, TvShowStatus, TvShowType } from '@/types';
 
 export const DEFAULT_MOVIE_SEARCH = {
@@ -297,4 +298,4 @@ export const LANGUAGES_MAP = {
   za: 'Zhuang',
   zh: 'Mandarin',
   zu: 'Zulu',
-} satisfies Record<string, string>;
+} satisfies Record<LanguageISO6391, string>;

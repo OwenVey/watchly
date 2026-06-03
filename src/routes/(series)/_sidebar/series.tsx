@@ -5,7 +5,8 @@ import React from 'react';
 import * as v from 'valibot';
 import { SeriesCard } from '@/components/series-card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DEFAULT_SERIES_SEARCH } from '@/lib/constants';
+import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
+import { schemaObjectKeys } from '@/lib/utils';
 import { seriesQueryOptions } from '@/query-options';
 import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 
@@ -57,7 +58,7 @@ const SeriesSearchSchema = v.object({
   keywords: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.keywords), DEFAULT_SERIES_SEARCH.keywords),
   studios: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.studios), DEFAULT_SERIES_SEARCH.studios),
   networks: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.networks), DEFAULT_SERIES_SEARCH.networks),
-  originalLanguage: v.optional(v.string()),
+  originalLanguage: v.optional(schemaObjectKeys(LANGUAGES_MAP)),
   watchProviders: v.optional(
     v.fallback(v.array(v.number()), DEFAULT_SERIES_SEARCH.watchProviders),
     DEFAULT_SERIES_SEARCH.watchProviders,

@@ -51,11 +51,9 @@ const SERIES_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(series)/_sidebar')({
-  loader: () => {
-    return {
-      providersPromise: tmdbApi('/watch/providers/tv', { query: { watch_region: 'US' } }),
-    };
-  },
+  loader: () => ({
+    providersPromise: tmdbApi.watch_providers.tv_providers(),
+  }),
   gcTime: 0,
   shouldReload: false,
   component: SeriesSidebar,
@@ -364,7 +362,7 @@ function Filters() {
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/keyword', { query: { query } });
+              const { results } = await tmdbApi.search.keyword({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -380,7 +378,7 @@ function Filters() {
             value={studios}
             onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -396,7 +394,7 @@ function Filters() {
             value={networks}
             onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -414,7 +412,7 @@ function Filters() {
                 to: '/series',
                 search: (prev) => ({
                   ...prev,
-                  originalLanguage: (originalLanguage ?? undefined) as SeriesSearchParams['originalLanguage'],
+                  originalLanguage: originalLanguage ?? undefined,
                 }),
               })
             }

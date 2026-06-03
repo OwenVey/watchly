@@ -1,10 +1,12 @@
 import { Accordion } from '@base-ui/react/accordion';
+import type { TVSeason } from '@lorenzopant/tmdb';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
 import { useState } from 'react';
+import * as v from 'valibot';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
@@ -24,6 +26,10 @@ import { seriesIdQueryOptions } from '@/query-options';
 import type { Season } from '@/types';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
+  params: {
+    parse: (params) => v.parse(v.object({ seriesId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ seriesId: params.seriesId.toString() }),
+  },
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
     const imdbId = series.external_ids.imdb_id;
@@ -38,7 +44,7 @@ function RouteComponent() {
   const { seriesId } = Route.useParams();
   const { omdb } = Route.useLoaderData();
 
-  const [seasonDetails, setSeasonDetails] = useState<Map<string, Season>>(new Map());
+  const [seasonDetails, setSeasonDetails] = useState<Map<string, TVSeason>>(new Map());
 
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
   const posterTransitionName = `series-poster-${series.id}`;
@@ -179,7 +185,7 @@ function RouteComponent() {
                 {series.first_air_date && (
                   <span className="ml-1 text-base font-medium text-muted-foreground">
                     {' '}
-                    ({series.first_air_date.getFullYear()})
+                    ({new Date(series.first_air_date).getFullYear()})
                   </span>
                 )}
               </h1>
@@ -250,8 +256,9 @@ function RouteComponent() {
                 onValueChange={async (seasonNumbers) => {
                   for (const seasonNumber of seasonNumbers) {
                     if (!seasonDetails.has(seasonNumber)) {
-                      const details = await tmdbApi('/tv/:seriesId/season/:seasonNumber', {
-                        params: { seriesId: series.id.toString(), seasonNumber },
+                      const details = await tmdbApi.tv_seasons.details({
+                        series_id: series.id,
+                        season_number: seasonNumber,
                       });
                       setSeasonDetails((prev) => new Map(prev).set(seasonNumber, details));
                     }
@@ -289,7 +296,7 @@ function RouteComponent() {
                           <div className="text-left">
                             <div className="text-lg font-semibold text-foreground">{season.name}</div>
                             <div className="text-sm font-medium text-muted-foreground">
-                              {season.air_date && `${season.air_date.getFullYear()} ⋅ `}
+                              {season.air_date && `${new Date(season.air_date).getFullYear()} ⋅ `}
                               {season.episode_count} Episodes
                             </div>
                             {season.overview && (

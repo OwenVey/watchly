@@ -4,6 +4,7 @@ import { useToggle } from '@uidotdev/usehooks';
 import { differenceInYears } from 'date-fns';
 import { UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
@@ -12,6 +13,10 @@ import { cn, getTmdbImage } from '@/lib/utils';
 import { personIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(people)/people_/$personId')({
+  params: {
+    parse: (params) => v.parse(v.object({ personId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ personId: params.personId.toString() }),
+  },
   loader: async ({ context, params }) => context.queryClient.ensureQueryData(personIdQueryOptions(params.personId)),
   component: Person,
 });
@@ -101,9 +106,12 @@ function Person() {
         )}
         <div className="flex max-w-xl flex-col items-center md:items-baseline">
           <h1 className="text-3xl font-bold text-foreground">{person.name}</h1>
-          <div className="text-muted-foreground">
-            Born {person.birthday.toLocaleDateString()} ({differenceInYears(new Date(), person.birthday)} years old)
-          </div>
+          {person.birthday && (
+            <div className="text-muted-foreground">
+              Born {new Date(person.birthday).toLocaleDateString()} (
+              {differenceInYears(new Date(), new Date(person.birthday))} years old)
+            </div>
+          )}
           <div className="text-muted-foreground">{person.place_of_birth}</div>
 
           {person.biography && (

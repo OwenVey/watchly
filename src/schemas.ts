@@ -348,7 +348,7 @@ export const SeriesSchema = v.object({
   genre_ids: v.array(v.number()),
   id: v.number(),
   origin_country: v.array(v.string()),
-  original_language: v.string(),
+  original_language: schemaObjectKeys(LANGUAGES_MAP),
   original_name: v.string(),
   overview: v.string(),
   popularity: v.number(),

@@ -41,11 +41,9 @@ const MOVIE_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
-  loader: () => {
-    return {
-      providersPromise: tmdbApi('/watch/providers/movie', { query: { watch_region: 'US' } }),
-    };
-  },
+  loader: () => ({
+    providersPromise: tmdbApi.watch_providers.movie_providers(),
+  }),
   gcTime: 0,
   shouldReload: false,
   component: MoviesSidebar,
@@ -354,7 +352,7 @@ function Filters() {
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/movies', search: (prev) => ({ ...prev, keywords }) })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/keyword', { query: { query } });
+              const { results } = await tmdbApi.search.keyword({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -370,7 +368,7 @@ function Filters() {
             value={studios}
             onValueChange={(studios) => navigate({ to: '/movies', search: (prev) => ({ ...prev, studios }) })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -388,7 +386,7 @@ function Filters() {
                 to: '/movies',
                 search: (prev) => ({
                   ...prev,
-                  originalLanguage: (originalLanguage ?? undefined) as MovieSearchParams['originalLanguage'],
+                  originalLanguage: originalLanguage ?? undefined,
                 }),
               })
             }

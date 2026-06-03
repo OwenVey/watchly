@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { FilmIcon } from 'lucide-react';
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,11 @@ import { MOVIE_GENRES_MAP } from '@/lib/constants';
 import { getTmdbImage } from '@/lib/utils';
 
 export const Route = createFileRoute('/collections/$collectionId')({
-  loader: async ({ params }) => tmdbApi('/collection/:collectionId', { params: { collectionId: params.collectionId } }),
+  params: {
+    parse: (params) => v.parse(v.object({ collectionId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ collectionId: params.collectionId.toString() }),
+  },
+  loader: async ({ params }) => tmdbApi.collections.details({ collection_id: params.collectionId }),
   component: Collection,
 });
 
@@ -73,7 +78,7 @@ function Collection() {
         <h2 className="text-2xl font-semibold text-foreground">Movies</h2>
         <ul className="mt-2 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
           {collection.parts
-            .sort((a, b) => (a.release_date?.getTime() ?? Infinity) - (b.release_date?.getTime() ?? Infinity))
+            .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
             .map((movie) => (
               <li key={movie.id}>
                 <MovieCard movie={movie} />
