@@ -1,4 +1,4 @@
-import type { PersonResultItem } from '@lorenzopant/tmdb';
+import type { Credit, PersonResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { UserRoundIcon } from 'lucide-react';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { getTmdbImage } from '@/lib/utils';
 import { Route as PersonIdRoute } from '@/routes/(people)/people_/$personId';
 
 interface Props {
-  person: PersonResultItem;
+  person: PersonResultItem | Credit;
   title?: string | null;
 }
 
@@ -21,7 +21,7 @@ export function PersonCard({ person, title }: Props) {
       render={
         <Link
           to={PersonIdRoute.to}
-          params={{ personId: person.id.toString() }}
+          params={{ personId: person.id }}
           preloadDelay={500}
           viewTransition
           onClick={() => {

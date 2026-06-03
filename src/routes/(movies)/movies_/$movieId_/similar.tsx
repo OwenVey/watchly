@@ -1,14 +1,20 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { movieIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId_/similar')({
+  params: {
+    parse: (params) => v.parse(v.object({ movieId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ movieId: params.movieId.toString() }),
+  },
   loader: ({ context, params }) => context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId)),
-  component: Crew,
+  component: Similar,
 });
-function Crew() {
+
+function Similar() {
   const { movieId } = Route.useParams();
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
 

@@ -2,7 +2,7 @@ import type { MovieResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
-import { cn, getTmdbImage } from '@/lib/utils';
+import { cn, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
 
 interface Props {
@@ -23,7 +23,7 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
         className,
       )}
       to={MovieIdRoute.to}
-      params={{ movieId: movie.id.toString() }}
+      params={{ movieId: movie.id }}
       preloadDelay={500}
       viewTransition
       onClick={() => {
@@ -31,7 +31,7 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
       }}
     >
       {showBadge && (
-        <span className="border-blue-9 bg-blue-11 text-blue-1 absolute top-0 right-0 z-10 m-2 rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide">
+        <span className="text-blue-1 absolute top-0 right-0 z-10 m-2 rounded-full border border-blue-400 bg-blue-600 px-2 py-0.5 text-xs font-semibold tracking-wide">
           MOVIE
         </span>
       )}
@@ -52,12 +52,11 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
           movie.poster_path && 'bg-black/50 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
         )}
       >
-        {movie.vote_average ? (
-          <div className="absolute top-2 left-2 flex items-center gap-1">
-            <TmdbLogo className="size-6" />
-            <span className="text-xs font-medium text-white">{movie.vote_average}</span>
-          </div>
-        ) : null}
+        <div className="absolute top-2 left-2 flex items-center gap-1">
+          <TmdbLogo className="size-6" />
+          <span className="text-xs font-medium text-white">{voteAverageToPercentage(movie.vote_average)}</span>
+        </div>
+
         {movie.release_date && (
           <div className="text-sm font-medium text-white">{new Date(movie.release_date).getFullYear()}</div>
         )}

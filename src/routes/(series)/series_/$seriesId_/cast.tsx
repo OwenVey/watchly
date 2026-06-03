@@ -1,10 +1,15 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import * as v from 'valibot';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { seriesIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId_/cast')({
+  params: {
+    parse: (params) => v.parse(v.object({ seriesId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ seriesId: params.seriesId.toString() }),
+  },
   loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
   component: Cast,
 });

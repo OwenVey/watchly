@@ -1,3 +1,4 @@
+import type { LanguageISO6391 } from '@lorenzopant/tmdb';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
@@ -31,7 +32,7 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi } from '@/lib/api';
 import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
-import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import type { MovieReleaseType } from '@/types';
@@ -85,13 +86,13 @@ function Movie() {
               .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
               .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
               .map(({ type, release_date }) => {
-                const IconComponent = RELEASE_TYPE_ICON_MAP[type];
+                const IconComponent = RELEASE_TYPE_ICON_MAP[type as MovieReleaseType];
                 return (
                   <React.Fragment key={type}>
                     <Tooltip>
                       <TooltipTrigger render={<IconComponent className="size-4" />} />
 
-                      <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type]}</TooltipContent>
+                      <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type as MovieReleaseType]}</TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}
                   </React.Fragment>
@@ -112,10 +113,10 @@ function Movie() {
         <Link
           from={Route.fullPath}
           to="/movies"
-          search={{ originalLanguage: movie.original_language }}
+          search={{ originalLanguage: movie.original_language as LanguageISO6391 }}
           className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
-          {LANGUAGES_MAP[movie.original_language]}
+          {LANGUAGES_MAP[movie.original_language as LanguageISO6391]}
         </Link>
       ),
     },
@@ -146,7 +147,7 @@ function Movie() {
 
   const ratings = [
     {
-      score: movie.vote_average,
+      score: voteAverageToPercentage(movie.vote_average),
       logo: TmdbLogo,
       tooltip: 'TMDb User Score',
       logoClass: 'w-7',
@@ -289,7 +290,7 @@ function Movie() {
               <div className="font-medium text-pretty text-foreground">{movie.belongs_to_collection.name}</div>
               <Link
                 to={CollectionIdRoute.fullPath}
-                params={{ collectionId: movie.belongs_to_collection.id.toString() }}
+                params={{ collectionId: movie.belongs_to_collection.id }}
                 className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }))}
               >
                 View

@@ -1,11 +1,11 @@
-import { TrendingAPI, type LanguageISO6391 } from '@lorenzopant/tmdb';
+import { type LanguageISO6391 } from '@lorenzopant/tmdb';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { format } from 'date-fns/format';
 import { tmdbApi } from '@/lib/api';
 import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
 import { type MovieSearchParams } from '@/routes/(movies)/_sidebar/movies';
 import type { SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
-import type { MediaType } from '@/types';
+import type { MediaType, TrendingMediaType } from '@/types';
 
 export const movieQueryOptions = (params: MovieSearchParams) =>
   infiniteQueryOptions({
@@ -232,8 +232,8 @@ export const personIdQueryOptions = (personId: number) =>
       }),
   });
 
-export const trendingQueryOptions = ({ media, timeWindow }: { media: MediaType; timeWindow: 'day' | 'week' }) =>
+export const trendingQueryOptions = ({ media, timeWindow }: { media: TrendingMediaType; timeWindow: 'day' | 'week' }) =>
   queryOptions({
-    queryKey: ['trending', { media, timeWindow }],
+    queryKey: ['trending', { media, timeWindow, page: 23 }],
     queryFn: () => tmdbApi.trending[media]({ time_window: timeWindow }),
   });

@@ -1,19 +1,10 @@
 import { clsx } from 'clsx';
 import type { ClassValue } from 'clsx';
-import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import * as v from 'valibot';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function useContextSafely<T>(context: React.Context<T>): NonNullable<T> {
-  const value = React.useContext(context);
-  if (value == null) {
-    throw new Error(`${context.displayName} cannot be used outside of provider`);
-  }
-  return value;
 }
 
 interface ImageTypeToSizeMap {
@@ -98,4 +89,8 @@ export function formatCurrency(
 export function schemaObjectKeys<T extends Record<string, unknown>>(obj: T) {
   const keys = Object.keys(obj) as Extract<keyof T, string>[];
   return v.picklist(keys as [Extract<keyof T, string>, ...Extract<keyof T, string>[]]);
+}
+
+export function voteAverageToPercentage(voteAverage: number) {
+  return `${Math.round(voteAverage * 10)}%`;
 }

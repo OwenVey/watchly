@@ -1,5 +1,5 @@
 import { Accordion } from '@base-ui/react/accordion';
-import type { TVSeason } from '@lorenzopant/tmdb';
+import type { LanguageISO6391, TVSeason } from '@lorenzopant/tmdb';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
@@ -21,9 +21,8 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
-import { formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { formatMinutesToHHMM, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
 import { seriesIdQueryOptions } from '@/query-options';
-import type { Season } from '@/types';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
   params: {
@@ -71,62 +70,60 @@ function RouteComponent() {
         <Link
           from={Route.fullPath}
           to="/movies"
-          search={{ originalLanguage: series.original_language }}
+          search={{ originalLanguage: series.original_language as LanguageISO6391 }}
           className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
-          {LANGUAGES_MAP[series.original_language]}
+          {LANGUAGES_MAP[series.original_language as LanguageISO6391]}
         </Link>
       ),
     },
     {
       label: 'Production Country',
-      value: series.production_countries.at(0)?.name,
+      value: series.production_countries?.at(0)?.name,
     },
     {
-      label: series.production_companies.length > 1 ? 'Studios' : 'Studio',
-      value:
-        series.production_companies.length > 0 ? (
-          <ul>
-            {series.production_companies.map(({ id, name }) => (
-              <li key={id}>
-                <Link
-                  from={Route.fullPath}
-                  to="/series"
-                  search={{ studios: [{ value: id.toString(), label: name }] }}
-                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
-                >
-                  {name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : null,
+      label: (series.production_companies?.length ?? 0) > 1 ? 'Studios' : 'Studio',
+      value: series.production_companies ? (
+        <ul>
+          {series.production_companies.map(({ id, name }) => (
+            <li key={id}>
+              <Link
+                from={Route.fullPath}
+                to="/series"
+                search={{ studios: [{ value: id.toString(), label: name }] }}
+                className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
+              >
+                {name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null,
     },
     {
-      label: series.networks.length > 1 ? 'Networks' : 'Network',
-      value:
-        series.networks.length > 0 ? (
-          <ul>
-            {series.networks.map(({ id, name }) => (
-              <li key={id}>
-                <Link
-                  from={Route.fullPath}
-                  to="/series"
-                  search={{ networks: [{ value: id.toString(), label: name }] }}
-                  className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
-                >
-                  {name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : null,
+      label: (series.networks?.length ?? 0 > 1) ? 'Networks' : 'Network',
+      value: series.networks ? (
+        <ul>
+          {series.networks.map(({ id, name }) => (
+            <li key={id}>
+              <Link
+                from={Route.fullPath}
+                to="/series"
+                search={{ networks: [{ value: id.toString(), label: name }] }}
+                className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
+              >
+                {name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null,
     },
   ].filter(({ value }) => value);
 
   const ratings = [
     {
-      score: series.vote_average,
+      score: voteAverageToPercentage(series.vote_average),
       logo: TmdbLogo,
       tooltip: 'TMDb User Score',
       logoClass: 'w-7',
@@ -197,7 +194,7 @@ function RouteComponent() {
                 )}
 
                 <div className="text-sm font-medium whitespace-nowrap text-foreground">
-                  {series.seasons.length} Seasons
+                  {series.seasons?.length ?? 0} Seasons
                 </div>
 
                 <div className="flex flex-wrap gap-1">
@@ -247,7 +244,7 @@ function RouteComponent() {
               </div>
             </div>
           </div>
-          {series.seasons.length > 0 && (
+          {series.seasons && (
             <div>
               <h2 className="text-2xl leading-5 font-semibold text-foreground">Seasons</h2>
               <Accordion.Root
@@ -265,7 +262,7 @@ function RouteComponent() {
                   }
                 }}
               >
-                {series.seasons.map((season) => (
+                {series.seasons?.map((season) => (
                   <Accordion.Item
                     key={season.id}
                     value={season.season_number.toString()}
@@ -273,12 +270,11 @@ function RouteComponent() {
                   >
                     <Accordion.Header>
                       <Accordion.Trigger className="group relative flex w-full items-center justify-between overflow-hidden rounded-lg border bg-card p-2 backdrop-blur-xl transition-all hover:border-accent hover:bg-muted data-panel-open:rounded-b-none! data-disabled:pointer-events-none">
-                        {season.vote_average && (
-                          <Badge variant="secondary" className="absolute top-2 right-2">
-                            <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
-                            {season.vote_average}
-                          </Badge>
-                        )}
+                        <Badge variant="secondary" className="absolute top-2 right-2">
+                          <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
+                          {voteAverageToPercentage(season.vote_average)}
+                        </Badge>
+
                         <div className="flex gap-4">
                           {season.poster_path ? (
                             <img
@@ -320,12 +316,11 @@ function RouteComponent() {
                           <ul className="divide-y">
                             {currentSeasonDetails.episodes.map((episode) => (
                               <li key={episode.id} className="relative flex gap-4 p-4">
-                                {episode.vote_average && (
-                                  <Badge variant="secondary" className="absolute top-4 right-4">
-                                    <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
-                                    {episode.vote_average}
-                                  </Badge>
-                                )}
+                                <Badge variant="secondary" className="absolute top-4 right-4">
+                                  <StarIcon className="mr-1 size-3 text-muted-foreground" fill="currentColor" />
+                                  {voteAverageToPercentage(episode.vote_average)}
+                                </Badge>
+
                                 {episode.still_path ? (
                                   <img
                                     width={142}

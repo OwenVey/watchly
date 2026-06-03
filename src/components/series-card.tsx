@@ -2,9 +2,8 @@ import type { TVSeriesResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
-import { cn, getTmdbImage } from '@/lib/utils';
+import { cn, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
-import type { Series } from '@/types';
 
 interface Props {
   series: TVSeriesResultItem;
@@ -24,7 +23,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
         className,
       )}
       to={SeriesIdRoute.to}
-      params={{ seriesId: series.id.toString() }}
+      params={{ seriesId: series.id }}
       preloadDelay={500}
       viewTransition
       onClick={() => {
@@ -32,7 +31,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
       }}
     >
       {showBadge && (
-        <span className="border-purple-9 bg-purple-11 text-purple-1 absolute top-0 right-0 z-10 m-2 rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide">
+        <span className="text-purple-1 absolute top-0 right-0 z-10 m-2 rounded-full border border-purple-400 bg-purple-600 px-2 py-0.5 text-xs font-semibold tracking-wide">
           SERIES
         </span>
       )}
@@ -53,12 +52,10 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
           series.poster_path && 'bg-black/50 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
         )}
       >
-        {series.vote_average ? (
-          <div className="absolute top-2 left-2 flex items-center gap-1">
-            <TmdbLogo className="size-6" />
-            <span className="text-xs font-medium text-white">{series.vote_average}</span>
-          </div>
-        ) : null}
+        <div className="absolute top-2 left-2 flex items-center gap-1">
+          <TmdbLogo className="size-6" />
+          <span className="text-xs font-medium text-white">{voteAverageToPercentage(series.vote_average)}</span>
+        </div>
         {series.first_air_date && (
           <div className="text-sm font-medium text-white">{new Date(series.first_air_date).getFullYear()}</div>
         )}
