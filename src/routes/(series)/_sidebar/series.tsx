@@ -11,8 +11,8 @@ import { seriesQueryOptions } from '@/query-options';
 import { OptionsSchema, TvShowTypeSchema } from '@/schemas';
 
 const SeriesSearchSchema = v.object({
-  firstAirDateAfter: v.optional(v.pipe(v.unknown(), v.toDate())),
-  firstAirDateBefore: v.optional(v.pipe(v.unknown(), v.toDate())),
+  firstAirDateAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  firstAirDateBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
   ratingMin: v.optional(
     v.fallback(
       v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.ratingMax - 1)),

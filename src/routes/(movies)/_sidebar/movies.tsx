@@ -1,5 +1,5 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
@@ -11,8 +11,8 @@ import { movieQueryOptions } from '@/query-options';
 import { MovieReleaseTypeSchema } from '@/schemas';
 
 const MovieSearchSchema = v.object({
-  releasedAfter: v.optional(v.pipe(v.unknown(), v.toDate())),
-  releasedBefore: v.optional(v.pipe(v.unknown(), v.toDate())),
+  releasedAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  releasedBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
   ratingMin: v.optional(
     v.fallback(
       v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax - 1)),

@@ -169,9 +169,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateAfter}
+                  selected={firstAirDateAfter ? new Date(firstAirDateAfter) : undefined}
                   onSelect={(firstAirDateAfter) =>
-                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateAfter }) })
+                    navigate({
+                      to: '/series',
+                      search: (prev) => ({ ...prev, firstAirDateAfter: firstAirDateAfter?.toISOString() }),
+                    })
                   }
                 />
               </PopoverContent>
@@ -195,9 +198,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateBefore}
+                  selected={firstAirDateBefore ? new Date(firstAirDateBefore) : undefined}
                   onSelect={(firstAirDateBefore) =>
-                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateBefore }) })
+                    navigate({
+                      to: '/series',
+                      search: (prev) => ({ ...prev, firstAirDateBefore: firstAirDateBefore?.toISOString() }),
+                    })
                   }
                 />
               </PopoverContent>
@@ -487,7 +493,7 @@ function Filters() {
           <Switch
             id="adult-content"
             checked={adult}
-            onCheckedChange={(adult) => navigate({ to: '/series', search: { adult } })}
+            onCheckedChange={(adult) => navigate({ to: '/series', search: (prev) => ({ ...prev, adult }) })}
           />
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>

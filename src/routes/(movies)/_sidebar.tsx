@@ -164,8 +164,13 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedAfter}
-                  onSelect={(releasedAfter) => navigate({ to: '/movies', search: { releasedAfter } })}
+                  selected={releasedAfter ? new Date(releasedAfter) : undefined}
+                  onSelect={(releasedAfter) =>
+                    navigate({
+                      to: '/movies',
+                      search: (prev) => ({ ...prev, releasedAfter: releasedAfter?.toISOString() }),
+                    })
+                  }
                 />
               </PopoverContent>
             </Popover>
@@ -188,9 +193,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedBefore}
+                  selected={releasedBefore ? new Date(releasedBefore) : undefined}
                   onSelect={(releasedBefore) =>
-                    void navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedBefore }) })
+                    navigate({
+                      to: '/movies',
+                      search: (prev) => ({ ...prev, releasedBefore: releasedBefore?.toISOString() }),
+                    })
                   }
                 />
               </PopoverContent>
@@ -207,7 +215,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as number[])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              void navigate({ to: '/movies', search: { ratingMin, ratingMax } });
+              void navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
             min={DEFAULT_MOVIE_SEARCH.ratingMin}
