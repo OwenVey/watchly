@@ -72,9 +72,9 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: SeriesSearchSchema,
   search: {
     middlewares: [
-      // retainSearchParams(true),
-      // retainSearchParams(Object.keys({...DEFAULT_SERIES_SEARCH}) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
-      stripSearchParams({ ...DEFAULT_SERIES_SEARCH }),
+      stripSearchParams(DEFAULT_SERIES_SEARCH),
+      // retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
+      // stripSearchParams(DEFAULT_SERIES_SEARCH),
     ],
   },
   loaderDeps: ({ search }) => search,

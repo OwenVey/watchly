@@ -497,7 +497,7 @@ function Filters() {
         {/* Clear Filters */}
         <Link
           to="/series"
-          search={{ ...DEFAULT_SERIES_SEARCH }}
+          search={DEFAULT_SERIES_SEARCH}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />

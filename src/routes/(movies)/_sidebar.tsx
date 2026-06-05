@@ -165,9 +165,7 @@ function Filters() {
                 <Calendar
                   mode="single"
                   selected={releasedAfter}
-                  onSelect={(releasedAfter) =>
-                    navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedAfter }) })
-                  }
+                  onSelect={(releasedAfter) => navigate({ to: '/movies', search: { releasedAfter } })}
                 />
               </PopoverContent>
             </Popover>
@@ -209,7 +207,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as number[])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              void navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/movies', search: { ratingMin, ratingMax } });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
             min={DEFAULT_MOVIE_SEARCH.ratingMin}
@@ -472,7 +470,7 @@ function Filters() {
         <Link
           from="/movies"
           to="/movies"
-          search={{ ...DEFAULT_MOVIE_SEARCH }}
+          search={DEFAULT_MOVIE_SEARCH}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />

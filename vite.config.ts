@@ -7,7 +7,11 @@ import { defineConfig } from 'vite';
 
 const config = defineConfig({
   plugins: [
-    devtools(),
+    devtools({
+      consolePiping: {
+        enabled: false,
+      },
+    }),
     nitro({ rollupConfig: { external: [/^@sentry\//u] } }),
     tailwindcss(),
     tanstackStart({
