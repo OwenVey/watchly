@@ -88,11 +88,13 @@ function Movie() {
               .map(({ type, release_date }) => {
                 const IconComponent = RELEASE_TYPE_ICON_MAP[type as MovieReleaseType];
                 return (
-                  <React.Fragment key={type}>
+                  <React.Fragment key={`${type}-${release_date}`}>
                     <Tooltip>
                       <TooltipTrigger render={<IconComponent className="size-4" />} />
 
-                      <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type as MovieReleaseType]}</TooltipContent>
+                      <TooltipContent side="left" sideOffset={8}>
+                        {MOVIE_RELEASE_TYPE_MAP[type as MovieReleaseType]}
+                      </TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}
                   </React.Fragment>
