@@ -173,7 +173,7 @@ function Filters() {
                   onSelect={(firstAirDateAfter) =>
                     navigate({
                       to: '/series',
-                      search: (prev) => ({ ...prev, firstAirDateAfter: firstAirDateAfter?.toISOString() }),
+                      search: { firstAirDateAfter: firstAirDateAfter?.toISOString() },
                     })
                   }
                 />
@@ -202,7 +202,7 @@ function Filters() {
                   onSelect={(firstAirDateBefore) =>
                     navigate({
                       to: '/series',
-                      search: (prev) => ({ ...prev, firstAirDateBefore: firstAirDateBefore?.toISOString() }),
+                      search: { firstAirDateBefore: firstAirDateBefore?.toISOString() },
                     })
                   }
                 />
@@ -220,7 +220,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as [number, number])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              void navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/series', search: { ratingMin, ratingMax } });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
@@ -240,7 +240,7 @@ function Filters() {
             onValueChange={(value) => setVoteCount(value as [number, number])}
             onValueCommitted={(value) => {
               const [voteCountMin, voteCountMax] = value as [number, number];
-              void navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+              void navigate({ to: '/series', search: { voteCountMin, voteCountMax } });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
@@ -261,10 +261,9 @@ function Filters() {
               onValueChange={(value) =>
                 navigate({
                   to: '/series',
-                  search: (prev) => ({
-                    ...prev,
+                  search: {
                     sort: (value ?? DEFAULT_SERIES_SEARCH.sort) as SeriesSearchParams['sort'],
-                  }),
+                  },
                 })
               }
             >
@@ -283,7 +282,7 @@ function Filters() {
             <Link
               from="/series"
               to="/series"
-              search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
+              search={{ sortDir: (sortDir === 'asc' ? 'desc' : 'asc') as SeriesSearchParams['sortDir'] }}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
               {sortDir === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -303,7 +302,7 @@ function Filters() {
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
             }))}
             onValueChange={(options) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
+              navigate({ to: '/series', search: { genres: options.map(({ value }) => +value) } })
             }
           />
         </div>
@@ -318,7 +317,7 @@ function Filters() {
             onValueChange={(status) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({ ...prev, status: (status ?? '') as SeriesSearchParams['status'] }),
+                search: { status: (status ?? '') as SeriesSearchParams['status'] },
               })
             }
           >
@@ -349,10 +348,9 @@ function Filters() {
             onValueChange={(options) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({
-                  ...prev,
+                search: {
                   types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP),
-                }),
+                },
               })
             }
           />
@@ -366,7 +364,7 @@ function Filters() {
             placeholder="Select keywords"
             items={[]}
             value={keywords}
-            onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
+            onValueChange={(keywords) => navigate({ to: '/series', search: { keywords } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi.search.keyword({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -382,7 +380,7 @@ function Filters() {
             placeholder="Select studios"
             items={[]}
             value={studios}
-            onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
+            onValueChange={(studios) => navigate({ to: '/series', search: { studios } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -398,7 +396,7 @@ function Filters() {
             placeholder="Select networks"
             items={[]}
             value={networks}
-            onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
+            onValueChange={(networks) => navigate({ to: '/series', search: { networks } })}
             onSearch={async (query) => {
               const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
@@ -416,10 +414,9 @@ function Filters() {
             onValueChange={(originalLanguage) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({
-                  ...prev,
+                search: {
                   originalLanguage: originalLanguage ?? undefined,
-                }),
+                },
               })
             }
           >
@@ -457,10 +454,9 @@ function Filters() {
                           <Link
                             from="/series"
                             to="/series"
-                            search={(prev) => ({
-                              ...prev,
+                            search={{
                               watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
-                            })}
+                            }}
                             className={cn(
                               'aspect-square overflow-hidden rounded-lg border p-1.5',
                               'outline-none focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground',
@@ -493,7 +489,7 @@ function Filters() {
           <Switch
             id="adult-content"
             checked={adult}
-            onCheckedChange={(adult) => navigate({ to: '/series', search: (prev) => ({ ...prev, adult }) })}
+            onCheckedChange={(adult) => navigate({ to: '/series', search: { adult } })}
           />
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>

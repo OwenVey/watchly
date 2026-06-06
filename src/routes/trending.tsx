@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, retainSearchParams, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
@@ -17,15 +17,27 @@ const TRENDING_MEDIA_OPTIONS = [
   { label: 'People', value: 'people' },
 ] satisfies { label: string; value: TrendingMediaType }[];
 
-const TrendingSearchSchema = v.object({
-  media: v.fallback(TrendingMediaTypeSchema, 'all'),
-  timeWindow: v.fallback(v.picklist(['day', 'week']), 'day'),
-});
+const DEFAULT_TRENDING_SEARCH = {
+  media: 'all' as TrendingMediaType,
+  timeWindow: 'day' as 'day' | 'week',
+};
 
 export const Route = createFileRoute('/trending')({
-  validateSearch: TrendingSearchSchema,
+  validateSearch: v.object({
+    media: v.optional(
+      v.fallback(TrendingMediaTypeSchema, DEFAULT_TRENDING_SEARCH.media),
+      DEFAULT_TRENDING_SEARCH.media,
+    ),
+    timeWindow: v.optional(
+      v.fallback(v.picklist(['day', 'week']), DEFAULT_TRENDING_SEARCH.timeWindow),
+      DEFAULT_TRENDING_SEARCH.timeWindow,
+    ),
+  }),
   search: {
-    middlewares: [stripSearchParams({ media: 'all' })],
+    middlewares: [
+      retainSearchParams(Object.keys(DEFAULT_TRENDING_SEARCH) as Array<keyof typeof DEFAULT_TRENDING_SEARCH>),
+      stripSearchParams(DEFAULT_TRENDING_SEARCH),
+    ],
   },
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(trendingQueryOptions(deps)),
@@ -46,7 +58,7 @@ function Trending() {
             <Select
               items={TRENDING_MEDIA_OPTIONS}
               value={media}
-              onValueChange={(value) => navigate({ search: (prev) => ({ ...prev, media: value ?? 'all' }) })}
+              onValueChange={(value) => navigate({ search: { media: value ?? undefined } })}
             >
               <SelectTrigger id="trending-media" className="w-full">
                 <SelectValue placeholder="Select media" />
@@ -71,7 +83,7 @@ function Trending() {
                 { label: 'Week', value: 'week' },
               ]}
               value={timeWindow}
-              onValueChange={(value) => navigate({ search: (prev) => ({ ...prev, timeWindow: value ?? 'day' }) })}
+              onValueChange={(value) => navigate({ search: { timeWindow: value ?? undefined } })}
             >
               <SelectTrigger id="trending-time-window" className="w-full">
                 <SelectValue placeholder="Select time window" />

@@ -1,5 +1,5 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
@@ -92,9 +92,8 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: MovieSearchSchema,
   search: {
     middlewares: [
+      retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
       stripSearchParams(DEFAULT_MOVIE_SEARCH),
-      // retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
-      // stripSearchParams(DEFAULT_MOVIE_SEARCH),
     ],
   },
   loaderDeps: ({ search }) => search,

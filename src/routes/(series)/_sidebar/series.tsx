@@ -1,5 +1,5 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import * as v from 'valibot';
@@ -72,9 +72,8 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: SeriesSearchSchema,
   search: {
     middlewares: [
+      retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
       stripSearchParams(DEFAULT_SERIES_SEARCH),
-      // retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
-      // stripSearchParams(DEFAULT_SERIES_SEARCH),
     ],
   },
   loaderDeps: ({ search }) => search,
