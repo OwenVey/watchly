@@ -25,7 +25,6 @@
     "@tanstack/react-router": "^1.170.13",
     "@tanstack/react-router-ssr-query": "^1.167.1",
     "@tanstack/react-start": "^1.168.22",
-    "@tanstack/router-plugin": "^1.168.16",
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
