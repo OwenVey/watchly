@@ -1,6 +1,6 @@
 import { createFetch, createSchema } from '@better-fetch/fetch';
 import { logger } from '@better-fetch/logger';
-import { TMDB } from '@lorenzopant/tmdb';
+import { TMDB, type TMDBOptions } from '@lorenzopant/tmdb';
 import * as v from 'valibot';
 
 const BEARER_TOKEN =
@@ -8,6 +8,8 @@ const BEARER_TOKEN =
 
 export const tmdbApi = new TMDB(BEARER_TOKEN, {
   logger: import.meta.env.DEV,
+  region: 'US',
+  timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone as TMDBOptions['timezone']) ?? 'America/Chicago',
   images: {
     autocomplete_paths: true,
     auto_include_image_language: true,
