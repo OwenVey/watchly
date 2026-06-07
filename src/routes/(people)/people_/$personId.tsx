@@ -9,7 +9,6 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
-import { tmdbApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { personIdQueryOptions } from '@/query-options';
 
@@ -89,7 +88,7 @@ function Person() {
         {person.profile_path ? (
           <img
             className="aspect-2/3 w-48 rounded-xl shadow-lg"
-            src={tmdbApi.images.profile(person.profile_path, 'h632')}
+            src={person.profile_path}
             alt={`profile for ${person.name}`}
             style={{ viewTransitionName: `person-profile-${person.id}` }}
           />
