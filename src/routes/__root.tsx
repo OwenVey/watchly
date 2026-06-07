@@ -10,6 +10,19 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import appCss from '../styles.css?url';
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  ssr: false,
+  notFoundComponent: () => (
+    <StatusPage code="404" title="Page not found" description="Sorry, we couldn't find the page you're looking for." />
+  ),
+  errorComponent: ({ error }) => (
+    <StatusPage
+      code="500"
+      title="Something went wrong"
+      description="Sorry, an unexpected error has occurred."
+      details={<pre className="rounded bg-muted p-4 text-left text-sm text-destructive">{error.message}</pre>}
+    />
+  ),
+  shellComponent: RootDocument,
   head: () => ({
     links: [
       {
@@ -35,18 +48,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
-  notFoundComponent: () => (
-    <StatusPage code="404" title="Page not found" description="Sorry, we couldn't find the page you're looking for." />
-  ),
-  errorComponent: ({ error }) => (
-    <StatusPage
-      code="500"
-      title="Something went wrong"
-      description="Sorry, an unexpected error has occurred."
-      details={<pre className="rounded bg-muted p-4 text-left text-sm text-destructive">{error.message}</pre>}
-    />
-  ),
-  shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
