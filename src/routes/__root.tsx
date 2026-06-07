@@ -10,7 +10,6 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import appCss from '../styles.css?url';
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  ssr: false,
   notFoundComponent: () => (
     <StatusPage code="404" title="Page not found" description="Sorry, we couldn't find the page you're looking for." />
   ),
