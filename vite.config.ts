@@ -15,11 +15,7 @@ const config = defineConfig({
     }),
     nitro(),
     tailwindcss(),
-    tanstackStart({
-      spa: {
-        enabled: true,
-      },
-    }),
+    tanstackStart(),
     viteReact(),
     babel({
       presets: [reactCompilerPreset()],
