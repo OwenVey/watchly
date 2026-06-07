@@ -1,3 +1,4 @@
+import { DiscoverTVStatusLabel, DiscoverTVType, DiscoverTVTypeLabel } from '@lorenzopant/tmdb';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -17,13 +18,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import {
-  DEFAULT_SERIES_SEARCH,
-  LANGUAGES_MAP,
-  SERIES_GENRES_MAP,
-  TV_SHOW_STATUS_MAP,
-  TV_SHOW_TYPE_MAP,
-} from '@/lib/constants';
+import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP, SERIES_GENRES_MAP } from '@/lib/constants';
 import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 
@@ -42,7 +37,7 @@ const SERIES_SORT_ITEMS = [
 
 const SERIES_STATUS_ITEMS = [
   { value: null, label: 'Select status' },
-  ...Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => ({ value, label })),
+  ...Object.entries(DiscoverTVStatusLabel).map(([value, label]) => ({ value, label })),
 ];
 
 const SERIES_LANGUAGE_ITEMS = [
@@ -340,16 +335,16 @@ function Filters() {
           <MultiCombobox
             id="types"
             placeholder="Select show types"
-            items={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            items={Object.entries(DiscoverTVTypeLabel).map(([value, label]) => ({ label, value }))}
             value={types.map((value) => ({
               value: value.toString(),
-              label: TV_SHOW_TYPE_MAP[value],
+              label: DiscoverTVTypeLabel[value],
             }))}
             onValueChange={(options) =>
               navigate({
                 to: '/series',
                 search: {
-                  types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP),
+                  types: options.map(({ value }) => +value as DiscoverTVType),
                 },
               })
             }

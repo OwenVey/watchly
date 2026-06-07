@@ -1,5 +1,5 @@
-import { DiscoverTVStatus, DiscoverTVType, type LanguageISO6391 } from '@lorenzopant/tmdb';
-import type { MovieReleaseType, Option } from '@/types';
+import { DiscoverTVType, MovieReleaseType, type LanguageISO6391 } from '@lorenzopant/tmdb';
+import type { Option } from '@/types';
 
 export const DEFAULT_MOVIE_SEARCH = {
   adult: false,
@@ -40,35 +40,6 @@ export const DEFAULT_SERIES_SEARCH = {
   voteCountMin: 0,
   watchProviders: [] as number[],
 } as const;
-
-export const MOVIE_RELEASE_TYPE_MAP = {
-  1: 'Premiere',
-  2: 'Theatrical (limited)',
-  3: 'Theatrical',
-  4: 'Digital',
-  5: 'Physical',
-  6: 'TV',
-  // TODO: will change to ReleaseType enum from `@lorenzopant/tmdb` once it is exported
-} satisfies Record<MovieReleaseType, string>;
-
-export const TV_SHOW_TYPE_MAP = {
-  0: 'Documentary',
-  1: 'News',
-  2: 'Miniseries',
-  3: 'Reality',
-  4: 'Scripted',
-  5: 'Talk Show',
-  6: 'Video',
-} satisfies Record<DiscoverTVType, string>;
-
-export const TV_SHOW_STATUS_MAP = {
-  0: 'Returning Series',
-  1: 'Planned',
-  2: 'In Production',
-  3: 'Ended',
-  4: 'Canceled',
-  5: 'Pilot',
-} satisfies Record<DiscoverTVStatus, string>;
 
 export const MOVIE_GENRES_MAP = {
   10_402: 'Music',

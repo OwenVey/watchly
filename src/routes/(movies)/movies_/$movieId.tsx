@@ -1,4 +1,4 @@
-import type { LanguageISO6391 } from '@lorenzopant/tmdb';
+import { MovieReleaseTypeLabel, type LanguageISO6391, type MovieReleaseType } from '@lorenzopant/tmdb';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
@@ -31,11 +31,10 @@ import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi } from '@/lib/api';
-import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
+import { LANGUAGES_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
-import type { MovieReleaseType } from '@/types';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   params: {
@@ -93,7 +92,7 @@ function Movie() {
                       <TooltipTrigger render={<IconComponent className="size-4" />} />
 
                       <TooltipContent side="left" sideOffset={8}>
-                        {MOVIE_RELEASE_TYPE_MAP[type as MovieReleaseType]}
+                        {MovieReleaseTypeLabel[type as MovieReleaseType]}
                       </TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}

@@ -1,3 +1,4 @@
+import { MovieReleaseType, MovieReleaseTypeLabel } from '@lorenzopant/tmdb';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -17,7 +18,7 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
+import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 
@@ -330,16 +331,16 @@ function Filters() {
           <MultiCombobox
             id="release-types"
             placeholder="Select release types"
-            items={Object.entries(MOVIE_RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            items={Object.entries(MovieReleaseTypeLabel).map(([value, label]) => ({ label, value }))}
             value={releaseTypes.map((value) => ({
               value: value.toString(),
-              label: MOVIE_RELEASE_TYPE_MAP[value as keyof typeof MOVIE_RELEASE_TYPE_MAP],
+              label: MovieReleaseTypeLabel[value],
             }))}
             onValueChange={(options) =>
               navigate({
                 to: '/movies',
                 search: {
-                  releaseTypes: options.map(({ value }) => +value as keyof typeof MOVIE_RELEASE_TYPE_MAP),
+                  releaseTypes: options.map(({ value }) => +value as MovieReleaseType),
                 },
               })
             }

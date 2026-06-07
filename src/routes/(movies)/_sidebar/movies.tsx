@@ -1,3 +1,4 @@
+import { MovieReleaseType } from '@lorenzopant/tmdb';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
@@ -8,7 +9,6 @@ import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
 import { schemaObjectKeys } from '@/lib/utils';
 import { movieQueryOptions } from '@/query-options';
-import { MovieReleaseTypeSchema } from '@/schemas';
 
 const MovieSearchSchema = v.object({
   releasedAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
@@ -68,7 +68,7 @@ const MovieSearchSchema = v.object({
   ),
   genres: v.optional(v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.genres), DEFAULT_MOVIE_SEARCH.genres),
   releaseTypes: v.optional(
-    v.fallback(v.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes),
+    v.fallback(v.array(v.picklist(Object.values(MovieReleaseType))), DEFAULT_MOVIE_SEARCH.releaseTypes),
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
   keywords: v.optional(
