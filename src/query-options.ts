@@ -190,6 +190,16 @@ export const movieIdQueryOptions = (movieId: number) =>
       }),
   });
 
+export const movieWatchProvidersQueryOptions = queryOptions({
+  queryKey: ['watch-providers', 'movie'],
+  queryFn: async () => tmdbApi.watch_providers.movie_providers(),
+});
+
+export const seriesWatchProvidersQueryOptions = queryOptions({
+  queryKey: ['watch-providers', 'series'],
+  queryFn: async () => tmdbApi.watch_providers.tv_providers(),
+});
+
 export const searchQueryOptions = (query: string) =>
   infiniteQueryOptions({
     queryKey: ['search', query],

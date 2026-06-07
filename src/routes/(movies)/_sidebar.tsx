@@ -1,5 +1,6 @@
 import { MovieReleaseType, MovieReleaseTypeLabel } from '@lorenzopant/tmdb';
-import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
@@ -20,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { tmdbApi } from '@/lib/api.js';
 import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
+import { movieWatchProvidersQueryOptions } from '@/query-options';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 
 const MOVIE_SORT_MAP: Record<MovieSearchParams['sort'], string> = {
@@ -42,10 +44,7 @@ const MOVIE_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
-  loader: () => ({
-    providersPromise: tmdbApi.watch_providers.movie_providers(),
-  }),
-  shouldReload: false,
+  ssr: false,
   component: MoviesSidebar,
 });
 
@@ -84,8 +83,6 @@ function MoviesSidebar() {
 }
 
 function Filters() {
-  const { providersPromise } = Route.useLoaderData();
-
   const search = MoviesRoute.useSearch();
   const {
     releasedAfter,
@@ -107,6 +104,7 @@ function Filters() {
     adult,
   } = search;
 
+  const { data: movieWatchProviders, isPending: providersPending } = useQuery(movieWatchProvidersQueryOptions);
   const navigate = useNavigate({ from: '/movies' });
 
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
@@ -411,16 +409,13 @@ function Filters() {
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="streaming-services">Streaming Services</Label>
           <div className="grid grid-cols-5 gap-1">
-            <Await
-              promise={providersPromise}
-              fallback={Array.from({ length: 10 }).map((_, index) => (
-                <Skeleton className="aspect-square" key={`placeholder-${index}`} />
-              ))}
-            >
-              {({ results: providers }) =>
-                providers
+            {providersPending
+              ? Array.from({ length: 10 }).map((_, index) => (
+                  <Skeleton className="aspect-square" key={`placeholder-${index}`} />
+                ))
+              : (movieWatchProviders?.results ?? [])
                   .sort((a, b) => a.display_priority - b.display_priority)
-                  .slice(0, showAllServices ? providers.length : 10)
+                  .slice(0, showAllServices ? movieWatchProviders?.results.length : 10)
                   .map((provider) => (
                     <Tooltip key={provider.provider_id}>
                       <TooltipTrigger
@@ -451,9 +446,7 @@ function Filters() {
                       />
                       <TooltipContent>{provider.provider_name}</TooltipContent>
                     </Tooltip>
-                  ))
-              }
-            </Await>
+                  ))}
           </div>
           <ShowMoreButton className="mt-1 w-full" onClick={() => toggleShowAllServices()} showAll={showAllServices} />
         </div>
