@@ -21,7 +21,7 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
-import { formatMinutesToHHMM, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
+import { formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { seriesIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
@@ -46,7 +46,6 @@ function RouteComponent() {
   const [seasonDetails, setSeasonDetails] = useState<Map<string, TVSeason>>(new Map());
 
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
-  const posterTransitionName = `series-poster-${series.id}`;
 
   const contentRating = series.content_ratings.results.find((a) => a.iso_3166_1 === 'US')?.rating;
 
@@ -150,7 +149,7 @@ function RouteComponent() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
-            src={getTmdbImage('backdrop', series.backdrop_path, 'w1280')}
+            src={series.backdrop_path}
             alt={`backdrop for ${series.name}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -165,9 +164,9 @@ function RouteComponent() {
                 className="w-48 rounded-xl shadow-lg"
                 width={192}
                 height={288}
-                src={getTmdbImage('poster', series.poster_path, 'w342')}
+                src={series.poster_path}
                 alt={`movie poster for ${series.name}`}
-                style={{ viewTransitionName: posterTransitionName }}
+                style={{ viewTransitionName: `series-poster-${series.id}` }}
               />
             ) : (
               <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
@@ -281,7 +280,7 @@ function RouteComponent() {
                               className="w-12 rounded-md shadow-lg"
                               width={76}
                               height={48}
-                              src={getTmdbImage('poster', season.poster_path, 'w92')}
+                              src={season.poster_path}
                               alt={`season poster of ${season.name}`}
                             />
                           ) : (
@@ -326,7 +325,7 @@ function RouteComponent() {
                                     width={142}
                                     height={80}
                                     className="h-20 w-auto rounded shadow-lg"
-                                    src={getTmdbImage('still', episode.still_path, 'w300')}
+                                    src={episode.still_path}
                                     alt={`episode still of ${episode.name}`}
                                   />
                                 ) : (

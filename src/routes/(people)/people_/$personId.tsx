@@ -9,7 +9,8 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
-import { cn, getTmdbImage } from '@/lib/utils';
+import { tmdbApi } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { personIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(people)/people_/$personId')({
@@ -24,7 +25,6 @@ export const Route = createFileRoute('/(people)/people_/$personId')({
 function Person() {
   const { personId } = Route.useParams();
   const { data: person } = useSuspenseQuery(personIdQueryOptions(personId));
-  const profileTransitionName = `person-profile-${person.id}`;
 
   const [showEntireBio, toggleShowEntireBio] = useToggle(false);
 
@@ -78,11 +78,7 @@ function Person() {
               'h-180 w-full object-cover blur-sm transition-opacity duration-1000',
               fade ? 'opacity-15' : 'opacity-0',
             )}
-            src={
-              validCast[currentIndex].backdrop_path
-                ? getTmdbImage('backdrop', validCast[currentIndex].backdrop_path, 'w1280')
-                : undefined
-            }
+            src={validCast[currentIndex].backdrop_path}
             alt={`cast backdrop`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -93,9 +89,9 @@ function Person() {
         {person.profile_path ? (
           <img
             className="aspect-2/3 w-48 rounded-xl shadow-lg"
-            src={getTmdbImage('profile', person.profile_path, 'h632')}
+            src={tmdbApi.images.profile(person.profile_path, 'h632')}
             alt={`profile for ${person.name}`}
-            style={{ viewTransitionName: profileTransitionName }}
+            style={{ viewTransitionName: `person-profile-${person.id}` }}
           />
         ) : (
           <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">

@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router';
 import { UserRoundIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { getTmdbImage } from '@/lib/utils';
 import { Route as PersonIdRoute } from '@/routes/(people)/people_/$personId';
 
 interface Props {
@@ -13,7 +12,6 @@ interface Props {
 
 export function PersonCard({ person, title }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
-  const profileTransitionName = `person-profile-${person.id}`;
 
   return (
     <Card
@@ -32,10 +30,10 @@ export function PersonCard({ person, title }: Props) {
           {person.profile_path ? (
             <img
               className="size-24 rounded-full border object-cover"
-              src={getTmdbImage('profile', person.profile_path, 'w185')}
+              src={person.profile_path}
               alt={`profile for ${person.name}`}
               style={{
-                viewTransitionName: isTransitionTarget ? profileTransitionName : 'none',
+                viewTransitionName: isTransitionTarget ? `person-profile-${person.id}` : 'none',
               }}
             />
           ) : (

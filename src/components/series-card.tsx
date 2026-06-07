@@ -2,7 +2,7 @@ import type { TVSeriesResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
-import { cn, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
+import { cn, voteAverageToPercentage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 
 interface Props {
@@ -13,7 +13,6 @@ interface Props {
 
 export function SeriesCard({ series, className, showBadge = false }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
-  const posterTransitionName = `series-poster-${series.id}`;
 
   return (
     <Link
@@ -38,11 +37,11 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
 
       {series.poster_path && (
         <img
-          src={getTmdbImage('poster', series.poster_path, 'w342')}
+          src={series.poster_path}
           alt={`Movie poster for ${series.name}`}
           className="h-full w-full object-cover"
           style={{
-            viewTransitionName: isTransitionTarget ? posterTransitionName : 'none',
+            viewTransitionName: isTransitionTarget ? `series-poster-${series.id}` : 'none',
           }}
         />
       )}

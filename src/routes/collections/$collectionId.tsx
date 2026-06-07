@@ -6,7 +6,6 @@ import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
 import { tmdbApi } from '@/lib/api';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
-import { getTmdbImage } from '@/lib/utils';
 
 export const Route = createFileRoute('/collections/$collectionId')({
   params: {
@@ -26,7 +25,7 @@ function Collection() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
-            src={getTmdbImage('backdrop', collection.backdrop_path, 'w1280')}
+            src={collection.backdrop_path}
             alt={`backdrop for ${collection.name}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -38,7 +37,7 @@ function Collection() {
           {collection.poster_path ? (
             <img
               className="w-48 rounded-xl shadow-lg"
-              src={getTmdbImage('poster', collection.poster_path, 'w342')}
+              src={collection.poster_path}
               alt={`collection poster for ${collection.name}`}
             />
           ) : (

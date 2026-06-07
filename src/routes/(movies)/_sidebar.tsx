@@ -19,7 +19,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
 import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP } from '@/lib/constants';
-import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 
 const MOVIE_SORT_MAP: Record<MovieSearchParams['sort'], string> = {
@@ -442,7 +442,7 @@ function Filters() {
                           >
                             {provider.logo_path && (
                               <img
-                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                src={provider.logo_path}
                                 alt={`${provider.provider_name} logo`}
                                 className="rounded-md"
                               />

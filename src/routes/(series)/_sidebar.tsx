@@ -19,7 +19,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
 import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP, SERIES_GENRES_MAP } from '@/lib/constants';
-import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { cn, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 
 const SERIES_SORT_MAP: Record<SeriesSearchParams['sort'], string> = {
@@ -462,7 +462,7 @@ function Filters() {
                           >
                             {provider.logo_path && (
                               <img
-                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                src={provider.logo_path}
                                 alt={`${provider.provider_name} logo`}
                                 className="rounded-md"
                               />

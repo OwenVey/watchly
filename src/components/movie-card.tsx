@@ -2,7 +2,7 @@ import type { MovieResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/tmdb-logo';
-import { cn, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
+import { cn, voteAverageToPercentage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
 
 interface Props {
@@ -13,7 +13,6 @@ interface Props {
 
 export function MovieCard({ movie, className, showBadge = false }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
-  const posterTransitionName = `movie-poster-${movie.id}`;
 
   return (
     <Link
@@ -38,11 +37,11 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
 
       {movie.poster_path && (
         <img
-          src={getTmdbImage('poster', movie.poster_path, 'w342')}
+          src={movie.poster_path}
           alt={`Movie poster for ${movie.title}`}
           className="h-full w-full object-cover"
           style={{
-            viewTransitionName: isTransitionTarget ? posterTransitionName : 'none',
+            viewTransitionName: isTransitionTarget ? `movie-poster-${movie.id}` : 'none',
           }}
         />
       )}

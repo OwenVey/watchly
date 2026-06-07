@@ -32,7 +32,7 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
-import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage, voteAverageToPercentage } from '@/lib/utils';
+import { cn, formatCurrency, formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 
@@ -55,7 +55,6 @@ function Movie() {
   const { omdb } = Route.useLoaderData();
 
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
-  const posterTransitionName = `movie-poster-${movie.id}`;
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
   const certification = usReleaseDates
@@ -175,7 +174,7 @@ function Movie() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
-            src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
+            src={movie.backdrop_path}
             alt={`backdrop for ${movie.title}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -189,9 +188,9 @@ function Movie() {
               className="w-48 rounded-xl shadow-lg"
               width={192}
               height={288}
-              src={getTmdbImage('poster', movie.poster_path, 'w342')}
+              src={movie.poster_path}
               alt={`movie poster for ${movie.title}`}
-              style={{ viewTransitionName: posterTransitionName }}
+              style={{ viewTransitionName: `movie-poster-${movie.id}` }}
             />
           ) : (
             <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
@@ -280,11 +279,7 @@ function Movie() {
               {movie.belongs_to_collection.backdrop_path && (
                 <img
                   className="absolute right-0 left-0 -z-10 w-full object-cover opacity-20"
-                  src={getTmdbImage(
-                    'backdrop',
-                    movie.belongs_to_collection.backdrop_path,
-                    'w1440_and_h320_multi_faces',
-                  )}
+                  src={movie.belongs_to_collection.backdrop_path}
                   alt={`backdrop for ${movie.title}`}
                 />
               )}

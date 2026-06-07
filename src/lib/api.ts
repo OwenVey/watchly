@@ -8,6 +8,25 @@ const BEARER_TOKEN =
 
 export const tmdbApi = new TMDB(BEARER_TOKEN, {
   logger: import.meta.env.DEV,
+  images: {
+    autocomplete_paths: true,
+    auto_include_image_language: true,
+    image_language_priority: {
+      // 1. textless posters first  2. English  3. any remaining
+      backdrops: ['null', 'en', '*'],
+      logos: ['null', 'en', '*'],
+      posters: ['null', 'en', '*'],
+      profiles: ['null', 'en', '*'],
+      stills: ['null', 'en', '*'],
+    },
+    default_image_sizes: {
+      backdrops: 'w1280',
+      logos: 'w92',
+      posters: 'w342',
+      profiles: 'w185',
+      still: 'w300',
+    },
+  },
 });
 
 export const omdbApi = createFetch({
