@@ -45,7 +45,6 @@ export const Route = createFileRoute('/(movies)/_sidebar')({
   loader: () => ({
     providersPromise: tmdbApi.watch_providers.movie_providers(),
   }),
-  gcTime: 0,
   shouldReload: false,
   component: MoviesSidebar,
 });

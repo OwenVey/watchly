@@ -49,7 +49,6 @@ export const Route = createFileRoute('/(series)/_sidebar')({
   loader: () => ({
     providersPromise: tmdbApi.watch_providers.tv_providers(),
   }),
-  gcTime: 0,
   shouldReload: false,
   component: SeriesSidebar,
 });
