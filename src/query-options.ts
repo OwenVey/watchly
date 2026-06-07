@@ -233,7 +233,27 @@ export const personIdQueryOptions = (personId: number) =>
   });
 
 export const trendingQueryOptions = ({ media, timeWindow }: { media: TrendingMediaType; timeWindow: 'day' | 'week' }) =>
-  queryOptions({
-    queryKey: ['trending', { media, timeWindow, page: 23 }],
-    queryFn: () => tmdbApi.trending[media]({ time_window: timeWindow }),
+  infiniteQueryOptions({
+    queryKey: ['trending', { media, timeWindow }],
+    queryFn: async ({ pageParam }) => {
+      const pagesToFetch = [pageParam, pageParam + 1, pageParam + 2];
+      const responses = await Promise.all(
+        pagesToFetch.map((page) => tmdbApi.trending[media]({ page, time_window: timeWindow })),
+      );
+
+      const lastResponse = responses.at(-1);
+      return {
+        page: lastResponse?.page ?? 0,
+        results: Array.from(
+          new Map(
+            responses.flatMap(({ results }) => results).map((result) => [`${result.media_type}-${result.id}`, result]),
+          ).values(),
+        ),
+        totalPages: lastResponse?.total_pages ?? 0,
+        totalResults: lastResponse?.total_results ?? 0,
+      };
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
