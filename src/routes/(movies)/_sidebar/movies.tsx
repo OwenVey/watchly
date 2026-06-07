@@ -112,16 +112,16 @@ function SkeletonCards() {
 function MovieCards() {
   const deps = Route.useLoaderDeps();
 
-  const { ref: loadMoreRef } = useIntersectionObserver({
-    onChange: (isIntersecting) => isIntersecting && hasNextPage && fetchNextPage(),
-  });
-
   const {
     data: movies,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
   } = useSuspenseInfiniteQuery(movieQueryOptions(deps));
+
+  const { ref: loadMoreRef } = useIntersectionObserver({
+    onChange: (isIntersecting) => isIntersecting && !isFetchingNextPage && hasNextPage && void fetchNextPage(),
+  });
 
   if (movies.pages[0]?.totalResults === 0) {
     return <div className="col-span-full mt-48 grid place-items-center text-muted-foreground">No results</div>;

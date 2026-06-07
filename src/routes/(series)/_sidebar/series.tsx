@@ -1,11 +1,11 @@
 import { DiscoverTVType } from '@lorenzopant/tmdb';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import * as v from 'valibot';
 import { SeriesCard } from '@/components/series-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
 import { schemaObjectKeys } from '@/lib/utils';
 import { seriesQueryOptions } from '@/query-options';
@@ -95,7 +95,6 @@ function SkeletonCards() {
 
 function SeriesCards() {
   const deps = Route.useLoaderDeps();
-  const [loadMoreRef, entry] = useIntersectionObserver();
 
   const {
     data: series,
@@ -104,11 +103,9 @@ function SeriesCards() {
     isFetchingNextPage,
   } = useSuspenseInfiniteQuery(seriesQueryOptions(deps));
 
-  React.useEffect(() => {
-    if (entry?.isIntersecting && !isFetchingNextPage && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
+  const { ref: loadMoreRef } = useIntersectionObserver({
+    onChange: (isIntersecting) => isIntersecting && !isFetchingNextPage && hasNextPage && void fetchNextPage(),
+  });
 
   if (series.pages[0]?.totalResults === 0) {
     return <div className="col-span-full mt-48 grid place-items-center text-muted-foreground">No results</div>;

@@ -1,9 +1,9 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useIntersectionObserver } from '@uidotdev/usehooks';
 import React from 'react';
 import { PersonCard } from '@/components/person-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { peopleQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(people)/people')({
@@ -12,15 +12,11 @@ export const Route = createFileRoute('/(people)/people')({
 });
 
 function People() {
-  const [loadMoreRef, entry] = useIntersectionObserver();
-
   const { data: people, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(peopleQueryOptions);
 
-  React.useEffect(() => {
-    if (entry?.isIntersecting && !isFetchingNextPage && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [entry, fetchNextPage, isFetchingNextPage, hasNextPage]);
+  const { ref: loadMoreRef } = useIntersectionObserver({
+    onChange: (isIntersecting) => isIntersecting && !isFetchingNextPage && hasNextPage && void fetchNextPage(),
+  });
 
   return (
     <ul className="grid w-full auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">

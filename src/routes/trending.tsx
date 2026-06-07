@@ -47,15 +47,16 @@ export const Route = createFileRoute('/trending')({
 });
 
 function Trending() {
-  const { media, timeWindow } = Route.useSearch();
+  const { media, timeWindow } = Route.useLoaderDeps();
   const navigate = useNavigate({ from: Route.fullPath });
-  const { ref: loadMoreRef } = useIntersectionObserver({
-    onChange: (isIntersecting) => isIntersecting && hasNextPage && fetchNextPage(),
-  });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     trendingQueryOptions({ media, timeWindow }),
   );
+
+  const { ref: loadMoreRef } = useIntersectionObserver({
+    onChange: (isIntersecting) => isIntersecting && !isFetchingNextPage && hasNextPage && void fetchNextPage(),
+  });
 
   if (data.pages[0]?.totalResults === 0) {
     return <div className="mt-48 grid w-full place-items-center text-muted-foreground">No results</div>;
