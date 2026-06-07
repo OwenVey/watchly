@@ -52,6 +52,7 @@ export function Navbar() {
               <div className="ml-8 hidden items-center gap-2 text-sm md:flex">
                 {LINKS.map((link) => (
                   <Link
+                    suppressHydrationWarning
                     key={link.to}
                     to={link.to}
                     className="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all"
