@@ -1,6 +1,6 @@
 import { Accordion } from '@base-ui/react/accordion';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { FilmIcon, MenuIcon, SearchIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
+import { FilmIcon, MenuIcon, SearchIcon, TrendingUpIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,11 @@ const LINKS = [
     icon: UsersIcon,
     label: 'People',
     to: '/people',
+  },
+  {
+    icon: TrendingUpIcon,
+    label: 'Trending',
+    to: '/trending',
   },
 ];
 

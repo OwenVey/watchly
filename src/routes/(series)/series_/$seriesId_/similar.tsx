@@ -1,14 +1,19 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import * as v from 'valibot';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { seriesIdQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId_/similar')({
+  params: {
+    parse: (params) => v.parse(v.object({ seriesId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ seriesId: params.seriesId.toString() }),
+  },
   loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
-  component: Crew,
+  component: Similar,
 });
-function Crew() {
+function Similar() {
   const { seriesId } = Route.useParams();
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
 

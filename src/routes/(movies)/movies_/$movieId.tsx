@@ -1,3 +1,4 @@
+import { MovieReleaseTypeLabel, type LanguageISO6391, type MovieReleaseType } from '@lorenzopant/tmdb';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
@@ -15,6 +16,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import React from 'react';
+import * as v from 'valibot';
 import { CardCarousel } from '@/components/card-carousel';
 import { ImdbLogo } from '@/components/imdb-logo';
 import { MovieCard } from '@/components/movie-card';
@@ -29,13 +31,16 @@ import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { omdbApi } from '@/lib/api';
-import { LANGUAGES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
-import { cn, formatCurrency, formatMinutesToHHMM, getTmdbImage } from '@/lib/utils';
+import { LANGUAGES_MAP } from '@/lib/constants';
+import { cn, formatCurrency, formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
-import type { MovieReleaseType } from '@/types';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
+  params: {
+    parse: (params) => v.parse(v.object({ movieId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ movieId: params.movieId.toString() }),
+  },
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     const omdbResponse = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
@@ -50,7 +55,6 @@ function Movie() {
   const { omdb } = Route.useLoaderData();
 
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
-  const posterTransitionName = `movie-poster-${movie.id}`;
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
   const certification = usReleaseDates
@@ -77,16 +81,18 @@ function Movie() {
         <div className="flex flex-col items-end gap-1">
           <div className="grid grid-cols-[max-content_max-content] items-center justify-items-end gap-x-2">
             {usReleaseDates
-              .sort((a, b) => a.release_date.getTime() - b.release_date.getTime())
+              .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
               .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
               .map(({ type, release_date }) => {
-                const IconComponent = RELEASE_TYPE_ICON_MAP[type];
+                const IconComponent = RELEASE_TYPE_ICON_MAP[type as MovieReleaseType];
                 return (
-                  <React.Fragment key={type}>
+                  <React.Fragment key={`${type}-${release_date}`}>
                     <Tooltip>
                       <TooltipTrigger render={<IconComponent className="size-4" />} />
 
-                      <TooltipContent side="left">{MOVIE_RELEASE_TYPE_MAP[type]}</TooltipContent>
+                      <TooltipContent side="left" sideOffset={8}>
+                        {MovieReleaseTypeLabel[type as MovieReleaseType]}
+                      </TooltipContent>
                     </Tooltip>
                     {format(release_date, 'MMM d, yyyy')}
                   </React.Fragment>
@@ -107,10 +113,10 @@ function Movie() {
         <Link
           from={Route.fullPath}
           to="/movies"
-          search={{ originalLanguage: movie.original_language }}
+          search={{ originalLanguage: movie.original_language as LanguageISO6391 }}
           className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
-          {LANGUAGES_MAP[movie.original_language]}
+          {LANGUAGES_MAP[movie.original_language as LanguageISO6391]}
         </Link>
       ),
     },
@@ -141,7 +147,7 @@ function Movie() {
 
   const ratings = [
     {
-      score: movie.vote_average,
+      score: voteAverageToPercentage(movie.vote_average),
       logo: TmdbLogo,
       tooltip: 'TMDb User Score',
       logoClass: 'w-7',
@@ -168,7 +174,7 @@ function Movie() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
-            src={getTmdbImage('backdrop', movie.backdrop_path, 'w1280')}
+            src={movie.backdrop_path}
             alt={`backdrop for ${movie.title}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -182,9 +188,9 @@ function Movie() {
               className="w-48 rounded-xl shadow-lg"
               width={192}
               height={288}
-              src={getTmdbImage('poster', movie.poster_path, 'w342')}
+              src={movie.poster_path}
               alt={`movie poster for ${movie.title}`}
-              style={{ viewTransitionName: posterTransitionName }}
+              style={{ viewTransitionName: `movie-poster-${movie.id}` }}
             />
           ) : (
             <div className="grid aspect-2/3 h-auto w-48 place-items-center rounded-xl bg-card shadow-lg">
@@ -199,7 +205,7 @@ function Movie() {
               {movie.release_date && (
                 <span className="ml-1 text-base font-medium text-muted-foreground">
                   {' '}
-                  ({movie.release_date.getFullYear()})
+                  ({new Date(movie.release_date).getFullYear()})
                 </span>
               )}
             </h1>
@@ -209,12 +215,14 @@ function Movie() {
                   {certification}
                 </div>
               )}
-              <div className="flex items-center gap-1">
-                <ClockIcon className="size-4 text-accent" />
-                <span className="text-sm font-medium whitespace-nowrap text-foreground">
-                  {formatMinutesToHHMM(movie.runtime)}
-                </span>
-              </div>
+              {movie.runtime && (
+                <div className="flex items-center gap-1">
+                  <ClockIcon className="size-4 text-accent" />
+                  <span className="text-sm font-medium whitespace-nowrap text-foreground">
+                    {formatMinutesToHHMM(movie.runtime)}
+                  </span>
+                </div>
+              )}
               <div className="flex flex-wrap gap-1">
                 {movie.genres.map(({ id, name }) => (
                   <Badge
@@ -271,18 +279,14 @@ function Movie() {
               {movie.belongs_to_collection.backdrop_path && (
                 <img
                   className="absolute right-0 left-0 -z-10 w-full object-cover opacity-20"
-                  src={getTmdbImage(
-                    'backdrop',
-                    movie.belongs_to_collection.backdrop_path,
-                    'w1440_and_h320_multi_faces',
-                  )}
+                  src={movie.belongs_to_collection.backdrop_path}
                   alt={`backdrop for ${movie.title}`}
                 />
               )}
               <div className="font-medium text-pretty text-foreground">{movie.belongs_to_collection.name}</div>
               <Link
                 to={CollectionIdRoute.fullPath}
-                params={{ collectionId: movie.belongs_to_collection.id.toString() }}
+                params={{ collectionId: movie.belongs_to_collection.id }}
                 className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }))}
               >
                 View

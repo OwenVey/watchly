@@ -1,3 +1,4 @@
+import { DiscoverTVStatusLabel, DiscoverTVType, DiscoverTVTypeLabel } from '@lorenzopant/tmdb';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -17,14 +18,8 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import {
-  DEFAULT_SERIES_SEARCH,
-  LANGUAGES_MAP,
-  SERIES_GENRES_MAP,
-  TV_SHOW_STATUS_MAP,
-  TV_SHOW_TYPE_MAP,
-} from '@/lib/constants';
-import { cn, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP, SERIES_GENRES_MAP } from '@/lib/constants';
+import { cn, toggleItemInArray } from '@/lib/utils.js';
 import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 
 const SERIES_SORT_MAP: Record<SeriesSearchParams['sort'], string> = {
@@ -42,7 +37,7 @@ const SERIES_SORT_ITEMS = [
 
 const SERIES_STATUS_ITEMS = [
   { value: null, label: 'Select status' },
-  ...Object.entries(TV_SHOW_STATUS_MAP).map(([value, label]) => ({ value, label })),
+  ...Object.entries(DiscoverTVStatusLabel).map(([value, label]) => ({ value, label })),
 ];
 
 const SERIES_LANGUAGE_ITEMS = [
@@ -51,11 +46,9 @@ const SERIES_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(series)/_sidebar')({
-  loader: () => {
-    return {
-      providersPromise: tmdbApi('/watch/providers/tv', { query: { watch_region: 'US' } }),
-    };
-  },
+  loader: () => ({
+    providersPromise: tmdbApi.watch_providers.tv_providers(),
+  }),
   gcTime: 0,
   shouldReload: false,
   component: SeriesSidebar,
@@ -171,9 +164,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateAfter}
+                  selected={firstAirDateAfter ? new Date(firstAirDateAfter) : undefined}
                   onSelect={(firstAirDateAfter) =>
-                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateAfter }) })
+                    navigate({
+                      to: '/series',
+                      search: { firstAirDateAfter: firstAirDateAfter?.toISOString() },
+                    })
                   }
                 />
               </PopoverContent>
@@ -197,9 +193,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateBefore}
+                  selected={firstAirDateBefore ? new Date(firstAirDateBefore) : undefined}
                   onSelect={(firstAirDateBefore) =>
-                    navigate({ to: '/series', search: (prev) => ({ ...prev, firstAirDateBefore }) })
+                    navigate({
+                      to: '/series',
+                      search: { firstAirDateBefore: firstAirDateBefore?.toISOString() },
+                    })
                   }
                 />
               </PopoverContent>
@@ -216,7 +215,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as [number, number])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              void navigate({ to: '/series', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/series', search: { ratingMin, ratingMax } });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.ratingMin, DEFAULT_SERIES_SEARCH.ratingMax]}
             min={DEFAULT_SERIES_SEARCH.ratingMin}
@@ -236,7 +235,7 @@ function Filters() {
             onValueChange={(value) => setVoteCount(value as [number, number])}
             onValueCommitted={(value) => {
               const [voteCountMin, voteCountMax] = value as [number, number];
-              void navigate({ to: '/series', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+              void navigate({ to: '/series', search: { voteCountMin, voteCountMax } });
             }}
             defaultValue={[DEFAULT_SERIES_SEARCH.voteCountMin, DEFAULT_SERIES_SEARCH.voteCountMax]}
             min={DEFAULT_SERIES_SEARCH.voteCountMin}
@@ -257,10 +256,9 @@ function Filters() {
               onValueChange={(value) =>
                 navigate({
                   to: '/series',
-                  search: (prev) => ({
-                    ...prev,
+                  search: {
                     sort: (value ?? DEFAULT_SERIES_SEARCH.sort) as SeriesSearchParams['sort'],
-                  }),
+                  },
                 })
               }
             >
@@ -279,7 +277,7 @@ function Filters() {
             <Link
               from="/series"
               to="/series"
-              search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
+              search={{ sortDir: (sortDir === 'asc' ? 'desc' : 'asc') as SeriesSearchParams['sortDir'] }}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
               {sortDir === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -299,7 +297,7 @@ function Filters() {
               label: SERIES_GENRES_MAP[value as keyof typeof SERIES_GENRES_MAP],
             }))}
             onValueChange={(options) =>
-              navigate({ to: '/series', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
+              navigate({ to: '/series', search: { genres: options.map(({ value }) => +value) } })
             }
           />
         </div>
@@ -314,7 +312,7 @@ function Filters() {
             onValueChange={(status) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({ ...prev, status: (status ?? '') as SeriesSearchParams['status'] }),
+                search: { status: (status ?? '') as SeriesSearchParams['status'] },
               })
             }
           >
@@ -337,18 +335,17 @@ function Filters() {
           <MultiCombobox
             id="types"
             placeholder="Select show types"
-            items={Object.entries(TV_SHOW_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            items={Object.entries(DiscoverTVTypeLabel).map(([value, label]) => ({ label, value }))}
             value={types.map((value) => ({
               value: value.toString(),
-              label: TV_SHOW_TYPE_MAP[value],
+              label: DiscoverTVTypeLabel[value],
             }))}
             onValueChange={(options) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({
-                  ...prev,
-                  types: options.map(({ value }) => +value as keyof typeof TV_SHOW_TYPE_MAP),
-                }),
+                search: {
+                  types: options.map(({ value }) => +value as DiscoverTVType),
+                },
               })
             }
           />
@@ -362,9 +359,9 @@ function Filters() {
             placeholder="Select keywords"
             items={[]}
             value={keywords}
-            onValueChange={(keywords) => navigate({ to: '/series', search: (prev) => ({ ...prev, keywords }) })}
+            onValueChange={(keywords) => navigate({ to: '/series', search: { keywords } })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/keyword', { query: { query } });
+              const { results } = await tmdbApi.search.keyword({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -378,9 +375,9 @@ function Filters() {
             placeholder="Select studios"
             items={[]}
             value={studios}
-            onValueChange={(studios) => navigate({ to: '/series', search: (prev) => ({ ...prev, studios }) })}
+            onValueChange={(studios) => navigate({ to: '/series', search: { studios } })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -394,9 +391,9 @@ function Filters() {
             placeholder="Select networks"
             items={[]}
             value={networks}
-            onValueChange={(networks) => navigate({ to: '/series', search: (prev) => ({ ...prev, networks }) })}
+            onValueChange={(networks) => navigate({ to: '/series', search: { networks } })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -412,10 +409,9 @@ function Filters() {
             onValueChange={(originalLanguage) =>
               navigate({
                 to: '/series',
-                search: (prev) => ({
-                  ...prev,
-                  originalLanguage: (originalLanguage ?? undefined) as SeriesSearchParams['originalLanguage'],
-                }),
+                search: {
+                  originalLanguage: originalLanguage ?? undefined,
+                },
               })
             }
           >
@@ -453,10 +449,9 @@ function Filters() {
                           <Link
                             from="/series"
                             to="/series"
-                            search={(prev) => ({
-                              ...prev,
+                            search={{
                               watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
-                            })}
+                            }}
                             className={cn(
                               'aspect-square overflow-hidden rounded-lg border p-1.5',
                               'outline-none focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground',
@@ -467,7 +462,7 @@ function Filters() {
                           >
                             {provider.logo_path && (
                               <img
-                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                src={provider.logo_path}
                                 alt={`${provider.provider_name} logo`}
                                 className="rounded-md"
                               />
@@ -499,7 +494,7 @@ function Filters() {
         {/* Clear Filters */}
         <Link
           to="/series"
-          search={{ ...DEFAULT_SERIES_SEARCH }}
+          search={DEFAULT_SERIES_SEARCH}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />

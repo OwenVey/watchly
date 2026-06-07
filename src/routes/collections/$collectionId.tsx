@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { FilmIcon } from 'lucide-react';
+import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
 import { tmdbApi } from '@/lib/api';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
-import { getTmdbImage } from '@/lib/utils';
 
 export const Route = createFileRoute('/collections/$collectionId')({
-  loader: async ({ params }) => tmdbApi('/collection/:collectionId', { params: { collectionId: params.collectionId } }),
+  params: {
+    parse: (params) => v.parse(v.object({ collectionId: v.pipe(v.string(), v.toNumber()) }), params),
+    stringify: (params) => ({ collectionId: params.collectionId.toString() }),
+  },
+  loader: async ({ params }) => tmdbApi.collections.details({ collection_id: params.collectionId }),
   component: Collection,
 });
 
@@ -21,7 +25,7 @@ function Collection() {
         <div className="absolute top-0 right-0 left-0 -z-10">
           <img
             className="h-180 w-full object-cover opacity-15 blur-sm"
-            src={getTmdbImage('backdrop', collection.backdrop_path, 'w1280')}
+            src={collection.backdrop_path}
             alt={`backdrop for ${collection.name}`}
           />
           <div className="absolute right-0 -bottom-4 left-0 h-1/2 bg-linear-to-t from-background" />
@@ -33,7 +37,7 @@ function Collection() {
           {collection.poster_path ? (
             <img
               className="w-48 rounded-xl shadow-lg"
-              src={getTmdbImage('poster', collection.poster_path, 'w342')}
+              src={collection.poster_path}
               alt={`collection poster for ${collection.name}`}
             />
           ) : (
@@ -73,7 +77,7 @@ function Collection() {
         <h2 className="text-2xl font-semibold text-foreground">Movies</h2>
         <ul className="mt-2 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
           {collection.parts
-            .sort((a, b) => (a.release_date?.getTime() ?? Infinity) - (b.release_date?.getTime() ?? Infinity))
+            .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
             .map((movie) => (
               <li key={movie.id}>
                 <MovieCard movie={movie} />

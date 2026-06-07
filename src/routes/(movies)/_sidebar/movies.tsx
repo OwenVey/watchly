@@ -1,17 +1,18 @@
+import { MovieReleaseType } from '@lorenzopant/tmdb';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { DEFAULT_MOVIE_SEARCH } from '@/lib/constants';
+import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
+import { schemaObjectKeys } from '@/lib/utils';
 import { movieQueryOptions } from '@/query-options';
-import { MovieReleaseTypeSchema } from '@/schemas';
 
 const MovieSearchSchema = v.object({
-  releasedAfter: v.optional(v.pipe(v.unknown(), v.toDate())),
-  releasedBefore: v.optional(v.pipe(v.unknown(), v.toDate())),
+  releasedAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  releasedBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
   ratingMin: v.optional(
     v.fallback(
       v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax - 1)),
@@ -67,7 +68,7 @@ const MovieSearchSchema = v.object({
   ),
   genres: v.optional(v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.genres), DEFAULT_MOVIE_SEARCH.genres),
   releaseTypes: v.optional(
-    v.fallback(v.array(MovieReleaseTypeSchema), DEFAULT_MOVIE_SEARCH.releaseTypes),
+    v.fallback(v.array(v.picklist(Object.values(MovieReleaseType))), DEFAULT_MOVIE_SEARCH.releaseTypes),
     DEFAULT_MOVIE_SEARCH.releaseTypes,
   ),
   keywords: v.optional(
@@ -78,7 +79,7 @@ const MovieSearchSchema = v.object({
     v.fallback(v.array(v.object({ value: v.string(), label: v.string() })), DEFAULT_MOVIE_SEARCH.studios),
     DEFAULT_MOVIE_SEARCH.studios,
   ),
-  originalLanguage: v.optional(v.string()),
+  originalLanguage: v.optional(schemaObjectKeys(LANGUAGES_MAP)),
   watchProviders: v.optional(
     v.fallback(v.array(v.number()), DEFAULT_MOVIE_SEARCH.watchProviders),
     DEFAULT_MOVIE_SEARCH.watchProviders,
@@ -91,9 +92,8 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: MovieSearchSchema,
   search: {
     middlewares: [
-      // retainSearchParams(true),
-      // retainSearchParams(Object.keys({ ...DEFAULT_MOVIE_SEARCH }) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
-      stripSearchParams({ ...DEFAULT_MOVIE_SEARCH }),
+      retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
+      stripSearchParams(DEFAULT_MOVIE_SEARCH),
     ],
   },
   loaderDeps: ({ search }) => search,

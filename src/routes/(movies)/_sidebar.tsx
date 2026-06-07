@@ -1,3 +1,4 @@
+import { MovieReleaseType, MovieReleaseTypeLabel } from '@lorenzopant/tmdb';
 import { Await, createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -17,8 +18,8 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP, MOVIE_RELEASE_TYPE_MAP } from '@/lib/constants';
-import { cn, formatMinutesToHHMM, getTmdbImage, toggleItemInArray } from '@/lib/utils.js';
+import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP } from '@/lib/constants';
+import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
 
 const MOVIE_SORT_MAP: Record<MovieSearchParams['sort'], string> = {
@@ -41,11 +42,9 @@ const MOVIE_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
-  loader: () => {
-    return {
-      providersPromise: tmdbApi('/watch/providers/movie', { query: { watch_region: 'US' } }),
-    };
-  },
+  loader: () => ({
+    providersPromise: tmdbApi.watch_providers.movie_providers(),
+  }),
   gcTime: 0,
   shouldReload: false,
   component: MoviesSidebar,
@@ -166,9 +165,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedAfter}
+                  selected={releasedAfter ? new Date(releasedAfter) : undefined}
                   onSelect={(releasedAfter) =>
-                    navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedAfter }) })
+                    navigate({
+                      to: '/movies',
+                      search: { releasedAfter: releasedAfter?.toISOString() },
+                    })
                   }
                 />
               </PopoverContent>
@@ -192,9 +194,12 @@ function Filters() {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedBefore}
+                  selected={releasedBefore ? new Date(releasedBefore) : undefined}
                   onSelect={(releasedBefore) =>
-                    void navigate({ to: '/movies', search: (prev) => ({ ...prev, releasedBefore }) })
+                    navigate({
+                      to: '/movies',
+                      search: { releasedBefore: releasedBefore?.toISOString() },
+                    })
                   }
                 />
               </PopoverContent>
@@ -211,7 +216,7 @@ function Filters() {
             onValueChange={(value) => setRating(value as number[])}
             onValueCommitted={(value) => {
               const [ratingMin, ratingMax] = value as [number, number];
-              void navigate({ to: '/movies', search: (prev) => ({ ...prev, ratingMin, ratingMax }) });
+              void navigate({ to: '/movies', search: { ratingMin, ratingMax } });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.ratingMin, DEFAULT_MOVIE_SEARCH.ratingMax]}
             min={DEFAULT_MOVIE_SEARCH.ratingMin}
@@ -231,7 +236,7 @@ function Filters() {
             onValueChange={(value) => setVoteCount(value as number[])}
             onValueCommitted={(value) => {
               const [voteCountMin, voteCountMax] = value as [number, number];
-              void navigate({ to: '/movies', search: (prev) => ({ ...prev, voteCountMin, voteCountMax }) });
+              void navigate({ to: '/movies', search: { voteCountMin, voteCountMax } });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.voteCountMin, DEFAULT_MOVIE_SEARCH.voteCountMax]}
             min={DEFAULT_MOVIE_SEARCH.voteCountMin}
@@ -251,7 +256,7 @@ function Filters() {
             onValueChange={(value) => setRuntime(value as number[])}
             onValueCommitted={(value) => {
               const [runtimeMin, runtimeMax] = value as [number, number];
-              void navigate({ to: '/movies', search: (prev) => ({ ...prev, runtimeMin, runtimeMax }) });
+              void navigate({ to: '/movies', search: { runtimeMin, runtimeMax } });
             }}
             defaultValue={[DEFAULT_MOVIE_SEARCH.runtimeMin, DEFAULT_MOVIE_SEARCH.runtimeMax]}
             min={DEFAULT_MOVIE_SEARCH.runtimeMin}
@@ -272,10 +277,9 @@ function Filters() {
               onValueChange={(sort) =>
                 navigate({
                   to: '/movies',
-                  search: (prev) => ({
-                    ...prev,
+                  search: {
                     sort: (sort ?? DEFAULT_MOVIE_SEARCH.sort) as MovieSearchParams['sort'],
-                  }),
+                  },
                 })
               }
             >
@@ -296,7 +300,7 @@ function Filters() {
             <Link
               from="/movies"
               to="/movies"
-              search={(prev) => ({ ...prev, sortDir: sortDir === 'asc' ? 'desc' : 'asc' })}
+              search={{ sortDir: (sortDir === 'asc' ? 'desc' : 'asc') as MovieSearchParams['sortDir'] }}
               className={cn('shrink-0', buttonVariants({ variant: 'outline', size: 'icon' }))}
             >
               {sortDir === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -316,7 +320,7 @@ function Filters() {
               label: MOVIE_GENRES_MAP[value as keyof typeof MOVIE_GENRES_MAP],
             }))}
             onValueChange={(options) =>
-              navigate({ to: '/movies', search: (prev) => ({ ...prev, genres: options.map(({ value }) => +value) }) })
+              navigate({ to: '/movies', search: { genres: options.map(({ value }) => +value) } })
             }
           />
         </div>
@@ -327,18 +331,17 @@ function Filters() {
           <MultiCombobox
             id="release-types"
             placeholder="Select release types"
-            items={Object.entries(MOVIE_RELEASE_TYPE_MAP).map(([value, label]) => ({ label, value }))}
+            items={Object.entries(MovieReleaseTypeLabel).map(([value, label]) => ({ label, value }))}
             value={releaseTypes.map((value) => ({
               value: value.toString(),
-              label: MOVIE_RELEASE_TYPE_MAP[value as keyof typeof MOVIE_RELEASE_TYPE_MAP],
+              label: MovieReleaseTypeLabel[value],
             }))}
             onValueChange={(options) =>
               navigate({
                 to: '/movies',
-                search: (prev) => ({
-                  ...prev,
-                  releaseTypes: options.map(({ value }) => +value as keyof typeof MOVIE_RELEASE_TYPE_MAP),
-                }),
+                search: {
+                  releaseTypes: options.map(({ value }) => +value as MovieReleaseType),
+                },
               })
             }
           />
@@ -352,9 +355,9 @@ function Filters() {
             placeholder="Select keywords"
             items={[]}
             value={keywords}
-            onValueChange={(keywords) => navigate({ to: '/movies', search: (prev) => ({ ...prev, keywords }) })}
+            onValueChange={(keywords) => navigate({ to: '/movies', search: { keywords } })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/keyword', { query: { query } });
+              const { results } = await tmdbApi.search.keyword({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -368,9 +371,9 @@ function Filters() {
             placeholder="Select studios"
             items={[]}
             value={studios}
-            onValueChange={(studios) => navigate({ to: '/movies', search: (prev) => ({ ...prev, studios }) })}
+            onValueChange={(studios) => navigate({ to: '/movies', search: { studios } })}
             onSearch={async (query) => {
-              const { results } = await tmdbApi('/search/company', { query: { query } });
+              const { results } = await tmdbApi.search.company({ query });
               return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
             }}
           />
@@ -386,10 +389,9 @@ function Filters() {
             onValueChange={(originalLanguage) =>
               navigate({
                 to: '/movies',
-                search: (prev) => ({
-                  ...prev,
-                  originalLanguage: (originalLanguage ?? undefined) as MovieSearchParams['originalLanguage'],
-                }),
+                search: {
+                  originalLanguage: originalLanguage ?? undefined,
+                },
               })
             }
           >
@@ -427,10 +429,9 @@ function Filters() {
                           <Link
                             from="/movies"
                             to="/movies"
-                            search={(prev) => ({
-                              ...prev,
+                            search={{
                               watchProviders: toggleItemInArray(watchProviders, provider.provider_id),
-                            })}
+                            }}
                             className={cn(
                               'aspect-square overflow-hidden rounded-lg border p-1.5',
                               'outline-none focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground',
@@ -441,7 +442,7 @@ function Filters() {
                           >
                             {provider.logo_path && (
                               <img
-                                src={getTmdbImage('logo', provider.logo_path, 'w92')}
+                                src={provider.logo_path}
                                 alt={`${provider.provider_name} logo`}
                                 className="rounded-md"
                               />
@@ -463,7 +464,7 @@ function Filters() {
           <Switch
             id="adult-content"
             checked={adult}
-            onCheckedChange={(adult) => navigate({ to: '/movies', search: (prev) => ({ ...prev, adult }) })}
+            onCheckedChange={(adult) => navigate({ to: '/movies', search: { adult } })}
           />
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>
@@ -474,7 +475,7 @@ function Filters() {
         <Link
           from="/movies"
           to="/movies"
-          search={{ ...DEFAULT_MOVIE_SEARCH }}
+          search={DEFAULT_MOVIE_SEARCH}
           className={cn('w-full', buttonVariants({ variant: 'outline' }))}
         >
           <FilterXIcon />
