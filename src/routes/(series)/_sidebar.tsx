@@ -48,7 +48,7 @@ const SERIES_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(series)/_sidebar')({
-  ssr: false,
+  loader: ({ context }) => context.queryClient.ensureQueryData(seriesWatchProvidersQueryOptions),
   component: SeriesSidebar,
 });
 
