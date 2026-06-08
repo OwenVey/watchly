@@ -45,7 +45,6 @@ export const Route = createFileRoute('/trending')({
 
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(trendingQueryOptions(deps)),
-  pendingMs: 0,
   pendingComponent: FullPageGridPending,
   component: Trending,
 });
