@@ -68,7 +68,7 @@ function RouteComponent() {
       value: (
         <Link
           from={Route.fullPath}
-          to="/movies"
+          to="/series"
           search={{ originalLanguage: series.original_language as LanguageISO6391 }}
           className="-m-1 rounded-md p-1 underline-offset-2 transition-colors hover:text-foreground hover:underline"
         >
@@ -224,7 +224,7 @@ function RouteComponent() {
                           render={
                             <Link
                               from={Route.fullPath}
-                              to="/movies"
+                              to="/series"
                               search={{
                                 keywords: [{ value: id.toString(), label: name }],
                               }}
