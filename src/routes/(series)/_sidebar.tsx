@@ -4,7 +4,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-rout
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -48,7 +48,8 @@ const SERIES_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(series)/_sidebar')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(seriesWatchProvidersQueryOptions),
+  ssr: false,
+  // loader: ({ context }) => context.queryClient.(seriesWatchProvidersQueryOptions),
   component: SeriesSidebar,
 });
 
@@ -115,14 +116,6 @@ function Filters() {
   const [rating, setRating] = React.useState([ratingMin, ratingMax]);
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
   const [showAllServices, toggleShowAllServices] = useToggle(false);
-
-  useEffect(() => {
-    setRating([ratingMin, ratingMax]);
-  }, [ratingMin, ratingMax]);
-
-  useEffect(() => {
-    setVoteCount([voteCountMin, voteCountMax]);
-  }, [voteCountMin, voteCountMax]);
 
   return (
     <>

@@ -101,7 +101,7 @@ export const seriesQueryOptions = (params: SeriesSearchParams) =>
               'first_air_date.gte': format(params.firstAirDateAfter, 'yyyy-M-d'),
             }),
             ...(params.firstAirDateBefore !== DEFAULT_SERIES_SEARCH.firstAirDateBefore && {
-              'primary_release_date.lte': format(params.firstAirDateBefore, 'yyyy-M-d'),
+              'first_air_date.lte': format(params.firstAirDateBefore, 'yyyy-M-d'),
             }),
             ...(params.ratingMin !== DEFAULT_SERIES_SEARCH.ratingMin && {
               'vote_average.gte': params.ratingMin,
@@ -204,6 +204,10 @@ export const searchQueryOptions = (query: string) =>
   infiniteQueryOptions({
     queryKey: ['search', query],
     queryFn: async ({ pageParam: page }) => {
+      if (query.length === 0) {
+        return { page, results: [], total_pages: 0, total_results: 0 };
+      }
+
       const response = await tmdbApi.search.multi({ query, page });
       return { ...response, results: response.results.sort((a, b) => b.popularity - a.popularity) }; // sort by popularity since TMDb doesn't sort search results by relevance
     },

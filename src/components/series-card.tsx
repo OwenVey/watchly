@@ -38,7 +38,7 @@ export function SeriesCard({ series, className, showBadge = false }: Props) {
       {series.poster_path && (
         <img
           src={series.poster_path}
-          alt={`Movie poster for ${series.name}`}
+          alt={`Series poster for ${series.name}`}
           className="h-full w-full object-cover"
           style={{
             viewTransitionName: isTransitionTarget ? `series-poster-${series.id}` : 'none',

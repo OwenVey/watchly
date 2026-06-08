@@ -12,6 +12,7 @@ import { ImdbLogo } from '@/components/imdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
+import { DetailPending } from '@/components/route-pending';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { TmdbLogo } from '@/components/tmdb-logo';
@@ -23,12 +24,14 @@ import { omdbApi, tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { seriesIdQueryOptions } from '@/query-options';
+import { SeriesIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
   params: {
-    parse: (params) => v.parse(v.object({ seriesId: v.pipe(v.string(), v.toNumber()) }), params),
+    parse: (params) => v.parse(SeriesIdParamsSchema, params),
     stringify: (params) => ({ seriesId: params.seriesId.toString() }),
   },
+
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
     const imdbId = series.external_ids.imdb_id;
@@ -36,6 +39,8 @@ export const Route = createFileRoute('/(series)/series_/$seriesId')({
     const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
+  pendingMs: 0,
+  pendingComponent: DetailPending,
   component: RouteComponent,
 });
 

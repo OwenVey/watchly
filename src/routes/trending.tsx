@@ -3,6 +3,7 @@ import { createFileRoute, retainSearchParams, stripSearchParams, useNavigate } f
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
+import { FullPageGridPending } from '@/components/route-pending';
 import { SeriesCard } from '@/components/series-card';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -41,8 +42,11 @@ export const Route = createFileRoute('/trending')({
       stripSearchParams(DEFAULT_TRENDING_SEARCH),
     ],
   },
+
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(trendingQueryOptions(deps)),
+  pendingMs: 0,
+  pendingComponent: FullPageGridPending,
   component: Trending,
 });
 

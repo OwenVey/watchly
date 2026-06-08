@@ -3,14 +3,19 @@ import { createFileRoute } from '@tanstack/react-router';
 import * as v from 'valibot';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
+import { GridPending } from '@/components/route-pending';
 import { seriesIdQueryOptions } from '@/query-options';
+import { SeriesIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId_/cast')({
   params: {
-    parse: (params) => v.parse(v.object({ seriesId: v.pipe(v.string(), v.toNumber()) }), params),
+    parse: (params) => v.parse(SeriesIdParamsSchema, params),
     stringify: (params) => ({ seriesId: params.seriesId.toString() }),
   },
+
   loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
+  pendingMs: 0,
+  pendingComponent: GridPending,
   component: Cast,
 });
 

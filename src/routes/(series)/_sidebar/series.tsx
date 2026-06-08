@@ -80,6 +80,7 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
       stripSearchParams(DEFAULT_SERIES_SEARCH),
     ],
   },
+
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(seriesQueryOptions(deps)),
   pendingMs: 0,

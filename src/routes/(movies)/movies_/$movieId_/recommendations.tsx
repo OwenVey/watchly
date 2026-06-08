@@ -3,14 +3,19 @@ import { createFileRoute } from '@tanstack/react-router';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
+import { GridPending } from '@/components/route-pending';
 import { movieIdQueryOptions } from '@/query-options';
+import { MovieIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId_/recommendations')({
   params: {
-    parse: (params) => v.parse(v.object({ movieId: v.pipe(v.string(), v.toNumber()) }), params),
+    parse: (params) => v.parse(MovieIdParamsSchema, params),
     stringify: (params) => ({ movieId: params.movieId.toString() }),
   },
+
   loader: ({ context, params }) => context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId)),
+  pendingMs: 0,
+  pendingComponent: GridPending,
   component: Recommendations,
 });
 

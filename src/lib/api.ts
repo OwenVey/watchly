@@ -7,6 +7,9 @@ const BEARER_TOKEN =
   'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3ODVkYWNiNjA5ZTA1N2YyNmIxNTlhYTg3MjdjYTg2YiIsIm5iZiI6MTY3MjE2MzI5NS4wODQsInN1YiI6IjYzYWIyZmRmMDlkZGE0MDA3Y2I5ZDFlZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ma51s5v9b_SQpKeHzHjZJvCQ-LvjGU6xCV0y6vY8Jf0';
 
 export const tmdbApi = new TMDB(BEARER_TOKEN, {
+  interceptors: {
+    // request: () => new Promise((resolve) => setTimeout(resolve, 2000)),
+  },
   logger: import.meta.env.DEV,
   region: 'US',
   timezone: (Intl.DateTimeFormat().resolvedOptions().timeZone as TMDBOptions['timezone']) ?? 'America/Chicago',

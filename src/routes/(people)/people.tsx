@@ -2,12 +2,15 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import React from 'react';
 import { PersonCard } from '@/components/person-card';
+import { FullPageGridPending } from '@/components/route-pending';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import { peopleQueryOptions } from '@/query-options';
 
 export const Route = createFileRoute('/(people)/people')({
   loader: ({ context }) => context.queryClient.ensureInfiniteQueryData(peopleQueryOptions),
+  pendingMs: 0,
+  pendingComponent: FullPageGridPending,
   component: People,
 });
 

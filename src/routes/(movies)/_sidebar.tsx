@@ -4,7 +4,7 @@ import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-rout
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -44,7 +44,8 @@ const MOVIE_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(movieWatchProvidersQueryOptions),
+  ssr: false,
+  // loader: ({ context }) => context.queryClient.ensureQueryData(movieWatchProvidersQueryOptions),
   component: MoviesSidebar,
 });
 
@@ -111,18 +112,6 @@ function Filters() {
   const [voteCount, setVoteCount] = React.useState([voteCountMin, voteCountMax]);
   const [runtime, setRuntime] = React.useState([runtimeMin, runtimeMax]);
   const [showAllServices, toggleShowAllServices] = useToggle(false);
-
-  useEffect(() => {
-    setRating([ratingMin, ratingMax]);
-  }, [ratingMin, ratingMax]);
-
-  useEffect(() => {
-    setVoteCount([voteCountMin, voteCountMax]);
-  }, [voteCountMin, voteCountMax]);
-
-  useEffect(() => {
-    setRuntime([runtimeMin, runtimeMax]);
-  }, [runtimeMin, runtimeMax]);
 
   return (
     <>

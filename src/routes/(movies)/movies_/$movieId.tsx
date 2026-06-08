@@ -23,6 +23,7 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
+import { DetailPending } from '@/components/route-pending';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
@@ -35,18 +36,22 @@ import { LANGUAGES_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
+import { MovieIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   params: {
-    parse: (params) => v.parse(v.object({ movieId: v.pipe(v.string(), v.toNumber()) }), params),
+    parse: (params) => v.parse(MovieIdParamsSchema, params),
     stringify: (params) => ({ movieId: params.movieId.toString() }),
   },
+
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     const omdbResponse = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
     const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
+  pendingMs: 0,
+  pendingComponent: DetailPending,
   component: Movie,
 });
 
