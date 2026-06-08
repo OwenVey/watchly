@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
-import { DetailPending } from '@/components/route-pending';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { cn } from '@/lib/utils';
@@ -21,8 +20,6 @@ export const Route = createFileRoute('/(people)/people_/$personId')({
   },
 
   loader: async ({ context, params }) => context.queryClient.ensureQueryData(personIdQueryOptions(params.personId)),
-  pendingMs: 0,
-  pendingComponent: DetailPending,
   component: Person,
 });
 

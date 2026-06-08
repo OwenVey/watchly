@@ -1,21 +1,6 @@
 import { PaddedLayout } from '@/components/padded-layout';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function DetailPending() {
-  return (
-    <PaddedLayout>
-      <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
-        <Skeleton className="aspect-2/3 w-48 rounded-xl" />
-        <div className="flex w-full max-w-md flex-col gap-3">
-          <Skeleton className="h-9 w-3/4" />
-          <Skeleton className="h-5 w-1/2" />
-          <Skeleton className="h-24 w-full" />
-        </div>
-      </div>
-    </PaddedLayout>
-  );
-}
-
 export function GridPending() {
   return (
     <PaddedLayout>

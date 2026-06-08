@@ -3,7 +3,6 @@ import { FilmIcon } from 'lucide-react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
-import { DetailPending } from '@/components/route-pending';
 import { Badge } from '@/components/ui/badge';
 import { tmdbApi } from '@/lib/api';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
@@ -16,8 +15,6 @@ export const Route = createFileRoute('/collections/$collectionId')({
   },
 
   loader: async ({ params }) => tmdbApi.collections.details({ collection_id: params.collectionId }),
-  pendingMs: 0,
-  pendingComponent: DetailPending,
   component: Collection,
 });
 

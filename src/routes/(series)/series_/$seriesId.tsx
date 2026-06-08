@@ -12,7 +12,6 @@ import { ImdbLogo } from '@/components/imdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
-import { DetailPending } from '@/components/route-pending';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { TmdbLogo } from '@/components/tmdb-logo';
@@ -39,8 +38,6 @@ export const Route = createFileRoute('/(series)/series_/$seriesId')({
     const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
-  pendingMs: 0,
-  pendingComponent: DetailPending,
   component: RouteComponent,
 });
 

@@ -23,7 +23,6 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
 import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
-import { DetailPending } from '@/components/route-pending';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
@@ -50,8 +49,6 @@ export const Route = createFileRoute('/(movies)/movies_/$movieId')({
     const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
     return { omdb };
   },
-  pendingMs: 0,
-  pendingComponent: DetailPending,
   component: Movie,
 });
 
