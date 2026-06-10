@@ -18,13 +18,14 @@ import {
 import React from 'react';
 import * as v from 'valibot';
 import { CardCarousel } from '@/components/card-carousel';
-import { ImdbLogo } from '@/components/imdb-logo';
+import { ImdbLogo } from '@/components/logos/imdb-logo';
+import { MetacriticLogo } from '@/components/logos/metacritic-logo';
+import { RottenTomatoesLogo } from '@/components/logos/rotten-tomatoes-logo';
+import { TmdbLogo } from '@/components/logos/tmdb-logo';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
-import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
 import { ShowMoreButton } from '@/components/show-more-button';
-import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -163,8 +164,14 @@ function Movie() {
     {
       score: omdb?.imdbRating !== 'N/A' && omdb?.imdbRating,
       logo: ImdbLogo,
-      tooltip: 'IMDb Rating',
+      tooltip: `IMDb Rating (${omdb?.imdbVotes} votes)`,
       logoClass: 'w-7',
+    },
+    {
+      score: omdb?.Ratings.find((r) => r.Source === 'Metacritic')?.Value?.replace('/100', '%'),
+      logo: MetacriticLogo,
+      tooltip: 'Metacritic Score',
+      logoClass: 'size-5',
     },
   ].filter((rating) => rating.score);
 
@@ -275,7 +282,7 @@ function Movie() {
           </div>
         </div>
 
-        <div className="flex min-w-72 flex-col gap-2 md:w-80">
+        <div className="flex min-w-80 flex-col gap-2 md:w-80">
           {movie.belongs_to_collection && (
             <Card className="relative flex items-center justify-between overflow-hidden px-4 py-3">
               {movie.belongs_to_collection.backdrop_path && (
@@ -297,7 +304,7 @@ function Movie() {
           )}
           <Card className="h-fit">
             {ratings.length > 0 && (
-              <div className="flex justify-center gap-6 border-b py-3">
+              <div className="flex justify-center gap-4 border-b px-4 py-3">
                 {ratings.map((rating, index) => (
                   <Tooltip key={index}>
                     <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">

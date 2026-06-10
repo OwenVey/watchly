@@ -54,6 +54,7 @@ export const omdbApi = createFetch({
             ),
             Response: v.literal('True'),
             imdbRating: v.string(),
+            imdbVotes: v.string(),
           }),
           v.object({
             Error: v.string(),

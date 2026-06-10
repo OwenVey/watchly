@@ -1,7 +1,7 @@
 import type { TVSeriesResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { TmdbLogo } from '@/components/tmdb-logo';
+import { TmdbLogo } from '@/components/logos/tmdb-logo';
 import { cn, voteAverageToPercentage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 

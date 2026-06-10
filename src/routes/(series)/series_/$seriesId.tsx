@@ -8,13 +8,13 @@ import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-re
 import { useState } from 'react';
 import * as v from 'valibot';
 import { CardCarousel } from '@/components/card-carousel';
-import { ImdbLogo } from '@/components/imdb-logo';
+import { ImdbLogo } from '@/components/logos/imdb-logo';
+import { RottenTomatoesLogo } from '@/components/logos/rotten-tomatoes-logo';
+import { TmdbLogo } from '@/components/logos/tmdb-logo';
 import { PaddedLayout } from '@/components/padded-layout';
 import { PersonCard } from '@/components/person-card';
-import { RottenTomatoesLogo } from '@/components/rotten-tomatoes-logo';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
-import { TmdbLogo } from '@/components/tmdb-logo';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';

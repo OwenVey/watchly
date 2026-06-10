@@ -2,6 +2,7 @@ import type { SVGProps } from 'react';
 
 export const RottenTomatoesLogo = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138.75 141.25" {...props}>
+    <title>Rotten Tomatoes logo</title>
     <g fill="#f93208">
       <path d="M20.154 40.829C-7.995 68.451 6.497 101.84 14.42 112.76c35.254 41.954 92.792 25.339 111.89-5.907 4.76-8.203 22.554-53.467-23.976-78.01z" />
       <path d="m39.613 39.265 4.778-8.86 28.406-5.04 11.119 9.21z" />

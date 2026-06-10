@@ -2,6 +2,7 @@ import type { SVGProps } from 'react';
 
 export const ImdbLogo = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 575 289.83" {...props}>
+    <title>IMDb logo</title>
     <path
       fill="#f6c700"
       d="M575 24.91C573.44 12.15 563.97 1.98 551.91 0H23.32C10.11 2.17 0 14.16 0 28.61v232.25c0 16 12.37 28.97 27.64 28.97h519.95c14.06 0 25.67-11.01 27.41-25.26V24.91Z"
