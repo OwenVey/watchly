@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrendingRouteImport } from './routes/trending'
-import { Route as TestRouteImport } from './routes/test'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollectionsCollectionIdRouteImport } from './routes/collections/$collectionId'
@@ -34,11 +33,6 @@ import { Route as moviesMoviesMovieIdCastRouteImport } from './routes/(movies)/m
 const TrendingRoute = TrendingRouteImport.update({
   id: '/trending',
   path: '/trending',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TestRoute = TestRouteImport.update({
-  id: '/test',
-  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -144,7 +138,6 @@ const moviesMoviesMovieIdCastRoute = moviesMoviesMovieIdCastRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
-  '/test': typeof TestRoute
   '/trending': typeof TrendingRoute
   '/people': typeof peoplePeopleRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
@@ -165,7 +158,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
-  '/test': typeof TestRoute
   '/trending': typeof TrendingRoute
   '/people': typeof peoplePeopleRoute
   '/collections/$collectionId': typeof CollectionsCollectionIdRoute
@@ -187,7 +179,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
-  '/test': typeof TestRoute
   '/trending': typeof TrendingRoute
   '/(movies)/_sidebar': typeof moviesSidebarRouteWithChildren
   '/(people)/people': typeof peoplePeopleRoute
@@ -212,7 +203,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/search'
-    | '/test'
     | '/trending'
     | '/people'
     | '/collections/$collectionId'
@@ -233,7 +223,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/search'
-    | '/test'
     | '/trending'
     | '/people'
     | '/collections/$collectionId'
@@ -254,7 +243,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/search'
-    | '/test'
     | '/trending'
     | '/(movies)/_sidebar'
     | '/(people)/people'
@@ -278,7 +266,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SearchRoute: typeof SearchRoute
-  TestRoute: typeof TestRoute
   TrendingRoute: typeof TrendingRoute
   moviesSidebarRoute: typeof moviesSidebarRouteWithChildren
   peoplePeopleRoute: typeof peoplePeopleRoute
@@ -304,13 +291,6 @@ declare module '@tanstack/react-router' {
       path: '/trending'
       fullPath: '/trending'
       preLoaderRoute: typeof TrendingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -476,7 +456,6 @@ const seriesSidebarRouteWithChildren = seriesSidebarRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SearchRoute: SearchRoute,
-  TestRoute: TestRoute,
   TrendingRoute: TrendingRoute,
   moviesSidebarRoute: moviesSidebarRouteWithChildren,
   peoplePeopleRoute: peoplePeopleRoute,
