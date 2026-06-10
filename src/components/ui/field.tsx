@@ -1,3 +1,4 @@
+// oxlint-disable jsx-a11y/prefer-tag-over-role
 import { cva, type VariantProps } from 'class-variance-authority';
 import { useMemo } from 'react';
 import { Label } from '@/components/ui/label';
@@ -67,7 +68,6 @@ function Field({
 }: React.ComponentProps<'div'> & VariantProps<typeof fieldVariants>) {
   return (
     <div
-      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
       role="group"
       data-slot="field"
       data-orientation={orientation}
