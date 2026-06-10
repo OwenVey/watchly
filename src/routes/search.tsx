@@ -35,7 +35,7 @@ export const Route = createFileRoute('/search')({
 function Search() {
   const { query } = Route.useSearch();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(searchQueryOptions(query));
+  const { data, fetchNextPage, hasNextPage } = useSuspenseInfiniteQuery(searchQueryOptions(query));
 
   if (query.length === 0) {
     return <div className="mt-48 grid w-full place-items-center text-muted-foreground">Search in the input above</div>;
@@ -66,7 +66,7 @@ function Search() {
         ))}
       </ul>
       <div className="mb-4 flex justify-center">
-        <Button variant="outline" onClick={() => fetchNextPage()} loading={isFetchingNextPage} disabled={!hasNextPage}>
+        <Button variant="outline" onClick={() => fetchNextPage()} disabled={!hasNextPage}>
           Load More
         </Button>
       </div>
