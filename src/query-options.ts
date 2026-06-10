@@ -1,7 +1,7 @@
 import { type LanguageISO6391 } from '@lorenzopant/tmdb';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { tmdbApi } from '@/lib/api';
+import { omdbApi, tmdbApi } from '@/lib/api';
 import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
 import { type MovieSearchParams } from '@/routes/(movies)/_sidebar/movies';
 import type { SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
@@ -180,6 +180,17 @@ export const movieIdQueryOptions = (movieId: number) =>
         movie_id: movieId,
         append_to_response: ['recommendations', 'similar', 'credits', 'release_dates', 'keywords'],
       }),
+  });
+
+export const omdbQueryOptions = (imdbId?: string) =>
+  queryOptions({
+    queryKey: ['omdb', imdbId ?? null],
+    queryFn: async () => {
+      if (!imdbId) return null;
+
+      const omdbResponse = await omdbApi('/', { query: { i: imdbId } });
+      return omdbResponse.Response === 'True' ? omdbResponse : null;
+    },
   });
 
 export const movieWatchProvidersQueryOptions = queryOptions({

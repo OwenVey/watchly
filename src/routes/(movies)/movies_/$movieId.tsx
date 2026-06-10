@@ -31,10 +31,9 @@ import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { omdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { cn, formatCurrency, formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
-import { movieIdQueryOptions } from '@/query-options';
+import { movieIdQueryOptions, omdbQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
 import { MovieIdParamsSchema } from '@/schemas';
 
@@ -46,18 +45,18 @@ export const Route = createFileRoute('/(movies)/movies_/$movieId')({
 
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
-    const omdbResponse = movie.imdb_id ? await omdbApi('/', { query: { i: movie.imdb_id } }) : null;
-    const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
-    return { omdb };
+    if (movie.imdb_id) {
+      void context.queryClient.ensureQueryData(omdbQueryOptions(movie.imdb_id));
+    }
   },
   component: Movie,
 });
 
 function Movie() {
   const { movieId } = Route.useParams();
-  const { omdb } = Route.useLoaderData();
 
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
+  const { data: omdb } = useSuspenseQuery(omdbQueryOptions(movie.imdb_id));
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
   const certification = usReleaseDates

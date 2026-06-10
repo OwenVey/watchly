@@ -19,10 +19,10 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { omdbApi, tmdbApi } from '@/lib/api';
+import { tmdbApi } from '@/lib/api';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
-import { seriesIdQueryOptions } from '@/query-options';
+import { omdbQueryOptions, seriesIdQueryOptions } from '@/query-options';
 import { SeriesIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(series)/series_/$seriesId')({
@@ -33,21 +33,20 @@ export const Route = createFileRoute('/(series)/series_/$seriesId')({
 
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
-    const imdbId = series.external_ids.imdb_id;
-    const omdbResponse = imdbId ? await omdbApi('/', { query: { i: imdbId } }) : null;
-    const omdb = omdbResponse?.Response === 'True' ? omdbResponse : null;
-    return { omdb };
+    if (series.external_ids.imdb_id) {
+      void context.queryClient.ensureQueryData(omdbQueryOptions(series.external_ids.imdb_id));
+    }
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { seriesId } = Route.useParams();
-  const { omdb } = Route.useLoaderData();
 
   const [seasonDetails, setSeasonDetails] = useState<Map<string, TVSeason>>(new Map());
 
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
+  const { data: omdb } = useSuspenseQuery(omdbQueryOptions(series.external_ids.imdb_id));
 
   const contentRating = series.content_ratings.results.find((a) => a.iso_3166_1 === 'US')?.rating;
 
