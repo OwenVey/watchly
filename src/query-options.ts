@@ -168,15 +168,7 @@ export const seriesIdQueryOptions = (seriesId: number) =>
     queryFn: async () =>
       tmdbApi.tv_series.details({
         series_id: seriesId,
-        append_to_response: [
-          'recommendations',
-          'similar',
-          'reviews',
-          'credits',
-          'external_ids',
-          'keywords',
-          'content_ratings',
-        ],
+        append_to_response: ['recommendations', 'similar', 'credits', 'external_ids', 'keywords', 'content_ratings'],
       }),
   });
 
@@ -186,7 +178,7 @@ export const movieIdQueryOptions = (movieId: number) =>
     queryFn: async () =>
       tmdbApi.movies.details({
         movie_id: movieId,
-        append_to_response: ['recommendations', 'similar', 'reviews', 'credits', 'release_dates', 'keywords'],
+        append_to_response: ['recommendations', 'similar', 'credits', 'release_dates', 'keywords'],
       }),
   });
 
