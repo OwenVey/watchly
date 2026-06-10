@@ -1,3 +1,5 @@
+'use client';
+
 import { Combobox as ComboboxPrimitive } from '@base-ui/react';
 import { ChevronDownIcon, XIcon, CheckIcon } from 'lucide-react';
 import * as React from 'react';
@@ -5,11 +7,7 @@ import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { cn } from '@/lib/utils';
 
-function Combobox<Value, Multiple extends boolean | undefined = false>(
-  props: ComboboxPrimitive.Root.Props<Value, Multiple>,
-): React.JSX.Element {
-  return <ComboboxPrimitive.Root {...props} />;
-}
+const Combobox = ComboboxPrimitive.Root;
 
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />;
@@ -131,7 +129,9 @@ function ComboboxItem({ className, children, ...props }: ComboboxPrimitive.Item.
       {...props}
     >
       {children}
-      <ComboboxPrimitive.ItemIndicator className="pointer-events-none absolute right-2 flex size-4 items-center justify-center">
+      <ComboboxPrimitive.ItemIndicator
+        render={<span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />}
+      >
         <CheckIcon className="pointer-events-none" />
       </ComboboxPrimitive.ItemIndicator>
     </ComboboxPrimitive.Item>
