@@ -1,5 +1,4 @@
 import { Slider as SliderPrimitive } from '@base-ui/react/slider';
-import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 interface SliderProps extends SliderPrimitive.Root.Props {
@@ -17,10 +16,7 @@ function Slider({
   labelPosition = 'bottom',
   ...props
 }: SliderProps) {
-  const _values = React.useMemo(
-    () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max]),
-    [value, defaultValue, min, max],
-  );
+  const _values = Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max];
 
   return (
     <SliderPrimitive.Root
