@@ -1,5 +1,5 @@
 import { Accordion } from '@base-ui/react/accordion';
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { FilmIcon, MenuIcon, SearchIcon, TrendingUpIcon, TvIcon, UsersIcon, XIcon } from 'lucide-react';
 import { WatchlyLogo } from '@/components/logos/watchly-logo';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -35,7 +35,9 @@ const LINKS = [
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { query } = useSearch({ strict: false });
+  const query = useLocation({
+    select: (location) => location.search.query ?? '',
+  });
 
   return (
     <Accordion.Root className="group sticky top-0 z-10 p-4 pb-0">
