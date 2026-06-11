@@ -1,7 +1,7 @@
 import { Accordion } from '@base-ui/react/accordion';
 import type { LanguageISO6391, TVSeason } from '@lorenzopant/tmdb';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { ClientOnly, createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
@@ -362,19 +362,21 @@ function RouteComponent() {
 
         <div className="flex min-w-72 flex-col gap-2 md:w-80">
           <Card className="h-fit">
-            {ratings.length > 0 && (
-              <div className="flex justify-center gap-6 border-b py-3">
-                {ratings.map((rating, index) => (
-                  <Tooltip key={index}>
-                    <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
-                      <rating.logo className={rating.logoClass} />
-                      <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
-                    </TooltipTrigger>
-                    <TooltipContent>{rating.tooltip}</TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            )}
+            <ClientOnly>
+              {ratings.length > 0 && (
+                <div className="flex justify-center gap-6 border-b py-3">
+                  {ratings.map((rating, index) => (
+                    <Tooltip key={index}>
+                      <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
+                        <rating.logo className={rating.logoClass} />
+                        <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
+                      </TooltipTrigger>
+                      <TooltipContent>{rating.tooltip}</TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              )}
+            </ClientOnly>
             <dl className="divide-y text-sm">
               {seriesDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">

@@ -1,6 +1,6 @@
 import { MovieReleaseTypeLabel, type LanguageISO6391, type MovieReleaseType } from '@lorenzopant/tmdb';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { ClientOnly, createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
 import {
@@ -302,19 +302,21 @@ function Movie() {
             </Card>
           )}
           <Card className="h-fit">
-            {ratings.length > 0 && (
-              <div className="flex justify-center gap-4 border-b px-4 py-3">
-                {ratings.map((rating, index) => (
-                  <Tooltip key={index}>
-                    <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
-                      <rating.logo className={rating.logoClass} />
-                      <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
-                    </TooltipTrigger>
-                    <TooltipContent>{rating.tooltip}</TooltipContent>
-                  </Tooltip>
-                ))}
-              </div>
-            )}
+            <ClientOnly>
+              {ratings.length > 0 && (
+                <div className="flex justify-center gap-4 border-b px-4 py-3">
+                  {ratings.map((rating, index) => (
+                    <Tooltip key={index}>
+                      <TooltipTrigger className="-m-1 flex items-center gap-1.5 rounded-md p-1">
+                        <rating.logo className={rating.logoClass} />
+                        <span className="text-sm font-medium text-muted-foreground">{rating.score}</span>
+                      </TooltipTrigger>
+                      <TooltipContent>{rating.tooltip}</TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              )}
+            </ClientOnly>
             <dl className="divide-y text-sm">
               {movieDetails.map(({ label, value }) => (
                 <div key={label} className="flex items-baseline justify-between gap-4 px-4 py-3">
