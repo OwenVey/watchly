@@ -44,8 +44,7 @@ const MOVIE_LANGUAGE_ITEMS = [
 ];
 
 export const Route = createFileRoute('/(movies)/_sidebar')({
-  ssr: false,
-  // loader: ({ context }) => context.queryClient.prefetchQuery(movieWatchProvidersQueryOptions),
+  loader: ({ context }) => context.queryClient.prefetchQuery(movieWatchProvidersQueryOptions),
   component: MoviesSidebar,
 });
 
