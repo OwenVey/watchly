@@ -19,7 +19,7 @@ export const Route = createFileRoute('/(people)/people_/$personId')({
     stringify: (params) => ({ personId: params.personId.toString() }),
   },
 
-  loader: async ({ context, params }) => context.queryClient.ensureQueryData(personIdQueryOptions(params.personId)),
+  loader: async ({ context, params }) => context.queryClient.prefetchQuery(personIdQueryOptions(params.personId)),
   component: Person,
 });
 

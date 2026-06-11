@@ -13,7 +13,7 @@ export const Route = createFileRoute('/(movies)/movies_/$movieId_/cast')({
     stringify: (params) => ({ movieId: params.movieId.toString() }),
   },
 
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId)),
+  loader: ({ context, params }) => context.queryClient.prefetchQuery(movieIdQueryOptions(params.movieId)),
   pendingMs: 0,
   pendingComponent: GridPending,
   component: Cast,

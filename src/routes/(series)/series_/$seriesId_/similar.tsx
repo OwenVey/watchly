@@ -13,7 +13,7 @@ export const Route = createFileRoute('/(series)/series_/$seriesId_/similar')({
     stringify: (params) => ({ seriesId: params.seriesId.toString() }),
   },
 
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId)),
+  loader: ({ context, params }) => context.queryClient.prefetchQuery(seriesIdQueryOptions(params.seriesId)),
   pendingMs: 0,
   pendingComponent: GridPending,
   component: Similar,

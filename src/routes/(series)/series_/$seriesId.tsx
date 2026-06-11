@@ -1,6 +1,6 @@
 import { Accordion } from '@base-ui/react/accordion';
 import type { LanguageISO6391, TVSeason } from '@lorenzopant/tmdb';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
@@ -34,7 +34,7 @@ export const Route = createFileRoute('/(series)/series_/$seriesId')({
   loader: async ({ context, params }) => {
     const series = await context.queryClient.ensureQueryData(seriesIdQueryOptions(params.seriesId));
     if (series.external_ids.imdb_id) {
-      void context.queryClient.ensureQueryData(omdbQueryOptions(series.external_ids.imdb_id));
+      void context.queryClient.prefetchQuery(omdbQueryOptions(series.external_ids.imdb_id));
     }
   },
   component: RouteComponent,
@@ -46,7 +46,7 @@ function RouteComponent() {
   const [seasonDetails, setSeasonDetails] = useState<Map<string, TVSeason>>(new Map());
 
   const { data: series } = useSuspenseQuery(seriesIdQueryOptions(seriesId));
-  const { data: omdb } = useSuspenseQuery(omdbQueryOptions(series.external_ids.imdb_id));
+  const { data: omdb } = useQuery(omdbQueryOptions(series.external_ids.imdb_id));
 
   const contentRating = series.content_ratings.results.find((a) => a.iso_3166_1 === 'US')?.rating;
 

@@ -1,11 +1,12 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { FilmIcon } from 'lucide-react';
 import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
-import { tmdbApi } from '@/lib/api';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
+import { collectionIdQueryOptions } from '@/query-options';
 import { CollectionIdParamsSchema } from '@/schemas';
 
 export const Route = createFileRoute('/collections/$collectionId')({
@@ -14,12 +15,13 @@ export const Route = createFileRoute('/collections/$collectionId')({
     stringify: (params) => ({ collectionId: params.collectionId.toString() }),
   },
 
-  loader: async ({ params }) => tmdbApi.collections.details({ collection_id: params.collectionId }),
+  loader: ({ context, params }) => context.queryClient.prefetchQuery(collectionIdQueryOptions(params.collectionId)),
   component: Collection,
 });
 
 function Collection() {
-  const collection = Route.useLoaderData();
+  const { collectionId } = Route.useParams();
+  const { data: collection } = useSuspenseQuery(collectionIdQueryOptions(collectionId));
 
   return (
     <PaddedLayout>

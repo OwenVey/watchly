@@ -1,5 +1,5 @@
 import { MovieReleaseTypeLabel, type LanguageISO6391, type MovieReleaseType } from '@lorenzopant/tmdb';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
 import { format } from 'date-fns';
@@ -46,7 +46,7 @@ export const Route = createFileRoute('/(movies)/movies_/$movieId')({
   loader: async ({ context, params }) => {
     const movie = await context.queryClient.ensureQueryData(movieIdQueryOptions(params.movieId));
     if (movie.imdb_id) {
-      void context.queryClient.ensureQueryData(omdbQueryOptions(movie.imdb_id));
+      void context.queryClient.prefetchQuery(omdbQueryOptions(movie.imdb_id));
     }
   },
   component: Movie,
@@ -56,7 +56,7 @@ function Movie() {
   const { movieId } = Route.useParams();
 
   const { data: movie } = useSuspenseQuery(movieIdQueryOptions(movieId));
-  const { data: omdb } = useSuspenseQuery(omdbQueryOptions(movie.imdb_id));
+  const { data: omdb } = useQuery(omdbQueryOptions(movie.imdb_id));
 
   const usReleaseDates = movie.release_dates.results.find((a) => a.iso_3166_1 === 'US')?.release_dates ?? [];
   const certification = usReleaseDates

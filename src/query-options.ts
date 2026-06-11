@@ -182,6 +182,12 @@ export const movieIdQueryOptions = (movieId: number) =>
       }),
   });
 
+export const collectionIdQueryOptions = (collectionId: number) =>
+  queryOptions({
+    queryKey: ['collection', collectionId],
+    queryFn: async () => tmdbApi.collections.details({ collection_id: collectionId }),
+  });
+
 export const omdbQueryOptions = (imdbId?: string) =>
   queryOptions({
     queryKey: ['omdb', imdbId ?? null],
