@@ -101,7 +101,7 @@ function RouteComponent() {
       ) : null,
     },
     {
-      label: (series.networks?.length ?? 0 > 1) ? 'Networks' : 'Network',
+      label: (series.networks?.length ?? 0) > 1 ? 'Networks' : 'Network',
       value: series.networks ? (
         <ul>
           {series.networks.map(({ id, name }) => (
