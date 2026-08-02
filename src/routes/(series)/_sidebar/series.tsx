@@ -68,6 +68,7 @@ const SeriesSearchSchema = v.object({
     DEFAULT_SERIES_SEARCH.watchProviders,
   ),
   adult: v.optional(v.fallback(v.boolean(), DEFAULT_SERIES_SEARCH.adult), DEFAULT_SERIES_SEARCH.adult),
+  showNames: v.optional(v.fallback(v.boolean(), false), false),
 });
 
 export type SeriesSearchParams = v.InferOutput<typeof SeriesSearchSchema>;
@@ -76,8 +77,11 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: SeriesSearchSchema,
   search: {
     middlewares: [
-      retainSearchParams(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
-      stripSearchParams(DEFAULT_SERIES_SEARCH),
+      retainSearchParams([
+        ...(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
+        'showNames',
+      ]),
+      stripSearchParams({ ...DEFAULT_SERIES_SEARCH, showNames: false }),
     ],
   },
 
@@ -118,7 +122,7 @@ function SeriesCards() {
         <React.Fragment key={page}>
           {results.map((show) => (
             <li key={show.id}>
-              <SeriesCard series={show} />
+              <SeriesCard series={show} showName={deps.showNames} />
             </li>
           ))}
         </React.Fragment>

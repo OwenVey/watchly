@@ -7,7 +7,7 @@ import { type MovieSearchParams } from '@/routes/(movies)/_sidebar/movies';
 import type { SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
 import type { TrendingMediaType } from '@/types';
 
-export const movieQueryOptions = (params: MovieSearchParams) =>
+export const movieQueryOptions = ({ showNames: _showNames, ...params }: MovieSearchParams) =>
   infiniteQueryOptions({
     queryKey: ['movies', params],
     queryFn: async ({ pageParam }) => {
@@ -84,7 +84,7 @@ export const movieQueryOptions = (params: MovieSearchParams) =>
     getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
 
-export const seriesQueryOptions = (params: SeriesSearchParams) =>
+export const seriesQueryOptions = ({ showNames: _showNames, ...params }: SeriesSearchParams) =>
   infiniteQueryOptions({
     queryKey: ['series', params],
     queryFn: async ({ pageParam }) => {

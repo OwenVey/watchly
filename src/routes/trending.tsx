@@ -1,6 +1,7 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import * as v from 'valibot';
+import { CardNameToggle } from '@/components/card-name-toggle';
 import { MovieCard } from '@/components/movie-card';
 import { PersonCard } from '@/components/person-card';
 import { FullPageGridPending } from '@/components/route-pending';
@@ -22,6 +23,7 @@ const TRENDING_MEDIA_OPTIONS = [
 
 const DEFAULT_TRENDING_SEARCH = {
   media: 'all' as TrendingMediaType,
+  showNames: false,
   timeWindow: 'day' as 'day' | 'week',
 };
 
@@ -34,6 +36,10 @@ export const Route = createFileRoute('/trending')({
     timeWindow: v.optional(
       v.fallback(v.picklist(['day', 'week']), DEFAULT_TRENDING_SEARCH.timeWindow),
       DEFAULT_TRENDING_SEARCH.timeWindow,
+    ),
+    showNames: v.optional(
+      v.fallback(v.boolean(), DEFAULT_TRENDING_SEARCH.showNames),
+      DEFAULT_TRENDING_SEARCH.showNames,
     ),
   }),
   search: {
@@ -50,7 +56,7 @@ export const Route = createFileRoute('/trending')({
 });
 
 function Trending() {
-  const { media, timeWindow } = Route.useLoaderDeps();
+  const { media, showNames, timeWindow } = Route.useLoaderDeps();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
@@ -68,7 +74,7 @@ function Trending() {
   return (
     <div className="flex w-full flex-1 flex-col p-4">
       <FieldSet>
-        <FieldGroup className="flex-row sm:max-w-sm">
+        <FieldGroup className="flex-row sm:max-w-md">
           <Field>
             <FieldLabel htmlFor="trending-media">Media</FieldLabel>
             <Select
@@ -76,7 +82,7 @@ function Trending() {
               value={media}
               onValueChange={(value) => navigate({ search: { media: value ?? undefined } })}
             >
-              <SelectTrigger id="trending-media" className="w-full">
+              <SelectTrigger id="trending-media">
                 <SelectValue placeholder="Select media" />
               </SelectTrigger>
               <SelectContent>
@@ -101,7 +107,7 @@ function Trending() {
               value={timeWindow}
               onValueChange={(value) => navigate({ search: { timeWindow: value ?? undefined } })}
             >
-              <SelectTrigger id="trending-time-window" className="w-full">
+              <SelectTrigger id="trending-time-window">
                 <SelectValue placeholder="Select time window" />
               </SelectTrigger>
               <SelectContent>
@@ -118,6 +124,12 @@ function Trending() {
               </SelectContent>
             </Select>
           </Field>
+
+          <CardNameToggle
+            checked={showNames}
+            className="self-end sm:h-8"
+            onCheckedChange={(showNames) => void navigate({ search: { showNames } })}
+          />
         </FieldGroup>
       </FieldSet>
 
@@ -127,8 +139,12 @@ function Trending() {
           {data.pages.map(({ page, results }) =>
             results.map((result) => (
               <li key={`${page}-${result.media_type}-${result.id}`}>
-                {result.media_type === 'movie' && <MovieCard movie={result} showBadge={media === 'all'} />}
-                {result.media_type === 'tv' && <SeriesCard series={result} showBadge={media === 'all'} />}
+                {result.media_type === 'movie' && (
+                  <MovieCard movie={result} showBadge={media === 'all'} showName={showNames} />
+                )}
+                {result.media_type === 'tv' && (
+                  <SeriesCard series={result} showBadge={media === 'all'} showName={showNames} />
+                )}
                 {result.media_type === 'person' && <PersonCard person={result} title={result.known_for_department} />}
               </li>
             )),

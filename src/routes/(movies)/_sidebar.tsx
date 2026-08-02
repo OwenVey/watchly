@@ -5,6 +5,7 @@ import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
 import React from 'react';
+import { CardNameToggle } from '@/components/card-name-toggle';
 import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -102,6 +103,7 @@ function Filters() {
     originalLanguage,
     watchProviders,
     adult,
+    showNames,
   } = search;
 
   const { data: movieWatchProviders, isPending: providersPending } = useQuery(movieWatchProvidersQueryOptions);
@@ -118,16 +120,21 @@ function Filters() {
         <h2 className="text-lg font-semibold text-foreground">Filters</h2>
         <div className="text-sm text-muted-foreground">
           {
-            Object.keys(search).filter((key) => {
-              const typedKey = key as keyof typeof search;
-              return JSON.stringify(search[typedKey]) !== JSON.stringify(DEFAULT_MOVIE_SEARCH[typedKey]);
-            }).length
+            (Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>).filter(
+              (key) => JSON.stringify(search[key]) !== JSON.stringify(DEFAULT_MOVIE_SEARCH[key]),
+            ).length
           }{' '}
           Active
         </div>
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
+        {/* Display */}
+        <CardNameToggle
+          checked={showNames}
+          onCheckedChange={(showNames) => void navigate({ search: { showNames }, to: '/movies' })}
+        />
+
         {/* Release Date */}
         <div className="flex flex-col gap-1.5">
           <Label>Release Date</Label>

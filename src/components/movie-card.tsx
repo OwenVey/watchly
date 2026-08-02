@@ -9,12 +9,13 @@ interface Props {
   movie: MovieResultItem;
   className?: string;
   showBadge?: boolean;
+  showName?: boolean;
 }
 
-export function MovieCard({ movie, className, showBadge = false }: Props) {
+export function MovieCard({ movie, className, showBadge = false, showName = false }: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
 
-  return (
+  const card = (
     <Link
       key={movie.id}
       className={cn(
@@ -63,5 +64,16 @@ export function MovieCard({ movie, className, showBadge = false }: Props) {
         <div className="line-clamp-3 text-sm text-balance text-white/70">{movie.overview}</div>
       </div>
     </Link>
+  );
+
+  if (!showName) {
+    return card;
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {card}
+      <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{movie.title}</div>
+    </div>
   );
 }

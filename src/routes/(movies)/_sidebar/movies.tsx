@@ -85,6 +85,7 @@ const MovieSearchSchema = v.object({
     DEFAULT_MOVIE_SEARCH.watchProviders,
   ),
   adult: v.optional(v.fallback(v.boolean(), DEFAULT_MOVIE_SEARCH.adult), DEFAULT_MOVIE_SEARCH.adult),
+  showNames: v.optional(v.fallback(v.boolean(), false), false),
 });
 export type MovieSearchParams = v.InferOutput<typeof MovieSearchSchema>;
 
@@ -92,8 +93,11 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
   validateSearch: MovieSearchSchema,
   search: {
     middlewares: [
-      retainSearchParams(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
-      stripSearchParams(DEFAULT_MOVIE_SEARCH),
+      retainSearchParams([
+        ...(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
+        'showNames',
+      ]),
+      stripSearchParams({ ...DEFAULT_MOVIE_SEARCH, showNames: false }),
     ],
   },
   loaderDeps: ({ search }) => search,
@@ -133,7 +137,7 @@ function MovieCards() {
         <React.Fragment key={page}>
           {results.map((movie) => (
             <li key={movie.id}>
-              <MovieCard movie={movie} />
+              <MovieCard movie={movie} showName={deps.showNames} />
             </li>
           ))}
         </React.Fragment>
