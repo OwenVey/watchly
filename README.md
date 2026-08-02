@@ -51,33 +51,32 @@ The app centers on filter-heavy discovery flows, infinite lists, detailed title 
 
 ### Prerequisites
 
-- Bun `1.3.12` or newer
 - Node.js `24` or newer
 
 ### Install
 
 ```bash
-bun install
+pnpm install
 ```
 
 ### Start the development server
 
 ```bash
-bun run dev
+pnpm dev
 ```
 
 The app runs at `http://localhost:5173` by default.
 
 ## Scripts
 
-- `bun run dev` starts the Vite development server.
-- `bun run build` runs `tsgo --build` and then creates the production Vite bundle.
-- `bun run build:analyze` builds with bundle analysis enabled outside Vercel.
-- `bun run preview` serves the production build locally.
-- `bun run lint` runs `oxlint`.
-- `bun run lint:fix` runs `oxlint --fix`.
-- `bun run format` runs `oxfmt`.
-- `bun run knip` checks for unused files and exports.
+- `pnpm dev` starts the Vite development server.
+- `pnpm build` runs `tsgo --build` and then creates the production Vite bundle.
+- `pnpm build:analyze` builds with bundle analysis enabled outside Vercel.
+- `pnpm preview` serves the production build locally.
+- `pnpm lint` runs `oxlint`.
+- `pnpm lint:fix` runs `oxlint --fix`.
+- `pnpm format` runs `oxfmt`.
+- `pnpm knip` checks for unused files and exports.
 
 ## Development Notes
 

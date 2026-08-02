@@ -34,8 +34,7 @@
   },
   "search.exclude": {
     "**/routeTree.gen.ts": true,
-    "**/package-lock.json": true,
-    "**/bun.lock": true
+    "**/pnpm-lock.yaml": true
   },
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true

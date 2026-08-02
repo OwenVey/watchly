@@ -4,18 +4,16 @@ import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react';
-import { nitro } from 'nitro/vite';
 import { defineConfig } from 'vite';
 
 const config = defineConfig({
   plugins: [
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
     devtools({
       consolePiping: {
         enabled: false,
       },
     }),
-    nitro(),
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
     tailwindcss(),
     tanstackStart(),
     viteReact(),
