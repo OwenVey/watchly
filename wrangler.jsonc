@@ -10,7 +10,4 @@
       "invocation_logs": true,
     },
   },
-  "vars": {
-    "SKIP_DEPENDENCY_INSTALL": true,
-  },
 }
