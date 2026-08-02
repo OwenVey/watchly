@@ -6,7 +6,7 @@ import * as v from 'valibot';
 import { SeriesCard } from '@/components/series-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
+import { DEFAULT_CARD_VIEW, DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
 import { schemaObjectKeys } from '@/lib/utils';
 import { seriesQueryOptions } from '@/query-options';
 import { OptionsSchema } from '@/schemas';
@@ -68,7 +68,13 @@ const SeriesSearchSchema = v.object({
     DEFAULT_SERIES_SEARCH.watchProviders,
   ),
   adult: v.optional(v.fallback(v.boolean(), DEFAULT_SERIES_SEARCH.adult), DEFAULT_SERIES_SEARCH.adult),
-  showNames: v.optional(v.fallback(v.boolean(), false), false),
+  cardSize: v.optional(
+    v.fallback(v.picklist(['small', 'medium', 'large']), DEFAULT_CARD_VIEW.cardSize),
+    DEFAULT_CARD_VIEW.cardSize,
+  ),
+  showNames: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showNames), DEFAULT_CARD_VIEW.showNames),
+  showRatings: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showRatings), DEFAULT_CARD_VIEW.showRatings),
+  showYears: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showYears), DEFAULT_CARD_VIEW.showYears),
 });
 
 export type SeriesSearchParams = v.InferOutput<typeof SeriesSearchSchema>;
@@ -79,9 +85,9 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
     middlewares: [
       retainSearchParams([
         ...(Object.keys(DEFAULT_SERIES_SEARCH) as Array<keyof typeof DEFAULT_SERIES_SEARCH>),
-        'showNames',
+        ...(Object.keys(DEFAULT_CARD_VIEW) as Array<keyof typeof DEFAULT_CARD_VIEW>),
       ]),
-      stripSearchParams({ ...DEFAULT_SERIES_SEARCH, showNames: false }),
+      stripSearchParams({ ...DEFAULT_SERIES_SEARCH, ...DEFAULT_CARD_VIEW }),
     ],
   },
 
@@ -122,7 +128,12 @@ function SeriesCards() {
         <React.Fragment key={page}>
           {results.map((show) => (
             <li key={show.id}>
-              <SeriesCard series={show} showName={deps.showNames} />
+              <SeriesCard
+                series={show}
+                showName={deps.showNames}
+                showRating={deps.showRatings}
+                showYear={deps.showYears}
+              />
             </li>
           ))}
         </React.Fragment>

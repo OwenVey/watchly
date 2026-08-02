@@ -10,9 +10,18 @@ interface Props {
   className?: string;
   showBadge?: boolean;
   showName?: boolean;
+  showRating?: boolean;
+  showYear?: boolean;
 }
 
-export function MovieCard({ movie, className, showBadge = false, showName = false }: Props) {
+export function MovieCard({
+  movie,
+  className,
+  showBadge = false,
+  showName = false,
+  showRating = false,
+  showYear = false,
+}: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
 
   const card = (
@@ -36,6 +45,13 @@ export function MovieCard({ movie, className, showBadge = false, showName = fals
         </span>
       )}
 
+      {showRating && (
+        <div className="group-hover: absolute top-1 left-1 z-10 flex items-center gap-1 rounded-md bg-black/50 px-1 backdrop-blur-sm transition-all group-hover:bg-transparent group-hover:backdrop-blur-none">
+          <TmdbLogo className="size-6" />
+          <span className="text-xs font-medium text-white">{voteAverageToPercentage(movie.vote_average)}</span>
+        </div>
+      )}
+
       {movie.poster_path && (
         <img
           src={movie.poster_path}
@@ -52,12 +68,14 @@ export function MovieCard({ movie, className, showBadge = false, showName = fals
           movie.poster_path && 'bg-black/50 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
         )}
       >
-        <div className="absolute top-2 left-2 flex items-center gap-1">
-          <TmdbLogo className="size-6" />
-          <span className="text-xs font-medium text-white">{voteAverageToPercentage(movie.vote_average)}</span>
-        </div>
+        {!showRating && (
+          <div className="absolute top-2 left-2 flex items-center gap-1">
+            <TmdbLogo className="size-6" />
+            <span className="text-xs font-medium text-white">{voteAverageToPercentage(movie.vote_average)}</span>
+          </div>
+        )}
 
-        {movie.release_date && (
+        {!showYear && movie.release_date && (
           <div className="text-sm font-medium text-white">{new Date(movie.release_date).getFullYear()}</div>
         )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{movie.title}</div>
@@ -66,14 +84,19 @@ export function MovieCard({ movie, className, showBadge = false, showName = fals
     </Link>
   );
 
-  if (!showName) {
+  if (!showName && !showYear) {
     return card;
   }
 
   return (
     <div className="flex flex-col gap-1.5">
       {card}
-      <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{movie.title}</div>
+      <div className="flex flex-col gap-0.5">
+        {showYear && movie.release_date && (
+          <div className="text-xs text-muted-foreground">{new Date(movie.release_date).getFullYear()}</div>
+        )}
+        {showName && <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{movie.title}</div>}
+      </div>
     </div>
   );
 }

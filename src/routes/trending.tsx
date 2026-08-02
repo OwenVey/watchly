@@ -10,6 +10,8 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import { CARD_GRID_SIZE_CLASSES, DEFAULT_CARD_VIEW } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import { trendingQueryOptions } from '@/query-options';
 import { TrendingMediaTypeSchema } from '@/schemas';
 import type { TrendingMediaType } from '@/types';
@@ -23,7 +25,7 @@ const TRENDING_MEDIA_OPTIONS = [
 
 const DEFAULT_TRENDING_SEARCH = {
   media: 'all' as TrendingMediaType,
-  showNames: false,
+  ...DEFAULT_CARD_VIEW,
   timeWindow: 'day' as 'day' | 'week',
 };
 
@@ -41,6 +43,18 @@ export const Route = createFileRoute('/trending')({
       v.fallback(v.boolean(), DEFAULT_TRENDING_SEARCH.showNames),
       DEFAULT_TRENDING_SEARCH.showNames,
     ),
+    showRatings: v.optional(
+      v.fallback(v.boolean(), DEFAULT_TRENDING_SEARCH.showRatings),
+      DEFAULT_TRENDING_SEARCH.showRatings,
+    ),
+    showYears: v.optional(
+      v.fallback(v.boolean(), DEFAULT_TRENDING_SEARCH.showYears),
+      DEFAULT_TRENDING_SEARCH.showYears,
+    ),
+    cardSize: v.optional(
+      v.fallback(v.picklist(['small', 'medium', 'large']), DEFAULT_TRENDING_SEARCH.cardSize),
+      DEFAULT_TRENDING_SEARCH.cardSize,
+    ),
   }),
   search: {
     middlewares: [
@@ -56,7 +70,7 @@ export const Route = createFileRoute('/trending')({
 });
 
 function Trending() {
-  const { media, showNames, timeWindow } = Route.useLoaderDeps();
+  const { cardSize, media, showNames, showRatings, showYears, timeWindow } = Route.useLoaderDeps();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
@@ -135,15 +149,27 @@ function Trending() {
 
       <div className="w-full">
         <h1 className="mt-4 text-2xl font-semibold text-foreground">Search Results</h1>
-        <ul className="grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
+        <ul className={cn('grid auto-rows-min gap-4', CARD_GRID_SIZE_CLASSES[cardSize])}>
           {data.pages.map(({ page, results }) =>
             results.map((result) => (
               <li key={`${page}-${result.media_type}-${result.id}`}>
                 {result.media_type === 'movie' && (
-                  <MovieCard movie={result} showBadge={media === 'all'} showName={showNames} />
+                  <MovieCard
+                    movie={result}
+                    showBadge={media === 'all'}
+                    showName={showNames}
+                    showRating={showRatings}
+                    showYear={showYears}
+                  />
                 )}
                 {result.media_type === 'tv' && (
-                  <SeriesCard series={result} showBadge={media === 'all'} showName={showNames} />
+                  <SeriesCard
+                    series={result}
+                    showBadge={media === 'all'}
+                    showName={showNames}
+                    showRating={showRatings}
+                    showYear={showYears}
+                  />
                 )}
                 {result.media_type === 'person' && <PersonCard person={result} title={result.known_for_department} />}
               </li>
@@ -152,7 +178,7 @@ function Trending() {
         </ul>
 
         {isFetchingNextPage ? (
-          <ul className="mt-4 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
+          <ul className={cn('mt-4 grid auto-rows-min gap-4', CARD_GRID_SIZE_CLASSES[cardSize])}>
             {Array.from({ length: 60 }).map((_, index) => (
               <li key={`placeholder-${index}`}>
                 <Skeleton className="aspect-2/3 w-full border" />

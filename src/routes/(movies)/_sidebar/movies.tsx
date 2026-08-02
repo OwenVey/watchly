@@ -6,7 +6,7 @@ import * as v from 'valibot';
 import { MovieCard } from '@/components/movie-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
+import { DEFAULT_CARD_VIEW, DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
 import { schemaObjectKeys } from '@/lib/utils';
 import { movieQueryOptions } from '@/query-options';
 
@@ -85,7 +85,13 @@ const MovieSearchSchema = v.object({
     DEFAULT_MOVIE_SEARCH.watchProviders,
   ),
   adult: v.optional(v.fallback(v.boolean(), DEFAULT_MOVIE_SEARCH.adult), DEFAULT_MOVIE_SEARCH.adult),
-  showNames: v.optional(v.fallback(v.boolean(), false), false),
+  cardSize: v.optional(
+    v.fallback(v.picklist(['small', 'medium', 'large']), DEFAULT_CARD_VIEW.cardSize),
+    DEFAULT_CARD_VIEW.cardSize,
+  ),
+  showNames: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showNames), DEFAULT_CARD_VIEW.showNames),
+  showRatings: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showRatings), DEFAULT_CARD_VIEW.showRatings),
+  showYears: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showYears), DEFAULT_CARD_VIEW.showYears),
 });
 export type MovieSearchParams = v.InferOutput<typeof MovieSearchSchema>;
 
@@ -95,9 +101,9 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
     middlewares: [
       retainSearchParams([
         ...(Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>),
-        'showNames',
+        ...(Object.keys(DEFAULT_CARD_VIEW) as Array<keyof typeof DEFAULT_CARD_VIEW>),
       ]),
-      stripSearchParams({ ...DEFAULT_MOVIE_SEARCH, showNames: false }),
+      stripSearchParams({ ...DEFAULT_MOVIE_SEARCH, ...DEFAULT_CARD_VIEW }),
     ],
   },
   loaderDeps: ({ search }) => search,
@@ -137,7 +143,12 @@ function MovieCards() {
         <React.Fragment key={page}>
           {results.map((movie) => (
             <li key={movie.id}>
-              <MovieCard movie={movie} showName={deps.showNames} />
+              <MovieCard
+                movie={movie}
+                showName={deps.showNames}
+                showRating={deps.showRatings}
+                showYear={deps.showYears}
+              />
             </li>
           ))}
         </React.Fragment>

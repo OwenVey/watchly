@@ -1,6 +1,21 @@
 import { DiscoverTVType, MovieReleaseType, type LanguageISO6391 } from '@lorenzopant/tmdb';
 import type { Option } from '@/types';
 
+export const DEFAULT_CARD_VIEW = {
+  cardSize: 'medium' as const,
+  showNames: false,
+  showRatings: false,
+  showYears: false,
+};
+
+export type CardSize = 'small' | 'medium' | 'large';
+
+export const CARD_GRID_SIZE_CLASSES: Record<CardSize, string> = {
+  small: 'grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]',
+  medium: 'grid-cols-[repeat(auto-fill,minmax(10rem,1fr))]',
+  large: 'grid-cols-[repeat(auto-fill,minmax(13rem,1fr))]',
+};
+
 export const DEFAULT_MOVIE_SEARCH = {
   adult: false,
   genres: [] as number[],

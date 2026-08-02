@@ -3,9 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
-import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, FilterXIcon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, RotateCcwIcon } from 'lucide-react';
 import React from 'react';
-import { CardNameToggle } from '@/components/card-name-toggle';
+import { CardViewOptions } from '@/components/card-view-options';
 import MultiCombobox from '@/components/multi-combobox';
 import { ShowMoreButton } from '@/components/show-more-button';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -20,7 +20,13 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
 import { tmdbApi } from '@/lib/api.js';
-import { DEFAULT_MOVIE_SEARCH, LANGUAGES_MAP, MOVIE_GENRES_MAP } from '@/lib/constants';
+import {
+  CARD_GRID_SIZE_CLASSES,
+  DEFAULT_CARD_VIEW,
+  DEFAULT_MOVIE_SEARCH,
+  LANGUAGES_MAP,
+  MOVIE_GENRES_MAP,
+} from '@/lib/constants';
 import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
 import { movieWatchProvidersQueryOptions } from '@/query-options';
 import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
@@ -50,13 +56,15 @@ export const Route = createFileRoute('/(movies)/_sidebar')({
 });
 
 function MoviesSidebar() {
+  const { cardSize } = MoviesRoute.useSearch();
+
   return (
     <>
       <Card
         className="sticky top-23.5 left-4 m-4 mr-0 hidden max-h-[calc(100vh-94px-16px)] w-80 flex-col md:flex"
         render={
           <aside>
-            <Filters />
+            <SidebarContent />
           </aside>
         }
       />
@@ -71,15 +79,45 @@ function MoviesSidebar() {
             }
           />
           <SheetContent>
-            <Filters />
+            <SidebarContent />
           </SheetContent>
         </Sheet>
 
-        <ul className="grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4 p-4">
+        <ul className={cn('grid auto-rows-min gap-4 p-4', CARD_GRID_SIZE_CLASSES[cardSize])}>
           <Outlet />
         </ul>
       </main>
     </>
+  );
+}
+
+function SidebarContent() {
+  return (
+    <>
+      <div className="flex flex-1 flex-col overflow-y-auto">
+        <ViewOptions />
+        <Filters />
+      </div>
+      <ClearFilters />
+    </>
+  );
+}
+
+function ViewOptions() {
+  const { cardSize, showNames, showRatings, showYears } = MoviesRoute.useSearch();
+  const navigate = useNavigate({ from: '/movies' });
+
+  return (
+    <CardViewOptions
+      cardSize={cardSize}
+      showNames={showNames}
+      showRatings={showRatings}
+      showYears={showYears}
+      onCardSizeChange={(cardSize) => void navigate({ search: { cardSize }, to: '/movies' })}
+      onShowNamesChange={(showNames) => void navigate({ search: { showNames }, to: '/movies' })}
+      onShowRatingsChange={(showRatings) => void navigate({ search: { showRatings }, to: '/movies' })}
+      onShowYearsChange={(showYears) => void navigate({ search: { showYears }, to: '/movies' })}
+    />
   );
 }
 
@@ -103,7 +141,6 @@ function Filters() {
     originalLanguage,
     watchProviders,
     adult,
-    showNames,
   } = search;
 
   const { data: movieWatchProviders, isPending: providersPending } = useQuery(movieWatchProvidersQueryOptions);
@@ -116,25 +153,22 @@ function Filters() {
 
   return (
     <>
-      <div className="border-b px-4 py-2">
-        <h2 className="text-lg font-semibold text-foreground">Filters</h2>
-        <div className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-between px-4 py-2">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <FilterIcon className="size-5" />
+          Filters
+        </h2>
+        <span className="text-sm text-muted-foreground">
           {
             (Object.keys(DEFAULT_MOVIE_SEARCH) as Array<keyof typeof DEFAULT_MOVIE_SEARCH>).filter(
               (key) => JSON.stringify(search[key]) !== JSON.stringify(DEFAULT_MOVIE_SEARCH[key]),
             ).length
           }{' '}
           Active
-        </div>
+        </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-6 overflow-y-auto p-4">
-        {/* Display */}
-        <CardNameToggle
-          checked={showNames}
-          onCheckedChange={(showNames) => void navigate({ search: { showNames }, to: '/movies' })}
-        />
-
+      <div className="flex flex-col gap-6 p-4">
         {/* Release Date */}
         <div className="flex flex-col gap-1.5">
           <Label>Release Date</Label>
@@ -456,19 +490,22 @@ function Filters() {
           <Label htmlFor="adult-content">Include Adult Content</Label>
         </div>
       </div>
-
-      <div className="border-t p-4">
-        {/* Clear Filters */}
-        <Link
-          from="/movies"
-          to="/movies"
-          search={DEFAULT_MOVIE_SEARCH}
-          className={cn('w-full', buttonVariants({ variant: 'outline' }))}
-        >
-          <FilterXIcon />
-          Clear Filters
-        </Link>
-      </div>
     </>
+  );
+}
+
+function ClearFilters() {
+  return (
+    <div className="border-t p-4">
+      <Link
+        from="/movies"
+        to="/movies"
+        search={{ ...DEFAULT_MOVIE_SEARCH, ...DEFAULT_CARD_VIEW }}
+        className={cn('w-full', buttonVariants({ variant: 'outline' }))}
+      >
+        <RotateCcwIcon />
+        Reset
+      </Link>
+    </div>
   );
 }

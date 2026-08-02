@@ -10,9 +10,18 @@ interface Props {
   className?: string;
   showBadge?: boolean;
   showName?: boolean;
+  showRating?: boolean;
+  showYear?: boolean;
 }
 
-export function SeriesCard({ series, className, showBadge = false, showName = false }: Props) {
+export function SeriesCard({
+  series,
+  className,
+  showBadge = false,
+  showName = false,
+  showRating = false,
+  showYear = false,
+}: Props) {
   const [isTransitionTarget, setIsTransitionTarget] = useState(false);
 
   const card = (
@@ -36,6 +45,13 @@ export function SeriesCard({ series, className, showBadge = false, showName = fa
         </span>
       )}
 
+      {showRating && (
+        <div className="group-hover: absolute top-1 left-1 z-10 flex items-center gap-1 rounded-md bg-black/50 px-1 backdrop-blur-sm transition-all group-hover:bg-transparent group-hover:backdrop-blur-none">
+          <TmdbLogo className="size-6" />
+          <span className="text-xs font-medium text-white">{voteAverageToPercentage(series.vote_average)}</span>
+        </div>
+      )}
+
       {series.poster_path && (
         <img
           src={series.poster_path}
@@ -52,11 +68,13 @@ export function SeriesCard({ series, className, showBadge = false, showName = fa
           series.poster_path && 'bg-black/50 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100',
         )}
       >
-        <div className="absolute top-2 left-2 flex items-center gap-1">
-          <TmdbLogo className="size-6" />
-          <span className="text-xs font-medium text-white">{voteAverageToPercentage(series.vote_average)}</span>
-        </div>
-        {series.first_air_date && (
+        {!showRating && (
+          <div className="absolute top-2 left-2 flex items-center gap-1">
+            <TmdbLogo className="size-6" />
+            <span className="text-xs font-medium text-white">{voteAverageToPercentage(series.vote_average)}</span>
+          </div>
+        )}
+        {!showYear && series.first_air_date && (
           <div className="text-sm font-medium text-white">{new Date(series.first_air_date).getFullYear()}</div>
         )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{series.name}</div>
@@ -65,14 +83,19 @@ export function SeriesCard({ series, className, showBadge = false, showName = fa
     </Link>
   );
 
-  if (!showName) {
+  if (!showName && !showYear) {
     return card;
   }
 
   return (
     <div className="flex flex-col gap-1.5">
       {card}
-      <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{series.name}</div>
+      <div className="flex flex-col gap-0.5">
+        {showYear && series.first_air_date && (
+          <div className="text-xs text-muted-foreground">{new Date(series.first_air_date).getFullYear()}</div>
+        )}
+        {showName && <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{series.name}</div>}
+      </div>
     </div>
   );
 }
