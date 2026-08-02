@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build && vite build",
+    "cf-typegen": "wrangler types",
+    "deploy": "bun run build && wrangler deploy",
     "dev": "vite",
     "format": "oxfmt",
     "knip": "knip",
@@ -42,6 +44,7 @@
     "valibot": "^1.4.2"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.50.0",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tanstack/devtools-vite": "^0.8.3",
     "@tanstack/eslint-plugin-query": "^5.101.4",
@@ -60,7 +63,8 @@
     "oxlint": "^1.76.0",
     "oxlint-tsgolint": "^7.0.2001",
     "typescript": "^7.0.2",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "wrangler": "^4.118.0"
   },
   "engines": {
     "node": "24.x"
