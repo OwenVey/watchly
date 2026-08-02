@@ -56,27 +56,27 @@ The app centers on filter-heavy discovery flows, infinite lists, detailed title 
 ### Install
 
 ```bash
-pnpm install
+nub install
 ```
 
 ### Start the development server
 
 ```bash
-pnpm dev
+nub run dev
 ```
 
 The app runs at `http://localhost:5173` by default.
 
 ## Scripts
 
-- `pnpm dev` starts the Vite development server.
-- `pnpm build` runs `tsgo --build` and then creates the production Vite bundle.
-- `pnpm build:analyze` builds with bundle analysis enabled outside Vercel.
-- `pnpm preview` serves the production build locally.
-- `pnpm lint` runs `oxlint`.
-- `pnpm lint:fix` runs `oxlint --fix`.
-- `pnpm format` runs `oxfmt`.
-- `pnpm knip` checks for unused files and exports.
+- `nub run dev` starts the Vite development server.
+- `nub run build` runs `tsc --build` and then creates the production Vite bundle.
+- `nub run build:analyze` builds with bundle analysis enabled outside Vercel.
+- `nub run preview` serves the production build locally.
+- `nub run lint` runs `oxlint`.
+- `nub run lint:fix` runs `oxlint --fix`.
+- `nub run format` runs `oxfmt`.
+- `nub run knip` checks for unused files and exports.
 
 ## Development Notes
 

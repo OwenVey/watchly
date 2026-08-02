@@ -34,7 +34,7 @@
   },
   "search.exclude": {
     "**/routeTree.gen.ts": true,
-    "**/pnpm-lock.yaml": true
+    "**/nub.lock": true
   },
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true

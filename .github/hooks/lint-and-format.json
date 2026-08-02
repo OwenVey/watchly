@@ -2,11 +2,11 @@
   "hooks": {
     "PostToolUse": [
       {
-        "command": "pnpm run lint:fix",
+        "command": "nub run lint:fix",
         "type": "command"
       },
       {
-        "command": "pnpm run format",
+        "command": "nub run format",
         "type": "command"
       }
     ]

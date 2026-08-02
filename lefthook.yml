@@ -5,8 +5,8 @@ pre-commit:
   parallel: true
   jobs:
     - name: lint
-      run: pnpm run lint:fix {staged_files} --no-error-on-unmatched-pattern
+      run: nub run lint:fix {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true
     - name: format
-      run: pnpm run format {staged_files} --no-error-on-unmatched-pattern
+      run: nub run format {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true
