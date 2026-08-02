@@ -1,6 +1,6 @@
 import { DiscoverTVStatusLabel, DiscoverTVType, DiscoverTVTypeLabel } from '@lorenzopant/tmdb';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, getRouteApi, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, RotateCcwIcon } from 'lucide-react';
@@ -29,7 +29,9 @@ import {
 } from '@/lib/constants';
 import { cn, toggleItemInArray } from '@/lib/utils.js';
 import { seriesWatchProvidersQueryOptions } from '@/query-options';
-import { Route as SeriesRoute, type SeriesSearchParams } from '@/routes/(series)/_sidebar/series';
+import type { SeriesSearchParams } from '@/schemas';
+
+const SeriesRoute = getRouteApi('/(series)/_sidebar/series');
 
 const SERIES_SORT_MAP: Record<SeriesSearchParams['sort'], string> = {
   first_air_date: 'First Air Date',

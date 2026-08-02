@@ -1,83 +1,12 @@
-import { DiscoverTVType } from '@lorenzopant/tmdb';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
 import React from 'react';
-import * as v from 'valibot';
 import { SeriesCard } from '@/components/series-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import { DEFAULT_CARD_VIEW, DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
-import { schemaObjectKeys } from '@/lib/utils';
+import { DEFAULT_CARD_VIEW, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
 import { seriesQueryOptions } from '@/query-options';
-import { OptionsSchema } from '@/schemas';
-
-const SeriesSearchSchema = v.object({
-  firstAirDateAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-  firstAirDateBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-  ratingMin: v.optional(
-    v.fallback(
-      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.ratingMax - 1)),
-      DEFAULT_SERIES_SEARCH.ratingMin,
-    ),
-    DEFAULT_SERIES_SEARCH.ratingMin,
-  ),
-  ratingMax: v.optional(
-    v.fallback(
-      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.ratingMax)),
-      DEFAULT_SERIES_SEARCH.ratingMax,
-    ),
-    DEFAULT_SERIES_SEARCH.ratingMax,
-  ),
-  voteCountMin: v.optional(
-    v.fallback(
-      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.voteCountMax - 1)),
-      DEFAULT_SERIES_SEARCH.voteCountMin,
-    ),
-    DEFAULT_SERIES_SEARCH.voteCountMin,
-  ),
-  voteCountMax: v.optional(
-    v.fallback(
-      v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.voteCountMax)),
-      DEFAULT_SERIES_SEARCH.voteCountMax,
-    ),
-    DEFAULT_SERIES_SEARCH.voteCountMax,
-  ),
-  sort: v.optional(
-    v.fallback(
-      v.picklist(['first_air_date', 'name', 'popularity', 'vote_average', 'vote_count']),
-      DEFAULT_SERIES_SEARCH.sort,
-    ),
-    DEFAULT_SERIES_SEARCH.sort,
-  ),
-  sortDir: v.optional(
-    v.fallback(v.picklist(['asc', 'desc']), DEFAULT_SERIES_SEARCH.sortDir),
-    DEFAULT_SERIES_SEARCH.sortDir,
-  ),
-  genres: v.optional(v.fallback(v.array(v.number()), DEFAULT_SERIES_SEARCH.genres), DEFAULT_SERIES_SEARCH.genres),
-  status: v.optional(v.fallback(v.string(), DEFAULT_SERIES_SEARCH.status), DEFAULT_SERIES_SEARCH.status),
-  types: v.optional(
-    v.fallback(v.array(v.picklist(Object.values(DiscoverTVType))), DEFAULT_SERIES_SEARCH.types),
-    DEFAULT_SERIES_SEARCH.types,
-  ),
-  keywords: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.keywords), DEFAULT_SERIES_SEARCH.keywords),
-  studios: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.studios), DEFAULT_SERIES_SEARCH.studios),
-  networks: v.optional(v.fallback(OptionsSchema, DEFAULT_SERIES_SEARCH.networks), DEFAULT_SERIES_SEARCH.networks),
-  originalLanguage: v.optional(schemaObjectKeys(LANGUAGES_MAP)),
-  watchProviders: v.optional(
-    v.fallback(v.array(v.number()), DEFAULT_SERIES_SEARCH.watchProviders),
-    DEFAULT_SERIES_SEARCH.watchProviders,
-  ),
-  adult: v.optional(v.fallback(v.boolean(), DEFAULT_SERIES_SEARCH.adult), DEFAULT_SERIES_SEARCH.adult),
-  cardSize: v.optional(
-    v.fallback(v.picklist(['small', 'medium', 'large']), DEFAULT_CARD_VIEW.cardSize),
-    DEFAULT_CARD_VIEW.cardSize,
-  ),
-  showNames: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showNames), DEFAULT_CARD_VIEW.showNames),
-  showRatings: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showRatings), DEFAULT_CARD_VIEW.showRatings),
-  showYears: v.optional(v.fallback(v.boolean(), DEFAULT_CARD_VIEW.showYears), DEFAULT_CARD_VIEW.showYears),
-});
-
-export type SeriesSearchParams = v.InferOutput<typeof SeriesSearchSchema>;
+import { SeriesSearchSchema } from '@/schemas';
 
 export const Route = createFileRoute('/(series)/_sidebar/series')({
   validateSearch: SeriesSearchSchema,

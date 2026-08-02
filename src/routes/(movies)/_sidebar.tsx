@@ -1,6 +1,6 @@
 import { MovieReleaseType, MovieReleaseTypeLabel } from '@lorenzopant/tmdb';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, getRouteApi, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
 import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, RotateCcwIcon } from 'lucide-react';
@@ -29,7 +29,9 @@ import {
 } from '@/lib/constants';
 import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
 import { movieWatchProvidersQueryOptions } from '@/query-options';
-import { type MovieSearchParams, Route as MoviesRoute } from '@/routes/(movies)/_sidebar/movies';
+import type { MovieSearchParams } from '@/schemas';
+
+const MoviesRoute = getRouteApi('/(movies)/_sidebar/movies');
 
 const MOVIE_SORT_MAP: Record<MovieSearchParams['sort'], string> = {
   vote_average: 'Rating',
