@@ -73,5 +73,10 @@
       "onFail": "warn"
     }
   },
-  "packageManager": "nub@0.6.0"
+  "packageManager": "nub@0.6.0",
+  "allowBuilds": {
+    "esbuild": true,
+    "lefthook": true,
+    "workerd": true
+  }
 }
