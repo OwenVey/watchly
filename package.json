@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build && vite build",
-    "cf-typegen": "varlock-wrangler types",
-    "deploy": "nub run build && varlock-wrangler deploy",
     "dev": "vite",
     "env:audit": "varlock audit",
     "env:scan": "varlock scan",
