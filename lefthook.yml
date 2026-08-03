@@ -4,6 +4,8 @@ assert_lefthook_installed: true
 pre-commit:
   parallel: true
   jobs:
+    - name: secrets
+      run: nub run env:scan --staged
     - name: lint
       run: nub run lint:fix {staged_files} --no-error-on-unmatched-pattern
       stage_fixed: true

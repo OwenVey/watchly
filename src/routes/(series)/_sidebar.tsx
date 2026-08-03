@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton.js';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip.js';
-import { tmdbApi } from '@/lib/api.js';
+import { searchCompanies, searchKeywords } from '@/lib/api.functions';
 import {
   CARD_GRID_SIZE_CLASSES,
   DEFAULT_CARD_VIEW,
@@ -393,10 +393,7 @@ function Filters() {
             items={[]}
             value={keywords}
             onValueChange={(keywords) => navigate({ to: '/series', search: { keywords } })}
-            onSearch={async (query) => {
-              const { results } = await tmdbApi.search.keyword({ query });
-              return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
-            }}
+            onSearch={(query) => searchKeywords({ data: { query } })}
           />
         </div>
 
@@ -409,10 +406,7 @@ function Filters() {
             items={[]}
             value={studios}
             onValueChange={(studios) => navigate({ to: '/series', search: { studios } })}
-            onSearch={async (query) => {
-              const { results } = await tmdbApi.search.company({ query });
-              return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
-            }}
+            onSearch={(query) => searchCompanies({ data: { query } })}
           />
         </div>
 
@@ -425,10 +419,7 @@ function Filters() {
             items={[]}
             value={networks}
             onValueChange={(networks) => navigate({ to: '/series', search: { networks } })}
-            onSearch={async (query) => {
-              const { results } = await tmdbApi.search.company({ query });
-              return results.map(({ id, name }) => ({ value: id.toString(), label: name }));
-            }}
+            onSearch={(query) => searchCompanies({ data: { query } })}
           />
         </div>
 

@@ -34,7 +34,7 @@ The app centers on filter-heavy discovery flows, infinite lists, detailed title 
 - Routes live in `src/routes` and generate `src/routeTree.gen.ts`.
 - The root route redirects `/` to `/movies`.
 - Search and discovery data access is centralized in `src/query-options.ts`.
-- TMDB and OMDb clients live in `src/lib/api.ts`.
+- TanStack server functions live in `src/lib/api.functions.ts`, and the server-only TMDB and OMDb clients live in `src/lib/api.server.ts`.
 - API response validation lives in `src/schemas.ts`.
 - Default discovery state and lookup maps live in `src/lib/constants.ts`.
 - Shared presentational primitives live in `src/components/ui`.
@@ -61,6 +61,15 @@ nub install
 
 ### Start the development server
 
+Create an ignored `.env.local` with the variables defined in `.env.schema`:
+
+```bash
+TMDB_API_KEY=your-tmdb-api-key
+OMDB_API_KEY=your-omdb-api-key
+```
+
+Varlock validates these values and injects them into the Cloudflare development runtime. Then run:
+
 ```bash
 nub run dev
 ```
@@ -73,6 +82,8 @@ The app runs at `http://localhost:5173` by default.
 - `nub run build` runs `tsc --build` and then creates the production Vite bundle.
 - `nub run build:analyze` builds with bundle analysis enabled outside Vercel.
 - `nub run preview` serves the production build locally.
+- `nub run env:audit` checks environment-variable usage against `.env.schema`.
+- `nub run env:scan` scans tracked files for leaked sensitive values.
 - `nub run lint` runs `oxlint`.
 - `nub run lint:fix` runs `oxlint --fix`.
 - `nub run format` runs `oxfmt`.
@@ -91,7 +102,8 @@ The app runs at `http://localhost:5173` by default.
 
 - TMDB is the primary data source for movies, TV, people, providers, and collections.
 - OMDb is used for supplemental IMDb and Rotten Tomatoes ratings when an IMDb ID is available.
-- Both API credentials are currently embedded in `src/lib/api.ts` for this client-only app.
+- Varlock manages and validates the API credentials declared in `.env.schema`. Values remain in the ignored `.env.local`, are accessed through typed `ENV` values by TanStack Start server functions, and are never included in client-side requests.
+- Cloudflare deployments use `varlock-wrangler`, which uploads sensitive values as Cloudflare secrets.
 - The app has no authentication, no user accounts, and no user-generated content.
 
 ## License

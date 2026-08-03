@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { tmdbApi } from '@/lib/api';
+import { getSeasonDetails } from '@/lib/api.functions';
 import { LANGUAGES_MAP } from '@/lib/constants';
 import { formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { omdbQueryOptions, seriesIdQueryOptions } from '@/query-options';
@@ -253,9 +253,8 @@ function RouteComponent() {
                 onValueChange={async (seasonNumbers) => {
                   for (const seasonNumber of seasonNumbers) {
                     if (!seasonDetails.has(seasonNumber)) {
-                      const details = await tmdbApi.tv_seasons.details({
-                        series_id: series.id,
-                        season_number: seasonNumber,
+                      const details = await getSeasonDetails({
+                        data: { seriesId: series.id, seasonNumber: Number(seasonNumber) },
                       });
                       setSeasonDetails((prev) => new Map(prev).set(seasonNumber, details));
                     }
