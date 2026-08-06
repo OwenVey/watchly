@@ -7,8 +7,10 @@ pre-commit:
     - name: secrets
       run: nub run env:scan --staged
     - name: lint
-      run: nub run lint:fix {staged_files} --no-error-on-unmatched-pattern
+      glob: '*.{js,jsx,ts,tsx}'
+      run: nub run lint:fix
       stage_fixed: true
     - name: format
-      run: nub run format {staged_files} --no-error-on-unmatched-pattern
+      glob: '*.{js,jsx,ts,tsx}'
+      run: nub run format
       stage_fixed: true

@@ -19,7 +19,9 @@ export const Route = createFileRoute('/(movies)/_sidebar/movies')({
       stripSearchParams({ ...DEFAULT_MOVIE_SEARCH, ...DEFAULT_CARD_VIEW }),
     ],
   },
-  loaderDeps: ({ search }) => search,
+  loaderDeps: ({
+    search: { cardSize: _cardSize, showNames: _showNames, showRatings: _showRatings, showYears: _showYears, ...params },
+  }) => params,
   loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(movieQueryOptions(deps)),
   pendingMs: 0,
   pendingComponent: SkeletonCards,
@@ -34,6 +36,7 @@ function SkeletonCards() {
 
 function MovieCards() {
   const deps = Route.useLoaderDeps();
+  const { showNames, showRatings, showYears } = Route.useSearch();
 
   const {
     data: movies,
@@ -56,12 +59,7 @@ function MovieCards() {
         <React.Fragment key={page}>
           {results.map((movie) => (
             <li key={movie.id}>
-              <MovieCard
-                movie={movie}
-                showName={deps.showNames}
-                showRating={deps.showRatings}
-                showYear={deps.showYears}
-              />
+              <MovieCard movie={movie} showName={showNames} showRating={showRatings} showYear={showYears} />
             </li>
           ))}
         </React.Fragment>

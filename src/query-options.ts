@@ -16,13 +16,10 @@ import {
 import type { MovieSearchParams, SeriesSearchParams } from '@/schemas';
 import type { TrendingMediaType } from '@/types';
 
-export const movieQueryOptions = ({
-  cardSize: _cardSize,
-  showNames: _showNames,
-  showRatings: _showRatings,
-  showYears: _showYears,
-  ...params
-}: MovieSearchParams) =>
+type ViewParam = 'cardSize' | 'showNames' | 'showRatings' | 'showYears';
+type QueryOptionsParams<T> = Omit<T, ViewParam>;
+
+export const movieQueryOptions = (params: QueryOptionsParams<MovieSearchParams>) =>
   infiniteQueryOptions({
     queryKey: ['movies', params],
     queryFn: ({ pageParam }) => getMovies({ data: { page: pageParam, params } }),
@@ -31,13 +28,7 @@ export const movieQueryOptions = ({
     getNextPageParam: (lastPage) => (lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined),
   });
 
-export const seriesQueryOptions = ({
-  cardSize: _cardSize,
-  showNames: _showNames,
-  showRatings: _showRatings,
-  showYears: _showYears,
-  ...params
-}: SeriesSearchParams) =>
+export const seriesQueryOptions = (params: QueryOptionsParams<SeriesSearchParams>) =>
   infiniteQueryOptions({
     queryKey: ['series', params],
     queryFn: ({ pageParam }) => getSeries({ data: { page: pageParam, params } }),

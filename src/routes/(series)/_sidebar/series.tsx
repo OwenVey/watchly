@@ -20,7 +20,9 @@ export const Route = createFileRoute('/(series)/_sidebar/series')({
     ],
   },
 
-  loaderDeps: ({ search }) => search,
+  loaderDeps: ({
+    search: { cardSize: _cardSize, showNames: _showNames, showRatings: _showRatings, showYears: _showYears, ...params },
+  }) => params,
   loader: ({ context, deps }) => context.queryClient.ensureInfiniteQueryData(seriesQueryOptions(deps)),
   pendingMs: 0,
   pendingComponent: SkeletonCards,
@@ -35,6 +37,7 @@ function SkeletonCards() {
 
 function SeriesCards() {
   const deps = Route.useLoaderDeps();
+  const { showNames, showRatings, showYears } = Route.useSearch();
 
   const {
     data: series,
@@ -57,12 +60,7 @@ function SeriesCards() {
         <React.Fragment key={page}>
           {results.map((show) => (
             <li key={show.id}>
-              <SeriesCard
-                series={show}
-                showName={deps.showNames}
-                showRating={deps.showRatings}
-                showYear={deps.showYears}
-              />
+              <SeriesCard series={show} showName={showNames} showRating={showRatings} showYear={showYears} />
             </li>
           ))}
         </React.Fragment>
