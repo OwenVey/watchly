@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.50.0",
-    "@nubjs/types": ">=0.4.13 <=0.6.0",
+    "@nubjs/types": "^0.7.1",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tanstack/devtools-vite": "^0.8.3",
     "@tanstack/eslint-plugin-query": "^5.101.4",
@@ -70,11 +70,11 @@
   "devEngines": {
     "packageManager": {
       "name": "nub",
-      "version": "^0.6.0",
+      "version": "^0.7.1",
       "onFail": "warn"
     }
   },
-  "packageManager": "nub@0.6.0",
+  "packageManager": "nub@0.7.1",
   "allowBuilds": {
     "esbuild": true,
     "lefthook": true,
