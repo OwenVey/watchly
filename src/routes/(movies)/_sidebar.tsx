@@ -2,7 +2,6 @@ import { MovieReleaseType, MovieReleaseTypeLabel } from '@lorenzopant/tmdb';
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, getRouteApi, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, RotateCcwIcon } from 'lucide-react';
 import React from 'react';
 import { CardViewOptions } from '@/components/card-view-options';
@@ -27,6 +26,7 @@ import {
   LANGUAGES_MAP,
   MOVIE_GENRES_MAP,
 } from '@/lib/constants';
+import { calendarDateToDate, dateToCalendarDate, formatNumericCalendarDate } from '@/lib/date.js';
 import { cn, formatMinutesToHHMM, toggleItemInArray } from '@/lib/utils.js';
 import { movieWatchProvidersQueryOptions } from '@/query-options';
 import type { MovieSearchParams } from '@/schemas';
@@ -186,18 +186,18 @@ function Filters() {
                     )}
                   >
                     <CalendarIcon />
-                    {releasedAfter ? format(releasedAfter, 'P') : 'After'}
+                    {releasedAfter ? formatNumericCalendarDate(releasedAfter) : 'After'}
                   </Button>
                 }
               />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedAfter ? new Date(releasedAfter) : undefined}
+                  selected={releasedAfter ? calendarDateToDate(releasedAfter) : undefined}
                   onSelect={(releasedAfter) =>
                     navigate({
                       to: '/movies',
-                      search: { releasedAfter: releasedAfter?.toISOString() },
+                      search: { releasedAfter: releasedAfter ? dateToCalendarDate(releasedAfter) : undefined },
                     })
                   }
                 />
@@ -215,18 +215,18 @@ function Filters() {
                     )}
                   >
                     <CalendarIcon />
-                    {releasedBefore ? format(releasedBefore, 'P') : 'Before'}
+                    {releasedBefore ? formatNumericCalendarDate(releasedBefore) : 'Before'}
                   </Button>
                 }
               />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={releasedBefore ? new Date(releasedBefore) : undefined}
+                  selected={releasedBefore ? calendarDateToDate(releasedBefore) : undefined}
                   onSelect={(releasedBefore) =>
                     navigate({
                       to: '/movies',
-                      search: { releasedBefore: releasedBefore?.toISOString() },
+                      search: { releasedBefore: releasedBefore ? dateToCalendarDate(releasedBefore) : undefined },
                     })
                   }
                 />

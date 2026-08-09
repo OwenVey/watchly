@@ -3,7 +3,12 @@ import * as v from 'valibot';
 import { DEFAULT_CARD_VIEW, DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH, LANGUAGES_MAP } from '@/lib/constants';
 import { schemaObjectKeys } from '@/lib/utils';
 
+const CALENDAR_DATE_LENGTH = 10;
 const PositiveIntegerParamSchema = v.pipe(v.string(), v.regex(/^[1-9]\d*$/), v.transform(Number));
+const CalendarDateParamSchema = v.pipe(
+  v.union([v.pipe(v.string(), v.isoDate()), v.pipe(v.string(), v.isoTimestamp())]),
+  v.transform((date) => date.slice(0, CALENDAR_DATE_LENGTH)),
+);
 
 export const CollectionIdParamsSchema = v.object({ collectionId: PositiveIntegerParamSchema });
 export const MovieIdParamsSchema = v.object({ movieId: PositiveIntegerParamSchema });
@@ -19,8 +24,8 @@ export const TrendingMediaTypeSchema = v.union([
 ]);
 
 export const MovieSearchSchema = v.object({
-  releasedAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-  releasedBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  releasedAfter: v.optional(CalendarDateParamSchema),
+  releasedBefore: v.optional(CalendarDateParamSchema),
   ratingMin: v.optional(
     v.fallback(
       v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_MOVIE_SEARCH.ratingMax - 1)),
@@ -99,8 +104,8 @@ export const MovieSearchSchema = v.object({
 export type MovieSearchParams = v.InferOutput<typeof MovieSearchSchema>;
 
 export const SeriesSearchSchema = v.object({
-  firstAirDateAfter: v.optional(v.pipe(v.string(), v.isoTimestamp())),
-  firstAirDateBefore: v.optional(v.pipe(v.string(), v.isoTimestamp())),
+  firstAirDateAfter: v.optional(CalendarDateParamSchema),
+  firstAirDateBefore: v.optional(CalendarDateParamSchema),
   ratingMin: v.optional(
     v.fallback(
       v.pipe(v.number(), v.minValue(1), v.maxValue(DEFAULT_SERIES_SEARCH.ratingMax - 1)),

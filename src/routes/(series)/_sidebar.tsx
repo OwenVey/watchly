@@ -2,7 +2,6 @@ import { DiscoverTVStatusLabel, DiscoverTVType, DiscoverTVTypeLabel } from '@lor
 import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, getRouteApi, Link, Outlet, useNavigate } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
 import { ArrowDownIcon, ArrowUpIcon, CalendarIcon, FilterIcon, RotateCcwIcon } from 'lucide-react';
 import React from 'react';
 import { CardViewOptions } from '@/components/card-view-options';
@@ -27,6 +26,7 @@ import {
   LANGUAGES_MAP,
   SERIES_GENRES_MAP,
 } from '@/lib/constants';
+import { calendarDateToDate, dateToCalendarDate, formatNumericCalendarDate } from '@/lib/date.js';
 import { cn, toggleItemInArray } from '@/lib/utils.js';
 import { seriesWatchProvidersQueryOptions } from '@/query-options';
 import type { SeriesSearchParams } from '@/schemas';
@@ -190,18 +190,20 @@ function Filters() {
                     )}
                   >
                     <CalendarIcon />
-                    {firstAirDateAfter ? format(firstAirDateAfter, 'P') : 'After'}
+                    {firstAirDateAfter ? formatNumericCalendarDate(firstAirDateAfter) : 'After'}
                   </Button>
                 }
               />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateAfter ? new Date(firstAirDateAfter) : undefined}
+                  selected={firstAirDateAfter ? calendarDateToDate(firstAirDateAfter) : undefined}
                   onSelect={(firstAirDateAfter) =>
                     navigate({
                       to: '/series',
-                      search: { firstAirDateAfter: firstAirDateAfter?.toISOString() },
+                      search: {
+                        firstAirDateAfter: firstAirDateAfter ? dateToCalendarDate(firstAirDateAfter) : undefined,
+                      },
                     })
                   }
                 />
@@ -219,18 +221,20 @@ function Filters() {
                     )}
                   >
                     <CalendarIcon />
-                    {firstAirDateBefore ? format(firstAirDateBefore, 'P') : 'Before'}
+                    {firstAirDateBefore ? formatNumericCalendarDate(firstAirDateBefore) : 'Before'}
                   </Button>
                 }
               />
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={firstAirDateBefore ? new Date(firstAirDateBefore) : undefined}
+                  selected={firstAirDateBefore ? calendarDateToDate(firstAirDateBefore) : undefined}
                   onSelect={(firstAirDateBefore) =>
                     navigate({
                       to: '/series',
-                      search: { firstAirDateBefore: firstAirDateBefore?.toISOString() },
+                      search: {
+                        firstAirDateBefore: firstAirDateBefore ? dateToCalendarDate(firstAirDateBefore) : undefined,
+                      },
                     })
                   }
                 />

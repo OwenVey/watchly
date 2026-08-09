@@ -1,7 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
-import { differenceInYears } from 'date-fns';
 import { UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import * as v from 'valibot';
@@ -9,6 +8,7 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { SeriesCard } from '@/components/series-card';
 import { ShowMoreButton } from '@/components/show-more-button';
+import { differenceInCalendarYears, formatNumericCalendarDate, getTodayCalendarDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
 import { personIdQueryOptions } from '@/query-options';
 import { PersonIdParamsSchema } from '@/schemas';
@@ -19,12 +19,16 @@ export const Route = createFileRoute('/(people)/people_/$personId')({
     stringify: (params) => ({ personId: params.personId.toString() }),
   },
 
-  loader: async ({ context, params }) => context.queryClient.prefetchQuery(personIdQueryOptions(params.personId)),
+  loader: async ({ context, params }) => {
+    await context.queryClient.prefetchQuery(personIdQueryOptions(params.personId));
+    return { today: getTodayCalendarDate() };
+  },
   component: Person,
 });
 
 function Person() {
   const { personId } = Route.useParams();
+  const { today } = Route.useLoaderData();
   const { data: person } = useSuspenseQuery(personIdQueryOptions(personId));
 
   const [showEntireBio, toggleShowEntireBio] = useToggle(false);
@@ -105,8 +109,8 @@ function Person() {
           <h1 className="text-3xl font-bold text-foreground">{person.name}</h1>
           {person.birthday && (
             <div className="text-muted-foreground">
-              Born {new Date(person.birthday).toLocaleDateString()} (
-              {differenceInYears(new Date(), new Date(person.birthday))} years old)
+              Born {formatNumericCalendarDate(person.birthday)} ({differenceInCalendarYears(person.birthday, today)}{' '}
+              years old)
             </div>
           )}
           <div className="text-muted-foreground">{person.place_of_birth}</div>

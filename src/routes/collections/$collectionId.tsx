@@ -6,6 +6,7 @@ import { MovieCard } from '@/components/movie-card';
 import { PaddedLayout } from '@/components/padded-layout';
 import { Badge } from '@/components/ui/badge';
 import { MOVIE_GENRES_MAP } from '@/lib/constants';
+import { compareIsoDates } from '@/lib/date';
 import { collectionIdQueryOptions } from '@/query-options';
 import { CollectionIdParamsSchema } from '@/schemas';
 
@@ -80,8 +81,8 @@ function Collection() {
       <div className="mt-12">
         <h2 className="text-2xl font-semibold text-foreground">Movies</h2>
         <ul className="mt-2 grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-4">
-          {collection.parts
-            .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
+          {[...collection.parts]
+            .sort((a, b) => compareIsoDates(a.release_date, b.release_date))
             .map((movie) => (
               <li key={movie.id}>
                 <MovieCard movie={movie} />

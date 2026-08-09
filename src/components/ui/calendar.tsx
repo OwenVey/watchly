@@ -1,7 +1,8 @@
 import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
-import { DayPicker, getDefaultClassNames, type DayButton, type Locale } from 'react-day-picker';
+import { DayPicker, getDefaultClassNames, type DayButton } from 'react-day-picker';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { dateToCalendarDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
 
 function Calendar({
@@ -30,10 +31,7 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       locale={locale}
-      formatters={{
-        formatMonthDropdown: (date) => date.toLocaleString(locale?.code, { month: 'short' }),
-        ...formatters,
-      }}
+      formatters={formatters}
       classNames={{
         root: cn('w-fit', defaultClassNames.root),
         months: cn('relative flex flex-col gap-4 md:flex-row', defaultClassNames.months),
@@ -114,7 +112,7 @@ function Calendar({
 
           return <ChevronDownIcon className={cn('size-4', className)} {...props} />;
         },
-        DayButton: ({ ...props }) => <CalendarDayButton locale={locale} {...props} />,
+        DayButton: ({ ...props }) => <CalendarDayButton {...props} />,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -129,13 +127,7 @@ function Calendar({
   );
 }
 
-function CalendarDayButton({
-  className,
-  day,
-  modifiers,
-  locale,
-  ...props
-}: React.ComponentProps<typeof DayButton> & { locale?: Partial<Locale> }) {
+function CalendarDayButton({ className, day, modifiers, ...props }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames();
 
   const ref = React.useRef<HTMLButtonElement>(null);
@@ -147,7 +139,7 @@ function CalendarDayButton({
     <Button
       variant="ghost"
       size="icon"
-      data-day={day.date.toLocaleDateString(locale?.code)}
+      data-day={dateToCalendarDate(day.date)}
       data-selected-single={
         modifiers.selected && !modifiers.range_start && !modifiers.range_end && !modifiers.range_middle
       }

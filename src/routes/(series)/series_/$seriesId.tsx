@@ -3,7 +3,6 @@ import type { LanguageISO6391, TVSeason } from '@lorenzopant/tmdb';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { ClientOnly, createFileRoute, Link } from '@tanstack/react-router';
 import { useToggle } from '@uidotdev/usehooks';
-import { format } from 'date-fns';
 import { ChevronDownIcon, ImageIcon, StarIcon, TagIcon, TvIcon } from 'lucide-react';
 import { useState } from 'react';
 import * as v from 'valibot';
@@ -21,6 +20,7 @@ import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { getSeasonDetails } from '@/lib/api.functions';
 import { LANGUAGES_MAP } from '@/lib/constants';
+import { formatCalendarDate, formatCalendarYear } from '@/lib/date';
 import { formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { omdbQueryOptions, seriesIdQueryOptions } from '@/query-options';
 import { SeriesIdParamsSchema } from '@/schemas';
@@ -54,11 +54,11 @@ function RouteComponent() {
     { label: 'Status', value: series.status },
     {
       label: 'First Air Date',
-      value: series.first_air_date && format(series.first_air_date, 'MMM d, yyyy'),
+      value: series.first_air_date && formatCalendarDate(series.first_air_date),
     },
     {
       label: 'Next Air Date',
-      value: series.next_episode_to_air?.air_date && format(series.next_episode_to_air.air_date, 'MMM d, yyyy'),
+      value: series.next_episode_to_air?.air_date && formatCalendarDate(series.next_episode_to_air.air_date),
     },
     {
       label: 'Episode Runtime',
@@ -182,7 +182,7 @@ function RouteComponent() {
                 {series.first_air_date && (
                   <span className="ml-1 text-base font-medium text-muted-foreground">
                     {' '}
-                    ({new Date(series.first_air_date).getFullYear()})
+                    ({formatCalendarYear(series.first_air_date)})
                   </span>
                 )}
               </h1>
@@ -291,7 +291,7 @@ function RouteComponent() {
                           <div className="text-left">
                             <div className="text-lg font-semibold text-foreground">{season.name}</div>
                             <div className="text-sm font-medium text-muted-foreground">
-                              {season.air_date && `${new Date(season.air_date).getFullYear()} ⋅ `}
+                              {season.air_date && `${formatCalendarYear(season.air_date)} ⋅ `}
                               {season.episode_count} Episodes
                             </div>
                             {season.overview && (
@@ -339,7 +339,7 @@ function RouteComponent() {
                                     <div className="flex flex-col">
                                       <div className="leading-none font-medium text-foreground">{episode.name}</div>
                                       <div className="mt-0.5 text-sm font-medium text-muted-foreground">
-                                        {episode.air_date && format(episode.air_date, 'MMM d, yyyy')}
+                                        {episode.air_date && formatCalendarDate(episode.air_date)}
                                         {episode.runtime && ` ⋅ ${formatMinutesToHHMM(episode.runtime)}`}
                                       </div>
                                     </div>

@@ -1,6 +1,5 @@
 import { type LanguageISO6391 } from '@lorenzopant/tmdb';
 import { createServerFn } from '@tanstack/react-start';
-import { format } from 'date-fns';
 import * as v from 'valibot';
 import { getOmdbApi, getTmdbApi } from '@/lib/api.server';
 import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
@@ -21,10 +20,10 @@ export const getMovies = createServerFn({ method: 'GET' })
           page: pageToFetch,
           ...(params.adult !== DEFAULT_MOVIE_SEARCH.adult && { include_adult: params.adult }),
           ...(params.releasedAfter !== DEFAULT_MOVIE_SEARCH.releasedAfter && {
-            'primary_release_date.gte': format(params.releasedAfter, 'yyyy-M-d'),
+            'primary_release_date.gte': params.releasedAfter,
           }),
           ...(params.releasedBefore !== DEFAULT_MOVIE_SEARCH.releasedBefore && {
-            'primary_release_date.lte': format(params.releasedBefore, 'yyyy-M-d'),
+            'primary_release_date.lte': params.releasedBefore,
           }),
           ...(params.ratingMin !== DEFAULT_MOVIE_SEARCH.ratingMin && { 'vote_average.gte': params.ratingMin }),
           ...(params.ratingMax !== DEFAULT_MOVIE_SEARCH.ratingMax && { 'vote_average.lte': params.ratingMax }),
@@ -70,10 +69,10 @@ export const getSeries = createServerFn({ method: 'GET' })
           page: pageToFetch,
           ...(params.adult !== DEFAULT_SERIES_SEARCH.adult && { include_adult: params.adult }),
           ...(params.firstAirDateAfter !== DEFAULT_SERIES_SEARCH.firstAirDateAfter && {
-            'first_air_date.gte': format(params.firstAirDateAfter, 'yyyy-M-d'),
+            'first_air_date.gte': params.firstAirDateAfter,
           }),
           ...(params.firstAirDateBefore !== DEFAULT_SERIES_SEARCH.firstAirDateBefore && {
-            'first_air_date.lte': format(params.firstAirDateBefore, 'yyyy-M-d'),
+            'first_air_date.lte': params.firstAirDateBefore,
           }),
           ...(params.ratingMin !== DEFAULT_SERIES_SEARCH.ratingMin && { 'vote_average.gte': params.ratingMin }),
           ...(params.ratingMax !== DEFAULT_SERIES_SEARCH.ratingMax && { 'vote_average.lte': params.ratingMax }),

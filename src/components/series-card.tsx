@@ -2,6 +2,7 @@ import type { TVSeriesResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/logos/tmdb-logo';
+import { formatCalendarYear } from '@/lib/date';
 import { cn, voteAverageToPercentage } from '@/lib/utils';
 import { Route as SeriesIdRoute } from '@/routes/(series)/series_/$seriesId';
 
@@ -75,7 +76,7 @@ export function SeriesCard({
           </div>
         )}
         {!showYear && series.first_air_date && (
-          <div className="text-sm font-medium text-white">{new Date(series.first_air_date).getFullYear()}</div>
+          <div className="text-sm font-medium text-white">{formatCalendarYear(series.first_air_date)}</div>
         )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{series.name}</div>
         <div className="line-clamp-3 text-sm text-balance text-white/70">{series.overview}</div>
@@ -92,7 +93,7 @@ export function SeriesCard({
       {card}
       <div className="flex flex-col gap-0.5">
         {showYear && series.first_air_date && (
-          <div className="text-xs text-muted-foreground">{new Date(series.first_air_date).getFullYear()}</div>
+          <div className="text-xs text-muted-foreground">{formatCalendarYear(series.first_air_date)}</div>
         )}
         {showName && <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{series.name}</div>}
       </div>

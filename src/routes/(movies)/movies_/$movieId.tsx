@@ -1,8 +1,7 @@
 import { MovieReleaseTypeLabel, type LanguageISO6391, type MovieReleaseType } from '@lorenzopant/tmdb';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { ClientOnly, createFileRoute, Link } from '@tanstack/react-router';
-import { useToggle } from '@uidotdev/usehooks'; // Ensure useToggle is imported
-import { format } from 'date-fns';
+import { useToggle } from '@uidotdev/usehooks';
 import {
   ClapperboardIcon,
   ClockIcon,
@@ -32,6 +31,7 @@ import { Card } from '@/components/ui/card';
 import { CarouselItem } from '@/components/ui/carousel';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { LANGUAGES_MAP } from '@/lib/constants';
+import { compareIsoDates, formatCalendarDate, formatCalendarYear } from '@/lib/date';
 import { cn, formatCurrency, formatMinutesToHHMM, voteAverageToPercentage } from '@/lib/utils';
 import { movieIdQueryOptions, omdbQueryOptions } from '@/query-options';
 import { Route as CollectionIdRoute } from '@/routes/collections/$collectionId';
@@ -82,9 +82,9 @@ function Movie() {
       value: (
         <div className="flex flex-col items-end gap-1">
           <div className="grid grid-cols-[max-content_max-content] items-center justify-items-end gap-x-2">
-            {usReleaseDates
-              .sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime())
-              .slice(0, showAllReleaseDates ? usReleaseDates.length : 3) // Limit to 5 by default
+            {[...usReleaseDates]
+              .sort((a, b) => compareIsoDates(a.release_date, b.release_date))
+              .slice(0, showAllReleaseDates ? usReleaseDates.length : 3)
               .map(({ type, release_date }) => {
                 const IconComponent = RELEASE_TYPE_ICON_MAP[type as MovieReleaseType];
                 return (
@@ -96,7 +96,7 @@ function Movie() {
                         {MovieReleaseTypeLabel[type as MovieReleaseType]}
                       </TooltipContent>
                     </Tooltip>
-                    {format(release_date, 'MMM d, yyyy')}
+                    {formatCalendarDate(release_date)}
                   </React.Fragment>
                 );
               })}
@@ -213,7 +213,7 @@ function Movie() {
               {movie.release_date && (
                 <span className="ml-1 text-base font-medium text-muted-foreground">
                   {' '}
-                  ({new Date(movie.release_date).getFullYear()})
+                  ({formatCalendarYear(movie.release_date)})
                 </span>
               )}
             </h1>

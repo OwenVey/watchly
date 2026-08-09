@@ -2,6 +2,7 @@ import type { MovieResultItem } from '@lorenzopant/tmdb';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { TmdbLogo } from '@/components/logos/tmdb-logo';
+import { formatCalendarYear } from '@/lib/date';
 import { cn, voteAverageToPercentage } from '@/lib/utils';
 import { Route as MovieIdRoute } from '@/routes/(movies)/movies_/$movieId';
 
@@ -76,7 +77,7 @@ export function MovieCard({
         )}
 
         {!showYear && movie.release_date && (
-          <div className="text-sm font-medium text-white">{new Date(movie.release_date).getFullYear()}</div>
+          <div className="text-sm font-medium text-white">{formatCalendarYear(movie.release_date)}</div>
         )}
         <div className="text-lg leading-6 font-bold text-balance text-white">{movie.title}</div>
         <div className="line-clamp-3 text-sm text-balance text-white/70">{movie.overview}</div>
@@ -93,7 +94,7 @@ export function MovieCard({
       {card}
       <div className="flex flex-col gap-0.5">
         {showYear && movie.release_date && (
-          <div className="text-xs text-muted-foreground">{new Date(movie.release_date).getFullYear()}</div>
+          <div className="text-xs text-muted-foreground">{formatCalendarYear(movie.release_date)}</div>
         )}
         {showName && <div className="line-clamp-2 text-sm leading-snug font-medium text-foreground">{movie.title}</div>}
       </div>
