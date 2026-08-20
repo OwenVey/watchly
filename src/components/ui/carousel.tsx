@@ -97,7 +97,7 @@ function Carousel({
     if (!api) {
       return;
     }
-    // oxlint-disable-next-line react/react-compiler
+    // oxlint-disable-next-line react/set-state-in-effect
     onSelect(api);
     api.on('reInit', onSelect);
     api.on('select', onSelect);

@@ -20,7 +20,9 @@ export default defineConfig({
     '@tanstack/query/no-void-query-fn': 'error',
     '@tanstack/query/stable-query-client': 'error',
     '@tanstack/router/create-route-property-order': 'error',
-    'react/react-compiler': 'error',
+  },
+  categories: {
+    correctness: 'error',
   },
   settings: {
     react: {

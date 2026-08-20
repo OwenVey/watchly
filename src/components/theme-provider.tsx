@@ -45,7 +45,7 @@ export function ThemeProvider({ children, defaultTheme = 'system', storageKey = 
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
-    // oxlint-disable-next-line react/react-compiler
+    // oxlint-disable-next-line react/set-state-in-effect
     setThemeState(stored === 'light' || stored === 'dark' || stored === 'system' ? stored : defaultTheme);
     setMounted(true);
   }, [defaultTheme, storageKey]);

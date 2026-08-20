@@ -37,7 +37,6 @@ export function useIntersectionObserver({
 
   const callbackRef = useRef<UseIntersectionObserverOptions['onChange']>(undefined);
 
-  // oxlint-disable-next-line react/react-compiler
   callbackRef.current = onChange;
 
   const frozen = state.entry?.isIntersecting && freezeOnceVisible;
