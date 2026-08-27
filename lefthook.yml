@@ -5,12 +5,12 @@ pre-commit:
   parallel: true
   jobs:
     - name: secrets
-      run: nub run env:scan --staged
+      run: bun run env:scan --staged
     - name: lint
       glob: '*.{js,jsx,ts,tsx}'
-      run: nub run lint:fix
+      run: bun run lint:fix
       stage_fixed: true
     - name: format
       glob: '*.{js,jsx,ts,tsx}'
-      run: nub run format
+      run: bun run format
       stage_fixed: true

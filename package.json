@@ -14,7 +14,7 @@
     "lint:fix": "oxlint --fix",
     "prepare": "lefthook install",
     "preview": "vite preview",
-    "test": "nub --test",
+    "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -46,7 +46,6 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.54.1",
-    "@nubjs/types": "^0.7.5",
     "@tanstack/devtools-vite": "^0.8.3",
     "@tanstack/eslint-plugin-query": "^5.102.7",
     "@tanstack/eslint-plugin-router": "^1.162.0",
@@ -69,15 +68,11 @@
   },
   "devEngines": {
     "packageManager": {
-      "name": "nub",
-      "version": "^0.7.5",
+      "name": "bun",
+      "version": "^1.4.0",
       "onFail": "warn"
     }
   },
-  "packageManager": "nub@0.7.5",
-  "allowBuilds": {
-    "esbuild": true,
-    "lefthook": true,
-    "workerd": true
-  }
+  "packageManager": "bun@1.4.0",
+  "trustedDependencies": ["esbuild", "lefthook", "workerd"]
 }

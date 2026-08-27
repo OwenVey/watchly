@@ -34,7 +34,7 @@
   },
   "search.exclude": {
     "**/routeTree.gen.ts": true,
-    "**/nub.lock": true
+    "**/bun.lock": true
   },
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true

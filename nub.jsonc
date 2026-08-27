@@ -1,8 +1,0 @@
-{
-  "$schema": "https://nubjs.com/schema/latest.json",
-  "install": {
-    "linker": "hoisted",
-    // <integer><s|m|h|d|w>; a bare number is rejected
-    "minimumReleaseAge": "0s",
-  },
-}

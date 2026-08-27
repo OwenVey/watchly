@@ -1,7 +1,7 @@
 ## Quick Reference
 
-- **Format code**: `nub run format`
-- **Check for issues**: `nub run lint:fix`
+- **Format code**: `bun run format`
+- **Check for issues**: `bun run lint:fix`
 
 Oxlint + Oxfmt (the underlying engine) provides robust linting and formatting. Most issues are automatically fixable.
 
@@ -101,4 +101,4 @@ Oxlint + Oxfmt's linter will catch most issues automatically. Focus your attenti
 
 ---
 
-Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run `nub run lint:fix` before committing to ensure compliance.
+Most formatting and common issues are automatically fixed by Oxlint + Oxfmt. Run `bun run lint:fix` before committing to ensure compliance.

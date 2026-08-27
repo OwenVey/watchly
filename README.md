@@ -56,7 +56,7 @@ The app centers on filter-heavy discovery flows, infinite lists, detailed title 
 ### Install
 
 ```bash
-nub install
+bun install
 ```
 
 ### Start the development server
@@ -71,23 +71,23 @@ OMDB_API_KEY=your-omdb-api-key
 Varlock validates these values and injects them into the Cloudflare development runtime. Then run:
 
 ```bash
-nub run dev
+bun run dev
 ```
 
 The app runs at `http://localhost:5173` by default.
 
 ## Scripts
 
-- `nub run dev` starts the Vite development server.
-- `nub run build` runs `tsc --build` and then creates the production Vite bundle.
-- `nub run build:analyze` builds with bundle analysis enabled outside Vercel.
-- `nub run preview` serves the production build locally.
-- `nub run env:audit` checks environment-variable usage against `.env.schema`.
-- `nub run env:scan` scans tracked files for leaked sensitive values.
-- `nub run lint` runs `oxlint`.
-- `nub run lint:fix` runs `oxlint --fix`.
-- `nub run format` runs `oxfmt`.
-- `nub run knip` checks for unused files and exports.
+- `bun run dev` starts the Vite development server.
+- `bun run build` runs `tsc --build` and then creates the production Vite bundle.
+- `bun run build:analyze` builds with bundle analysis enabled outside Vercel.
+- `bun run preview` serves the production build locally.
+- `bun run env:audit` checks environment-variable usage against `.env.schema`.
+- `bun run env:scan` scans tracked files for leaked sensitive values.
+- `bun run lint` runs `oxlint`.
+- `bun run lint:fix` runs `oxlint --fix`.
+- `bun run format` runs `oxfmt`.
+- `bun run knip` checks for unused files and exports.
 
 ## Development Notes
 
