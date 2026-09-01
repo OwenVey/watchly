@@ -2,7 +2,7 @@ import { type LanguageISO6391 } from '@lorenzopant/tmdb';
 import { createServerFn } from '@tanstack/react-start';
 import * as v from 'valibot';
 import { getOmdbApi, getTmdbApi } from '@/lib/api.server';
-import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH } from '@/lib/constants';
+import { DEFAULT_MOVIE_SEARCH, DEFAULT_SERIES_SEARCH, OMDB_ENABLED } from '@/lib/constants';
 import { MovieSearchSchema, SeriesSearchSchema, TrendingMediaTypeSchema } from '@/schemas';
 
 const PageSchema = v.pipe(v.number(), v.integer(), v.minValue(1));
@@ -133,6 +133,10 @@ export const getCollectionDetails = createServerFn({ method: 'GET' })
 export const getOmdbRatings = createServerFn({ method: 'GET' })
   .validator(v.object({ imdbId: v.pipe(v.string(), v.regex(/^tt\d+$/)) }))
   .handler(async ({ data: { imdbId } }) => {
+    if (!OMDB_ENABLED) {
+      return null;
+    }
+
     const omdbResponse = await getOmdbApi()('/', { query: { i: imdbId } });
     return omdbResponse.Response === 'True' ? omdbResponse : null;
   });

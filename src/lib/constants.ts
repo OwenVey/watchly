@@ -1,6 +1,8 @@
 import { DiscoverTVType, MovieReleaseType, type LanguageISO6391 } from '@lorenzopant/tmdb';
 import type { Option } from '@/types';
 
+export const OMDB_ENABLED = false;
+
 export const DEFAULT_CARD_VIEW = {
   cardSize: 'medium' as const,
   showNames: false,

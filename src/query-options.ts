@@ -13,6 +13,7 @@ import {
   getTrending,
   searchMedia,
 } from '@/lib/api.functions';
+import { OMDB_ENABLED } from '@/lib/constants';
 import type { MovieSearchParams, SeriesSearchParams } from '@/schemas';
 import type { TrendingMediaType } from '@/types';
 
@@ -58,7 +59,8 @@ export const collectionIdQueryOptions = (collectionId: number) =>
 export const omdbQueryOptions = (imdbId?: string) =>
   queryOptions({
     queryKey: ['omdb', imdbId ?? null],
-    queryFn: () => (imdbId ? getOmdbRatings({ data: { imdbId } }) : null),
+    queryFn: () => (OMDB_ENABLED && imdbId ? getOmdbRatings({ data: { imdbId } }) : null),
+    enabled: OMDB_ENABLED && Boolean(imdbId),
   });
 
 export const movieWatchProvidersQueryOptions = queryOptions({
