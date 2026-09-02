@@ -1,11 +1,6 @@
-import { clsx } from 'clsx';
-import type { ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import * as v from 'valibot';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
+export { cn } from 'cn';
 
 export function formatMinutesToHHMM(minutes: number) {
   const hours = Math.floor(minutes / 60);
