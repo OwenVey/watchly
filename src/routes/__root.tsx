@@ -18,7 +18,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       code="500"
       title="Something went wrong"
       description="Sorry, an unexpected error has occurred."
-      details={<pre className="rounded bg-muted p-4 text-left text-sm text-destructive">{error.message}</pre>}
+      details={
+        <pre className="rounded bg-muted p-4 text-left text-sm text-destructive">
+          {error instanceof Error ? error.message : String(error)}
+        </pre>
+      }
     />
   ),
   shellComponent: RootDocument,
